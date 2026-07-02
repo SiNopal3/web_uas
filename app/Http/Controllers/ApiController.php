@@ -99,4 +99,51 @@ class ApiController extends Controller
             'message' => 'Gagal mengambil data dari API eksternal (Status: ' . $response->status() . ')'
         ], $response->status() === 200 ? 404 : $response->status());
     }
+    // 7. Endpoint Integrasi Cuaca Global (Open-Meteo API)
+    public function getWeather($lat, $lng)
+    {
+        // Mengambil data temperatur, curah hujan, dan kecepatan angin [cite: 48-50]
+        $url = "https://api.open-meteo.com/v1/forecast?latitude={$lat}&longitude={$lng}&current=temperature_2m,rain,wind_speed_10m";
+        
+        $response = Http::withHeaders([
+            'User-Agent' => 'SupplyChainApp/1.0'
+        ])->withoutVerifying()->get($url);
+
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'data' => $response->json()['current'] ?? null,
+                'raw_data' => $response->json()
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengambil data cuaca'
+        ], 500);
+    }
+
+    // 8. Endpoint Integrasi ExchangeRate API
+    public function getExchangeRate($base_currency)
+    {
+        // Mengambil data kurs real-time [cite: 73]
+        $url = "https://open.er-api.com/v6/latest/" . strtoupper($base_currency);
+        
+        $response = Http::withHeaders([
+            'User-Agent' => 'SupplyChainApp/1.0'
+        ])->withoutVerifying()->get($url);
+
+        if ($response->successful()) {
+            return response()->json([
+                'success' => true,
+                'base' => $base_currency,
+                'rates' => $response->json()['rates'] ?? null
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengambil data kurs mata uang'
+        ], 500);
+    }
 }

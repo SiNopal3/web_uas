@@ -16,3 +16,8 @@ Route::get('/news', [ApiController::class, 'getNews']);           // [cite: 235]
 Route::get('/currency', [ApiController::class, 'getCurrency']);   // [cite: 236]
 // Rute Integrasi API Eksternal
 Route::get('/external/country/{name}', [ApiController::class, 'getCountryProfile']);
+// Rute untuk mengecek cuaca berdasarkan Latitude dan Longitude
+Route::get('/external/weather/{lat}/{lng}', [ApiController::class, 'getWeather']);
+
+// Rute untuk mengecek kurs mata uang (misalnya USD atau IDR)
+Route::get('/external/currency/{base_currency}', [ApiController::class, 'getExchangeRate']);
