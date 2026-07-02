@@ -14,3 +14,5 @@ Route::get('/risk', [ApiController::class, 'getRisk']);           // [cite: 233]
 Route::get('/ports', [ApiController::class, 'getPorts']);         // [cite: 234]
 Route::get('/news', [ApiController::class, 'getNews']);           // [cite: 235]
 Route::get('/currency', [ApiController::class, 'getCurrency']);   // [cite: 236]
+// Rute Integrasi API Eksternal
+Route::get('/external/country/{name}', [ApiController::class, 'getCountryProfile']);
