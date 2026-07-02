@@ -21,3 +21,8 @@ Route::get('/external/weather/{lat}/{lng}', [ApiController::class, 'getWeather']
 
 // Rute untuk mengecek kurs mata uang (misalnya USD atau IDR)
 Route::get('/external/currency/{base_currency}', [ApiController::class, 'getExchangeRate']);
+// Rute untuk mengambil data ekonomi dari World Bank (gunakan 2 huruf kode negara, misal: ID, US, DE)
+Route::get('/external/economy/{country_code}', [ApiController::class, 'getWorldBankData']);
+
+// Rute untuk mencari berita berdasarkan topik
+Route::get('/external/news/{topic}', [ApiController::class, 'getGlobalNews']);
