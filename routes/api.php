@@ -26,3 +26,9 @@ Route::get('/external/economy/{country_code}', [ApiController::class, 'getWorldB
 
 // Rute untuk mencari berita berdasarkan topik
 Route::get('/external/news/{topic}', [ApiController::class, 'getGlobalNews']);
+use App\Http\Controllers\RiskEngineController;
+
+// Rute Fase 4: Data Science & AI Engine
+Route::get('/ai/sentiment', [RiskEngineController::class, 'analyzeSentiment']);
+// Rute untuk AI Risk Prediction Engine
+Route::get('/ai/predict-risk', [RiskEngineController::class, 'predictRisk']);
