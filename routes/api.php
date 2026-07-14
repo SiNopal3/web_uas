@@ -26,4 +26,5 @@ Route::get('/external/news/{topic}', [ApiController::class, 'getGlobalNews']);
 
 // Rute AI Risk Engine
 Route::get('/ai/sentiment', [RiskEngineController::class, 'analyzeSentiment']);
-Route::get('/ai/predict-risk', [RiskEngineController::class, 'predictRisk']);
+Route::get('/ai/predict-risk', [ApiController::class, 'predictRisk']);
+Route::get('/external/ports/{country}', [ApiController::class, 'getPorts']);
