@@ -9,6 +9,25 @@ class Country extends Model
 {
     use HasFactory;
     
-    // Mengizinkan semua kolom diisi
-    protected $guarded = []; 
+    protected $fillable = [
+        'name',
+        'currency',
+        'region',
+    ];
+
+    /**
+     * Relasi ke riwayat skor risiko.
+     */
+    public function riskScores()
+    {
+        return $this->hasMany(RiskScore::class);
+    }
+
+    /**
+     * Relasi ke daftar pantauan favorit (watchlists).
+     */
+    public function watchlists()
+    {
+        return $this->hasMany(Watchlist::class);
+    }
 }
