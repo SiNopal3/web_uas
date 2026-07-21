@@ -474,50 +474,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!nameA && !nameB) {
             tbody.innerHTML = `
-                <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                    <td class="py-2.5 px-3 rounded-start border-start border-primary border-4">
-                        <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">GDP &amp; Pertumbuhan</div>
-                        <span class="badge bg-primary-subtle text-primary border border-primary px-2.5 py-0.5" style="font-size: 11.5px;">Economic Scale</span>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td class="py-3 px-3 border-start border-primary border-4">
+                        <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">GDP &amp; Pertumbuhan</div>
+                        <div class="small" style="color:#3b82f6;">Economic Scale</div>
                     </td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-end py-2.5 px-3 rounded-end"><span class="badge bg-dark border border-secondary text-light px-2.5 py-1" style="font-size: 12.5px;">Pilih 2 Negara</span></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-end py-3 px-3"><span class="small fw-semibold" style="color:#94a3b8;">Pilih 2 Negara</span></td>
                 </tr>
-                <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                    <td class="py-2.5 px-3 rounded-start border-start border-danger border-4">
-                        <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Inflasi &amp; Stabilitas Harga</div>
-                        <span class="badge bg-danger-subtle text-danger border border-danger px-2.5 py-0.5" style="font-size: 11.5px;">Shock Index</span>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td class="py-3 px-3 border-start border-danger border-4">
+                        <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Inflasi &amp; Stabilitas Harga</div>
+                        <div class="small" style="color:#ef4444;">Shock Index</div>
                     </td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-end py-2.5 px-3 rounded-end"><span class="badge bg-dark border border-secondary text-light px-2.5 py-1" style="font-size: 12.5px;">Pilih 2 Negara</span></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-end py-3 px-3"><span class="small fw-semibold" style="color:#94a3b8;">Pilih 2 Negara</span></td>
                 </tr>
-                <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                    <td class="py-2.5 px-3 rounded-start border-start border-warning border-4">
-                        <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Risiko Rantai Pasok</div>
-                        <span class="badge bg-warning-subtle text-warning border border-warning px-2.5 py-0.5" style="font-size: 11.5px;">Disruption Index</span>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td class="py-3 px-3 border-start border-warning border-4">
+                        <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Risiko Rantai Pasok</div>
+                        <div class="small" style="color:#d97706;">Disruption Index</div>
                     </td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-end py-2.5 px-3 rounded-end"><span class="badge bg-dark border border-secondary text-light px-2.5 py-1" style="font-size: 12.5px;">Pilih 2 Negara</span></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-end py-3 px-3"><span class="small fw-semibold" style="color:#94a3b8;">Pilih 2 Negara</span></td>
                 </tr>
-                <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                    <td class="py-2.5 px-3 rounded-start border-start border-info border-4">
-                        <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Cuaca &amp; Pelabuhan</div>
-                        <span class="badge bg-info-subtle text-info border border-info px-2.5 py-0.5" style="font-size: 11.5px;">Maritime Transit</span>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td class="py-3 px-3 border-start border-info border-4">
+                        <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Cuaca &amp; Pelabuhan</div>
+                        <div class="small" style="color:#0ea5e9;">Maritime Transit</div>
                     </td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-end py-2.5 px-3 rounded-end"><span class="badge bg-dark border border-secondary text-light px-2.5 py-1" style="font-size: 12.5px;">Pilih 2 Negara</span></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-end py-3 px-3"><span class="small fw-semibold" style="color:#94a3b8;">Pilih 2 Negara</span></td>
                 </tr>
-                <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                    <td class="py-2.5 px-3 rounded-start border-start border-success border-4">
-                        <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Mata Uang &amp; Valas</div>
-                        <span class="badge bg-success-subtle text-success border border-success px-2.5 py-0.5" style="font-size: 11.5px;">FX Volatility</span>
+                <tr>
+                    <td class="py-3 px-3 border-start border-success border-4">
+                        <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Mata Uang &amp; Valas</div>
+                        <div class="small" style="color:#10b981;">FX Volatility</div>
                     </td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-center py-2.5 px-3"><div class="fw-bold text-muted mb-0" style="font-size: 20px;">--</div><div class="text-light fw-semibold" style="font-size: 13.5px;">Belum dipilih</div></td>
-                    <td class="text-end py-2.5 px-3 rounded-end"><span class="badge bg-dark border border-secondary text-light px-2.5 py-1" style="font-size: 12.5px;">Pilih 2 Negara</span></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-center py-3 px-3"><div class="fw-bold" style="font-size: 20px; color:#94a3b8;">--</div><div class="small" style="color:#94a3b8;">Belum dipilih</div></td>
+                    <td class="text-end py-3 px-3"><span class="small fw-semibold" style="color:#94a3b8;">Pilih 2 Negara</span></td>
                 </tr>
             `;
             return;
@@ -531,140 +531,140 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tbody.innerHTML = `
             <!-- 1. GDP ROW -->
-            <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                <td class="py-2.5 px-3 rounded-start border-start border-primary border-4">
-                    <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">GDP &amp; Pertumbuhan</div>
-                    <span class="badge bg-primary-subtle text-primary border border-primary px-2.5 py-0.5" style="font-size: 11.5px;">Economic Scale</span>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td class="py-3 px-3 border-start border-primary border-4">
+                    <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">GDP &amp; Pertumbuhan</div>
+                    <div class="small" style="color:#3b82f6;">Economic Scale</div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-white mb-1" style="font-size: 20px;">${cA.gdp.value}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-info-subtle text-info border border-info px-2 py-0.5" style="font-size: 12px;">+${cA.gdp.growth} Growth</span>
-                        <span class="text-light fw-semibold" style="font-size: 12.5px;">${cA.gdp.status}</span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#0f172a;">${cA.gdp.value}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#3b82f6;">+${cA.gdp.growth} Growth</span>
+                        <span class="small" style="color:#64748b;">${cA.gdp.status}</span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-primary" style="width: ${cA.gdp.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-primary" style="width: ${cA.gdp.score}%"></div></div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-white mb-1" style="font-size: 20px;">${cB.gdp.value}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-success-subtle text-success border border-success px-2 py-0.5" style="font-size: 12px;">+${cB.gdp.growth} Growth</span>
-                        <span class="text-light fw-semibold" style="font-size: 12.5px;">${cB.gdp.status}</span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#0f172a;">${cB.gdp.value}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#10b981;">+${cB.gdp.growth} Growth</span>
+                        <span class="small" style="color:#64748b;">${cB.gdp.status}</span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-warning" style="width: ${cB.gdp.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-warning" style="width: ${cB.gdp.score}%"></div></div>
                 </td>
-                <td class="text-end py-2.5 px-3 rounded-end">
-                    <span class="badge bg-${gdpDiff >= 0 ? 'success' : 'warning'}-subtle text-${gdpDiff >= 0 ? 'success' : 'warning'} border border-${gdpDiff >= 0 ? 'success' : 'warning'} px-2.5 py-1 d-inline-block mb-1" style="font-size: 12.5px;">${gdpDiff >= 0 ? '+' : ''}${gdpDiff.toFixed(1)}% Growth Spread</span>
-                    <div class="text-light fw-bold" style="font-size: 13px;">${gdpDiff >= 0 ? cA.name + ' Pertumbuhan Lebih Tinggi' : cB.name + ' Pertumbuhan Lebih Tinggi'}</div>
+                <td class="text-end py-3 px-3">
+                    <div class="fw-semibold mb-1" style="font-size: 13px; color:${gdpDiff >= 0 ? '#10b981' : '#d97706'};">${gdpDiff >= 0 ? '+' : ''}${gdpDiff.toFixed(1)}% Growth Spread</div>
+                    <div class="small fw-bold" style="color:#475569;">${gdpDiff >= 0 ? cA.name + ' Pertumbuhan Lebih Tinggi' : cB.name + ' Pertumbuhan Lebih Tinggi'}</div>
                 </td>
             </tr>
 
             <!-- 2. INFLATION ROW -->
-            <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                <td class="py-2.5 px-3 rounded-start border-start border-danger border-4">
-                    <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Inflasi &amp; Stabilitas Harga</div>
-                    <span class="badge bg-danger-subtle text-danger border border-danger px-2.5 py-0.5" style="font-size: 11.5px;">Shock Index</span>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td class="py-3 px-3 border-start border-danger border-4">
+                    <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Inflasi &amp; Stabilitas Harga</div>
+                    <div class="small" style="color:#ef4444;">Shock Index</div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-danger mb-1" style="font-size: 20px;">${cA.inflation.rate}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-secondary px-2 py-0.5" style="font-size: 12px;">Risk: ${cA.inflation.score}/100</span>
-                        <span class="text-light fw-semibold" style="font-size: 12.5px;">${cA.inflation.status}</span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#ef4444;">${cA.inflation.rate}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#64748b;">Risk: ${cA.inflation.score}/100</span>
+                        <span class="small" style="color:#64748b;">${cA.inflation.status}</span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-danger" style="width: ${cA.inflation.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-danger" style="width: ${cA.inflation.score}%"></div></div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-warning mb-1" style="font-size: 20px;">${cB.inflation.rate}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-secondary px-2 py-0.5" style="font-size: 12px;">Risk: ${cB.inflation.score}/100</span>
-                        <span class="text-light fw-semibold" style="font-size: 12.5px;">${cB.inflation.status}</span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#d97706;">${cB.inflation.rate}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#64748b;">Risk: ${cB.inflation.score}/100</span>
+                        <span class="small" style="color:#64748b;">${cB.inflation.status}</span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-warning" style="width: ${cB.inflation.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-warning" style="width: ${cB.inflation.score}%"></div></div>
                 </td>
-                <td class="text-end py-2.5 px-3 rounded-end">
-                    <span class="badge bg-${infDiff <= 0 ? 'success' : 'danger'}-subtle text-${infDiff <= 0 ? 'success' : 'danger'} border border-${infDiff <= 0 ? 'success' : 'danger'} px-2.5 py-1 d-inline-block mb-1" style="font-size: 12.5px;">${infDiff > 0 ? '+' : ''}${infDiff.toFixed(1)} Pts Risk Spread</span>
-                    <div class="text-light fw-bold" style="font-size: 13px;">${infDiff <= 0 ? cA.name + ' Lebih Stabil' : cB.name + ' Lebih Stabil'}</div>
+                <td class="text-end py-3 px-3">
+                    <div class="fw-semibold mb-1" style="font-size: 13px; color:${infDiff <= 0 ? '#10b981' : '#ef4444'};">${infDiff > 0 ? '+' : ''}${infDiff.toFixed(1)} Pts Risk Spread</div>
+                    <div class="small fw-bold" style="color:#475569;">${infDiff <= 0 ? cA.name + ' Lebih Stabil' : cB.name + ' Lebih Stabil'}</div>
                 </td>
             </tr>
 
             <!-- 3. RISK ROW -->
-            <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                <td class="py-2.5 px-3 rounded-start border-start border-warning border-4">
-                    <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Risiko Rantai Pasok</div>
-                    <span class="badge bg-warning-subtle text-warning border border-warning px-2.5 py-0.5" style="font-size: 11.5px;">Disruption Index</span>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td class="py-3 px-3 border-start border-warning border-4">
+                    <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Risiko Rantai Pasok</div>
+                    <div class="small" style="color:#d97706;">Disruption Index</div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-success mb-1" style="font-size: 20px;">${cA.risk.score} / 100</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-${cA.risk.badge_color} px-2 py-0.5" style="font-size: 12px;">${cA.risk.level}</span>
-                        <span class="text-light fw-semibold" style="font-size: 12px;">Mar: <strong class="text-white">${cA.risk.maritime}</strong> | Fin: <strong class="text-white">${cA.risk.financial}</strong></span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#10b981;">${cA.risk.score} / 100</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#64748b;">${cA.risk.level}</span>
+                        <span class="small" style="color:#64748b;">Mar: <strong style="color:#0f172a;">${cA.risk.maritime}</strong> | Fin: <strong style="color:#0f172a;">${cA.risk.financial}</strong></span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-success" style="width: ${cA.risk.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-success" style="width: ${cA.risk.score}%"></div></div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-info mb-1" style="font-size: 20px;">${cB.risk.score} / 100</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-${cB.risk.badge_color} px-2 py-0.5" style="font-size: 12px;">${cB.risk.level}</span>
-                        <span class="text-light fw-semibold" style="font-size: 12px;">Mar: <strong class="text-white">${cB.risk.maritime}</strong> | Fin: <strong class="text-white">${cB.risk.financial}</strong></span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#3b82f6;">${cB.risk.score} / 100</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#64748b;">${cB.risk.level}</span>
+                        <span class="small" style="color:#64748b;">Mar: <strong style="color:#0f172a;">${cB.risk.maritime}</strong> | Fin: <strong style="color:#0f172a;">${cB.risk.financial}</strong></span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-info" style="width: ${cB.risk.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-info" style="width: ${cB.risk.score}%"></div></div>
                 </td>
-                <td class="text-end py-2.5 px-3 rounded-end">
-                    <span class="badge bg-${riskDiff <= 0 ? 'success' : 'warning'}-subtle text-${riskDiff <= 0 ? 'success' : 'warning'} border border-${riskDiff <= 0 ? 'success' : 'warning'} px-2.5 py-1 d-inline-block mb-1" style="font-size: 12.5px;">${riskDiff > 0 ? '+' : ''}${riskDiff.toFixed(1)} Pts Risk Spread</span>
-                    <div class="text-light fw-bold" style="font-size: 13px;">${riskDiff <= 0 ? cA.name + ' Risiko Lebih Rendah' : cB.name + ' Risiko Lebih Rendah'}</div>
+                <td class="text-end py-3 px-3">
+                    <div class="fw-semibold mb-1" style="font-size: 13px; color:${riskDiff <= 0 ? '#10b981' : '#d97706'};">${riskDiff > 0 ? '+' : ''}${riskDiff.toFixed(1)} Pts Risk Spread</div>
+                    <div class="small fw-bold" style="color:#475569;">${riskDiff <= 0 ? cA.name + ' Risiko Lebih Rendah' : cB.name + ' Risiko Lebih Rendah'}</div>
                 </td>
             </tr>
 
             <!-- 4. WEATHER ROW -->
-            <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                <td class="py-2.5 px-3 rounded-start border-start border-info border-4">
-                    <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Cuaca &amp; Pelabuhan</div>
-                    <span class="badge bg-info-subtle text-info border border-info px-2.5 py-0.5" style="font-size: 11.5px;">Maritime Transit</span>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td class="py-3 px-3 border-start border-info border-4">
+                    <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Cuaca &amp; Pelabuhan</div>
+                    <div class="small" style="color:#0ea5e9;">Maritime Transit</div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-white mb-1" style="font-size: 19px;">${cA.weather.condition}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-info-subtle text-info border border-info px-2 py-0.5" style="font-size: 12px;">Score: ${cA.weather.score}/100</span>
-                        <span class="text-light fw-semibold" style="font-size: 12px;">Wind: <strong class="text-white">${cA.weather.wind_speed}</strong></span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 18px; color:#0f172a;">${cA.weather.condition}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#0ea5e9;">Score: ${cA.weather.score}/100</span>
+                        <span class="small" style="color:#64748b;">Wind: <strong style="color:#0f172a;">${cA.weather.wind_speed}</strong></span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-info" style="width: ${cA.weather.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-info" style="width: ${cA.weather.score}%"></div></div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-white mb-1" style="font-size: 19px;">${cB.weather.condition}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-warning-subtle text-warning border border-warning px-2 py-0.5" style="font-size: 12px;">Score: ${cB.weather.score}/100</span>
-                        <span class="text-light fw-semibold" style="font-size: 12px;">Wind: <strong class="text-white">${cB.weather.wind_speed}</strong></span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 18px; color:#0f172a;">${cB.weather.condition}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#d97706;">Score: ${cB.weather.score}/100</span>
+                        <span class="small" style="color:#64748b;">Wind: <strong style="color:#0f172a;">${cB.weather.wind_speed}</strong></span>
                     </div>
-                    <div class="progress mx-auto" style="height: 6px; width: 80%; background: rgba(255,255,255,0.12); border-radius: 3px;"><div class="progress-bar bg-warning" style="width: ${cB.weather.score}%"></div></div>
+                    <div class="progress mx-auto" style="height: 5px; width: 80%; background: #e2e8f0; border-radius: 3px;"><div class="progress-bar bg-warning" style="width: ${cB.weather.score}%"></div></div>
                 </td>
-                <td class="text-end py-2.5 px-3 rounded-end">
-                    <span class="badge bg-${weatherDiff <= 0 ? 'success' : 'info'}-subtle text-${weatherDiff <= 0 ? 'success' : 'info'} border border-${weatherDiff <= 0 ? 'success' : 'info'} px-2.5 py-1 d-inline-block mb-1" style="font-size: 12.5px;">${weatherDiff > 0 ? '+' : ''}${weatherDiff.toFixed(1)} Pts Weather Spread</span>
-                    <div class="text-light fw-bold" style="font-size: 13px;">${weatherDiff <= 0 ? cA.name + ' Cuaca Lebih Tenang' : cB.name + ' Cuaca Lebih Tenang'}</div>
+                <td class="text-end py-3 px-3">
+                    <div class="fw-semibold mb-1" style="font-size: 13px; color:${weatherDiff <= 0 ? '#10b981' : '#0ea5e9'};">${weatherDiff > 0 ? '+' : ''}${weatherDiff.toFixed(1)} Pts Weather Spread</div>
+                    <div class="small fw-bold" style="color:#475569;">${weatherDiff <= 0 ? cA.name + ' Cuaca Lebih Tenang' : cB.name + ' Cuaca Lebih Tenang'}</div>
                 </td>
             </tr>
 
             <!-- 5. CURRENCY ROW -->
-            <tr style="background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.08);">
-                <td class="py-2.5 px-3 rounded-start border-start border-success border-4">
-                    <div class="fw-bold text-white d-flex align-items-center mb-1" style="font-size: 15px;">Mata Uang &amp; Valas</div>
-                    <span class="badge bg-success-subtle text-success border border-success px-2.5 py-0.5" style="font-size: 11.5px;">FX Volatility</span>
+            <tr>
+                <td class="py-3 px-3 border-start border-success border-4">
+                    <div class="fw-bold mb-0" style="font-size: 15px; color:#0f172a;">Mata Uang &amp; Valas</div>
+                    <div class="small" style="color:#10b981;">FX Volatility</div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-success mb-1" style="font-size: 20px;">${cA.currency.code.split(' - ')[0]}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-dark border border-secondary text-light px-2 py-0.5" style="font-size: 12px;">Vol Risk: ${cA.currency.score}/100</span>
-                        <span class="badge bg-success px-2 py-0.5" style="font-size: 12px;">${cA.currency.trend}</span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#10b981;">${cA.currency.code.split(' - ')[0]}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#64748b;">Vol Risk: ${cA.currency.score}/100</span>
+                        <span class="small fw-semibold" style="color:#10b981;">${cA.currency.trend}</span>
                     </div>
                 </td>
-                <td class="text-center py-2.5 px-3 border-end border-secondary" style="border-color: rgba(255,255,255,0.08) !important;">
-                    <div class="fw-bold text-info mb-1" style="font-size: 20px;">${cB.currency.code.split(' - ')[0]}</div>
-                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-1.5 my-1.5">
-                        <span class="badge bg-dark border border-secondary text-light px-2 py-0.5" style="font-size: 12px;">Vol Risk: ${cB.currency.score}/100</span>
-                        <span class="badge bg-success px-2 py-0.5" style="font-size: 12px;">${cB.currency.trend}</span>
+                <td class="text-center py-3 px-3" style="border-right: 1px solid #f1f5f9;">
+                    <div class="fw-bold mb-1" style="font-size: 20px; color:#3b82f6;">${cB.currency.code.split(' - ')[0]}</div>
+                    <div class="d-flex justify-content-center align-items-center flex-wrap gap-2 my-1">
+                        <span class="small fw-semibold" style="color:#64748b;">Vol Risk: ${cB.currency.score}/100</span>
+                        <span class="small fw-semibold" style="color:#10b981;">${cB.currency.trend}</span>
                     </div>
                 </td>
-                <td class="text-end py-2.5 px-3 rounded-end">
-                    <span class="badge bg-success-subtle text-success border border-success px-2.5 py-1 d-inline-block mb-1" style="font-size: 12.5px;">${curDiff < 6 ? 'Low Spread' : (curDiff < 15 ? 'Moderate Spread' : 'High Differential')}</span>
-                    <div class="text-light fw-bold" style="font-size: 13px;">${cA.currency.score <= cB.currency.score ? cA.name + ' FX Lebih Stabil' : cB.name + ' FX Lebih Stabil'}</div>
+                <td class="text-end py-3 px-3">
+                    <div class="fw-semibold mb-1" style="font-size: 13px; color:#10b981;">${curDiff < 6 ? 'Low Spread' : (curDiff < 15 ? 'Moderate Spread' : 'High Differential')}</div>
+                    <div class="small fw-bold" style="color:#475569;">${cA.currency.score <= cB.currency.score ? cA.name + ' FX Lebih Stabil' : cB.name + ' FX Lebih Stabil'}</div>
                 </td>
             </tr>
         `;

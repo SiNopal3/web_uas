@@ -23,203 +23,357 @@
 
     <style>
         :root {
-            --bg-dark: #0f1218;
-            --sidebar-bg: #151921;
-            --card-bg: rgba(28, 34, 46, 0.75);
-            --border-color: rgba(255, 255, 255, 0.14);
-            --accent-gold: #e0b472;
-            --text-light: #f8fafc;
-            --text-muted: #cbd5e1;
+            /* ── Light Theme: White + Navy Sidebar ── */
+            --bg-main:        #f8fafc;
+            --sidebar-bg:     #1e293b;
+            --sidebar-hover:  rgba(59, 130, 246, 0.12);
+            --card-bg:        #ffffff;
+            --border-color:   #e2e8f0;
+            --accent-gold:    #d97706;
+            --accent-blue:    #3b82f6;
+            --text-primary:   #0f172a;
+            --text-secondary: #475569;
+            --text-muted-lt:  #64748b;
+            --shadow-card:    0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+            --shadow-hover:   0 4px 12px rgba(0,0,0,0.12), 0 8px 24px rgba(0,0,0,0.08);
         }
 
+        /* ── Base ── */
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-main);
             font-family: 'Inter', sans-serif;
-            color: var(--text-light);
+            color: var(--text-primary);
             margin: 0;
             overflow-x: hidden;
-            font-size: 13.5px !important;
+            font-size: 14px !important;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Override Bootstrap 5 & Warna Teks agar Super Cerah dan Jernih (WCAG AAA) */
+        /* ── Typography overrides ── */
         .text-muted, .text-secondary, small, .small {
-            color: #cbd5e1 !important;
+            color: var(--text-muted-lt) !important;
             font-weight: 500 !important;
-            font-size: 12.5px !important;
+            font-size: 13px !important;
         }
-        label, .form-label, span.text-muted, div.text-muted, p.text-muted {
-            color: #e2e8f0 !important;
+        label, .form-label {
+            color: var(--text-secondary) !important;
             font-weight: 600 !important;
         }
+        span.text-muted, div.text-muted, p.text-muted {
+            color: var(--text-muted-lt) !important;
+            font-weight: 500 !important;
+        }
         h1, h2, h3, h4, h5, h6 {
-            color: #ffffff !important;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            color: var(--text-primary) !important;
+            text-shadow: none !important;
+            font-weight: 700 !important;
+            letter-spacing: -0.01em;
         }
-
         .table td, .table th, .form-control, .dropdown-item, .btn {
-            font-size: 13.5px !important;
+            font-size: 14px !important;
         }
 
-        /* Sidebar Styling */
+        /* ── Sidebar (stays dark navy for contrast) ── */
         .sidebar {
             width: 260px;
+            min-width: 260px;
             background-color: var(--sidebar-bg);
-            border-right: 1px solid var(--border-color);
+            border-right: none;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.12);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
             z-index: 1080 !important;
+            overflow: hidden;
         }
 
         .sidebar-link {
-            color: var(--text-muted);
-            padding: 12px 20px;
+            color: #94a3b8;
+            padding: 11px 20px;
             display: flex;
             align-items: center;
             text-decoration: none;
-            border-radius: 10px;
-            margin: 4px 15px;
+            border-radius: 8px;
+            margin: 2px 10px;
             font-weight: 500;
             font-size: 13.5px !important;
-            transition: all 0.2s;
-            border-left: 4px solid transparent;
+            transition: all 0.18s ease;
+            border-left: 3px solid transparent;
         }
-
-        .sidebar-link:hover, .sidebar-link.active {
+        .sidebar-link:hover {
             color: #ffffff;
-            background: rgba(200, 156, 98, 0.15);
-            border-left: 4px solid var(--accent-gold);
+            background: rgba(255,255,255,0.08);
+            border-left: 3px solid var(--accent-gold);
         }
-
+        .sidebar-link.active {
+            color: #ffffff;
+            background: rgba(59,130,246,0.18);
+            border-left: 3px solid var(--accent-blue);
+            font-weight: 600;
+        }
         .sidebar-link i {
-            width: 24px;
+            width: 22px;
             text-align: center;
             margin-right: 10px;
         }
 
-        /* Card & Panel Styling */
+        /* ── Card ── */
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            transition: border-color 0.3s, transform 0.2s;
+            box-shadow: var(--shadow-card);
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+            backdrop-filter: none;
         }
-
         .glass-card:hover {
-            border-color: rgba(200, 156, 98, 0.3);
+            box-shadow: var(--shadow-hover);
+            border-color: #cbd5e1;
         }
 
-        /* Choices.js Custom Overrides for Dark Mode */
-        .choices__inner {
-            background-color: rgba(0,0,0,0.3) !important;
-            border: 1px solid var(--border-color) !important;
+        /* ── Form controls ── */
+        .form-control, .form-select {
+            background-color: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            color: var(--text-primary) !important;
+            border-radius: 8px !important;
+            box-shadow: none !important;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--accent-blue) !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+            background-color: #ffffff !important;
+        }
+        .form-control::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        /* ── Dropdown menus ── */
+        .dropdown-menu {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12) !important;
             border-radius: 10px !important;
-            color: #ffffff !important;
+        }
+        .dropdown-item {
+            color: var(--text-primary) !important;
+        }
+        .dropdown-item:hover {
+            background: #f1f5f9 !important;
+            color: var(--accent-blue) !important;
+        }
+
+        /* Country search dropdown */
+        #countryDropdownList .dropdown-item,
+        #countryDropdownList > div {
+            color: var(--text-primary) !important;
+            background: #ffffff !important;
+        }
+        #countryDropdownList .dropdown-item:hover {
+            background: #f1f5f9 !important;
+        }
+        #countryDropdownList {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+        }
+
+        /* ── Tables ── */
+        .table {
+            color: var(--text-primary) !important;
+        }
+        .table thead th {
+            background: #f1f5f9 !important;
+            color: var(--text-secondary) !important;
+            border-color: #e2e8f0 !important;
+            font-weight: 600;
+            font-size: 12.5px !important;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .table tbody td {
+            border-color: #f1f5f9 !important;
+        }
+        .table-dark, .bg-dark {
+            background-color: #1e293b !important;
+        }
+
+        /* ── Badges ── */
+        .badge {
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+        .badge.bg-secondary {
+            background-color: #e2e8f0 !important;
+            color: #475569 !important;
+        }
+
+        /* ── Buttons ── */
+        .btn-outline-secondary {
+            border-color: #e2e8f0 !important;
+            color: var(--text-secondary) !important;
+        }
+        .btn-outline-secondary:hover {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+        }
+
+        /* ── Choices.js Light Mode ── */
+        .choices__inner {
+            background-color: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 8px !important;
+            color: var(--text-primary) !important;
             min-height: 44px !important;
         }
         .choices__list--dropdown {
-            background-color: #1b1e25 !important;
-            border: 1px solid var(--border-color) !important;
-            color: #ffffff !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            color: var(--text-primary) !important;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
         }
         .choices__item--selectable.is-highlighted {
-            background-color: var(--accent-gold) !important;
-            color: #ffffff !important;
+            background-color: #eff6ff !important;
+            color: var(--accent-blue) !important;
+        }
+        .choices__item {
+            color: var(--text-primary) !important;
         }
 
-        /* Leaflet Dark Custom Popups */
+        /* ── Leaflet popups (light) ── */
         .leaflet-popup-content-wrapper {
-            background: transparent !important;
-            box-shadow: none !important;
+            background: #ffffff !important;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+            border-radius: 10px !important;
             padding: 0 !important;
+            border: 1px solid #e2e8f0 !important;
         }
         .leaflet-popup-tip {
-            background: #1b1c20 !important;
+            background: #ffffff !important;
         }
 
-        /* Auto word-wrap untuk mencegah teks/URL panjang meluber ke samping */
+        /* ── Modals ── */
+        .modal-content {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 14px !important;
+            box-shadow: 0 16px 48px rgba(0,0,0,0.16) !important;
+            color: var(--text-primary) !important;
+        }
+        .modal-header, .modal-footer {
+            border-color: #f1f5f9 !important;
+        }
+
+        /* ── Word wrap ── */
         .news-item, .glass-card, table, td, th, p, h1, h2, h3, h4, h5, h6, .modal-body, .modal-content {
             word-break: break-word;
             overflow-wrap: anywhere;
         }
-        .d-flex {
-            max-width: 100%;
-        }
+        .d-flex { max-width: 100%; }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-dark);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2d3748;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-gold);
-        }
+        /* ── Custom Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
 
-        /* Sembunyikan tombol clear bawaan browser [X] agar tidak bentrok dengan tombol putar/refresh custom kita */
+        /* ── Input clear button ── */
         input[type="text"]::-webkit-search-cancel-button,
-        input[type="search"]::-webkit-search-cancel-button {
-            -webkit-appearance: none;
-            display: none;
-        }
+        input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; display: none; }
         input[type="text"]::-ms-clear,
-        input[type="search"]::-ms-clear {
-            display: none;
-        }
-        .clear-search-trigger {
-            transition: all 0.2s ease;
-        }
+        input[type="search"]::-ms-clear { display: none; }
+        .clear-search-trigger { transition: all 0.2s ease; }
         .clear-search-trigger:hover {
             transform: translateY(-50%) rotate(45deg) scale(1.15) !important;
-            color: var(--accent-gold) !important;
+            color: var(--accent-blue) !important;
         }
 
-        /* Responsive Behavior */
+        /* ── Global override: strip dark classes from form elements ── */
+        .form-control.bg-dark,
+        .form-select.bg-dark,
+        input.bg-dark,
+        textarea.bg-dark {
+            background-color: #f8fafc !important;
+            color: var(--text-primary) !important;
+            border-color: #e2e8f0 !important;
+        }
+        .form-control.bg-dark:focus,
+        .form-select.bg-dark:focus {
+            background-color: #ffffff !important;
+            border-color: var(--accent-blue) !important;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.12) !important;
+        }
+        .input-group-text.bg-dark {
+            background-color: #f1f5f9 !important;
+            border-color: #e2e8f0 !important;
+            color: var(--text-secondary) !important;
+        }
+        /* Override text-white inside light cards */
+        .glass-card .text-white,
+        .glass-card h1, .glass-card h2, .glass-card h3,
+        .glass-card h4, .glass-card h5, .glass-card h6 {
+            color: var(--text-primary) !important;
+        }
+        /* Override border-secondary on light bg */
+        .glass-card .border-secondary,
+        .form-control.border-secondary,
+        .form-select.border-secondary {
+            border-color: #e2e8f0 !important;
+        }
+        /* Modals stay light */
+        .modal-body .bg-dark,
+        .modal-content .bg-dark {
+            background-color: #f8fafc !important;
+            color: var(--text-primary) !important;
+        }
+        /* dropdown country search */
+        .dropdown-menu.bg-dark,
+        #countryDropdownList.bg-dark {
+            background: #ffffff !important;
+            border-color: #e2e8f0 !important;
+        }
+        /* Main content wrapper */
+        .main-content {
+            background-color: var(--bg-main);
+        }
+        .hover-gold:hover {
+            border-color: var(--accent-gold) !important;
+            box-shadow: 0 6px 20px rgba(217,119,6,0.15) !important;
+        }
+
+        /* ── Responsive ── */
         @media (max-width: 991.98px) {
             .sidebar {
                 position: fixed;
                 left: -260px;
                 top: 0;
                 bottom: 0;
+                height: 100vh;
+                min-height: unset;
+                overflow-y: auto;
             }
-            .sidebar.show {
-                left: 0;
-            }
+            .sidebar.show { left: 0; }
         }
 
-        /* Sidebar Backdrop for Offcanvas (< 992px) */
+        /* ── Sidebar Backdrop ── */
         .sidebar-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.65);
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(15,23,42,0.5);
             backdrop-filter: blur(3px);
             z-index: 1070 !important;
-            display: none;
-            opacity: 0;
+            display: none; opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .sidebar-backdrop.show {
-            display: block;
-            opacity: 1;
-        }
+        .sidebar-backdrop.show { display: block; opacity: 1; }
     </style>
 </head>
 <body>
     <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
-    <div class="d-flex min-vh-100" style="width: 100%; overflow-x: hidden;">
+    <div class="d-flex app-wrapper" style="width: 100%; overflow-x: hidden; min-height: 100vh; align-items: stretch;">
         <!-- Sidebar Navigation Component -->
         @include('components.sidebar')
 
@@ -231,11 +385,11 @@
                 @yield('content')
             </main>
 
-            <footer class="py-3 px-4 border-top border-secondary text-center text-md-start d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted" style="border-color: rgba(255,255,255,0.05) !important;">
-                <div>&copy; {{ date('Y') }} RiskIntel Hub. All Rights Reserved. Enterprise Grade Supply Chain Platform.</div>
+            <footer class="py-3 px-4 border-top text-center text-md-start d-flex flex-column flex-md-row justify-content-between align-items-center small" style="border-color: #e2e8f0 !important; background:#f8fafc; color:#64748b;">
+                <div style="color:#64748b;">&copy; {{ date('Y') }} RiskIntel Hub. All Rights Reserved. Enterprise Grade Supply Chain Platform.</div>
                 <div class="mt-2 mt-md-0">
-                    <span class="badge bg-success me-2"><i class="fa-solid fa-check-circle me-1"></i> SSL 256-Bit</span>
-                    <span class="badge bg-dark border border-secondary">NGA Satellite Sync</span>
+                    <span class="badge me-2" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;"><i class="fa-solid fa-check-circle me-1"></i> SSL 256-Bit</span>
+                    <span class="badge" style="background:#f1f5f9;color:#475569;border:1px solid #e2e8f0;">NGA Satellite Sync</span>
                 </div>
             </footer>
         </div>
@@ -289,7 +443,7 @@
                 hours = hours % 12;
                 hours = hours ? hours : 12;
                 const hoursStr = String(hours).padStart(2, '0');
-                elGlobalClock.innerHTML = `<span class="text-info">${day} ${month} ${year}</span><span class="text-secondary mx-1.5">•</span><span class="text-white">${hoursStr}:${minutes}:${seconds} ${ampm}</span>`;
+                elGlobalClock.innerHTML = `<span style="color:#3b82f6;">${day} ${month} ${year}</span><span style="color:#94a3b8;margin:0 5px;">•</span><span style="color:#0f172a;">${hoursStr}:${minutes}:${seconds} ${ampm}</span>`;
             }
             updateGlobalClock();
             setInterval(updateGlobalClock, 1000);

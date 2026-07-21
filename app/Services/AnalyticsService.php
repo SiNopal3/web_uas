@@ -155,10 +155,14 @@ class AnalyticsService
             if (!empty($filters['country'])) {
                 $rawSearch = trim($filters['country']);
                 $cleanSearch = trim(preg_replace('/\s*\(.*?\)/', '', $rawSearch));
+                // Extract ISO code if present in format "Country (ISO - CURR)"
+                preg_match('/\(([A-Z]{2,3})\s*[-–]/', $rawSearch, $isoMatch);
+                $isoFromInput = $isoMatch[1] ?? '';
                 $nameMatch = strcasecmp($c['name'], $cleanSearch) === 0
                           || strcasecmp($c['name'], $rawSearch) === 0
                           || strcasecmp($c['iso'], $cleanSearch) === 0
-                          || stripos($c['name'], $cleanSearch) !== false;
+                          || stripos($c['name'], $cleanSearch) !== false
+                          || ($isoFromInput && strcasecmp($c['iso'], $isoFromInput) === 0);
                 if (!$nameMatch) {
                     return false;
                 }
@@ -795,15 +799,24 @@ class AnalyticsService
         $c = null;
         if ($isSingleCountry) {
             $cleanReq = trim(preg_replace('/\s*\(.*?\)/', '', $requestedCountry));
+            // First pass: exact match by name or ISO
             $c = collect($countries)->first(function ($item) use ($cleanReq, $requestedCountry) {
                 return strcasecmp($item['name'], $cleanReq) === 0
                     || strcasecmp($item['name'], $requestedCountry) === 0
                     || strcasecmp($item['iso'], $cleanReq) === 0
+                    || strcasecmp($item['iso'], strtoupper(substr($cleanReq, 0, 2))) === 0
                     || stripos($item['name'], $cleanReq) !== false;
             });
+            // Second pass: fetch directly from prediction service if still not found
             if (!$c) {
                 $rawReq = $this->predictionService->collectCountriesData([], $cleanReq);
-                $c = $rawReq[0] ?? null;
+                // Find the matching entry (it may be appended at end or first)
+                $c = collect($rawReq)->first(function ($item) use ($cleanReq, $requestedCountry) {
+                    return strcasecmp($item['name'], $cleanReq) === 0
+                        || strcasecmp($item['name'], $requestedCountry) === 0
+                        || strcasecmp($item['iso'], $cleanReq) === 0
+                        || stripos($item['name'], $cleanReq) !== false;
+                });
             }
         }
 
@@ -926,235 +939,6 @@ class AnalyticsService
                         'fill' => false
                     ]
                 ]
-            ],
-            // 11. Data Visualization Dashboard: GDP Trend (Line Chart dengan Titik)
-            'gdp_trend' => [
-                'type' => 'line',
-                'labels' => ['Triwulan 1 (Q1)', 'Triwulan 2 (Q2)', 'Triwulan 3 (Q3)', 'Triwulan 4 (Q4)'],
-                'datasets' => $isSingleCountry && $c ? [
-                    [
-                        'type' => 'line',
-                        'label' => "Pertumbuhan GDP {$c['name']} (%)",
-                        'data' => [
-                            round(max(0.5, 4.8 - (($c['inflation_risk'] ?? 30) / 18)), 1),
-                            round(max(0.5, 5.1 - (($c['inflation_risk'] ?? 30) / 17)), 1),
-                            round(max(0.5, 4.7 - (($c['inflation_risk'] ?? 30) / 19)), 1),
-                            round(max(0.5, 5.3 - (($c['inflation_risk'] ?? 30) / 16)), 1)
-                        ],
-                        'borderColor' => '#38bdf8',
-                        'backgroundColor' => 'rgba(56, 189, 248, 0.15)',
-                        'borderWidth' => 3,
-                        'pointRadius' => 6,
-                        'pointHoverRadius' => 8,
-                        'pointBackgroundColor' => '#38bdf8',
-                        'pointBorderColor' => '#ffffff',
-                        'pointBorderWidth' => 2,
-                        'fill' => true,
-                        'tension' => 0.3
-                    ],
-                    [
-                        'type' => 'line',
-                        'label' => "Target GDP Nasional {$c['name']} (%)",
-                        'data' => [4.5, 4.5, 4.5, 4.5],
-                        'borderColor' => '#4ade80',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'borderDash' => [5, 5],
-                        'pointRadius' => 4,
-                        'pointBackgroundColor' => '#4ade80',
-                        'fill' => false,
-                        'tension' => 0
-                    ]
-                ] : [
-                    [
-                        'type' => 'line',
-                        'label' => '- (Pilih Negara Terlebih Dahulu)',
-                        'data' => [0, 0, 0, 0],
-                        'borderColor' => '#475569',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'pointRadius' => 4,
-                        'fill' => false
-                    ]
-                ]
-            ],
-            // 12. Data Visualization Dashboard: Inflation Trend (Line Chart dengan Titik)
-            'inflation_trend' => [
-                'type' => 'line',
-                'labels' => ['Triwulan 1 (Q1)', 'Triwulan 2 (Q2)', 'Triwulan 3 (Q3)', 'Triwulan 4 (Q4)'],
-                'datasets' => $isSingleCountry && $c ? [
-                    [
-                        'type' => 'line',
-                        'label' => "Laju Inflasi Aktual {$c['name']} (%)",
-                        'data' => [
-                            round(max(1.2, (($c['inflation_risk'] ?? 30) / 10)), 1),
-                            round(max(1.2, (($c['inflation_risk'] ?? 30) / 10) + 0.3), 1),
-                            round(max(1.2, (($c['inflation_risk'] ?? 30) / 10) - 0.2), 1),
-                            round(max(1.2, (($c['inflation_risk'] ?? 30) / 10) + 0.4), 1)
-                        ],
-                        'borderColor' => '#facc15',
-                        'backgroundColor' => 'rgba(250, 204, 21, 0.15)',
-                        'borderWidth' => 3,
-                        'pointRadius' => 6,
-                        'pointHoverRadius' => 8,
-                        'pointBackgroundColor' => '#facc15',
-                        'pointBorderColor' => '#ffffff',
-                        'pointBorderWidth' => 2,
-                        'fill' => true,
-                        'tension' => 0.3
-                    ],
-                    [
-                        'type' => 'line',
-                        'label' => "Target Bank Sentral {$c['name']} (2.5%)",
-                        'data' => [2.5, 2.5, 2.5, 2.5],
-                        'borderColor' => '#4ade80',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'borderDash' => [5, 5],
-                        'pointRadius' => 4,
-                        'pointBackgroundColor' => '#4ade80',
-                        'fill' => false,
-                        'tension' => 0
-                    ]
-                ] : [
-                    [
-                        'type' => 'line',
-                        'label' => '- (Pilih Negara Terlebih Dahulu)',
-                        'data' => [0, 0, 0, 0],
-                        'borderColor' => '#475569',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'pointRadius' => 4,
-                        'fill' => false
-                    ]
-                ]
-            ],
-            // 13. Data Visualization Dashboard: Currency Trend (Line Chart dengan Titik)
-            'currency_trend' => [
-                'type' => 'line',
-                'labels' => ['Triwulan 1 (Q1)', 'Triwulan 2 (Q2)', 'Triwulan 3 (Q3)', 'Triwulan 4 (Q4)'],
-                'datasets' => $isSingleCountry && $c ? [
-                    [
-                        'type' => 'line',
-                        'label' => "Indeks Stabilitas Valas {$c['name']}",
-                        'data' => [
-                            round(max(60, 105 - (($c['currency_risk'] ?? 25) * 0.8)), 1),
-                            round(max(60, 104 - (($c['currency_risk'] ?? 25) * 0.85)), 1),
-                            round(max(60, 106 - (($c['currency_risk'] ?? 25) * 0.75)), 1),
-                            round(max(60, 103 - (($c['currency_risk'] ?? 25) * 0.9)), 1)
-                        ],
-                        'borderColor' => '#38bdf8',
-                        'backgroundColor' => 'rgba(56, 189, 248, 0.15)',
-                        'borderWidth' => 3,
-                        'pointRadius' => 6,
-                        'pointHoverRadius' => 8,
-                        'pointBackgroundColor' => '#38bdf8',
-                        'pointBorderColor' => '#ffffff',
-                        'pointBorderWidth' => 2,
-                        'fill' => true,
-                        'tension' => 0.3
-                    ],
-                    [
-                        'type' => 'line',
-                        'label' => "Volatilitas Pasar FX {$c['name']} (%)",
-                        'data' => [
-                            round(($c['currency_risk'] ?? 25) / 6, 1),
-                            round((($c['currency_risk'] ?? 25) / 6) + 0.8, 1),
-                            round((($c['currency_risk'] ?? 25) / 6) - 0.5, 1),
-                            round((($c['currency_risk'] ?? 25) / 6) + 0.4, 1)
-                        ],
-                        'borderColor' => '#f43f5e',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'pointRadius' => 4,
-                        'pointBackgroundColor' => '#f43f5e',
-                        'fill' => false,
-                        'tension' => 0.3
-                    ]
-                ] : [
-                    [
-                        'type' => 'line',
-                        'label' => '- (Pilih Negara Terlebih Dahulu)',
-                        'data' => [0, 0, 0, 0],
-                        'borderColor' => '#475569',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'pointRadius' => 4,
-                        'fill' => false
-                    ]
-                ]
-            ],
-            // 14. Data Visualization Dashboard: Risk Trend (Line Chart dengan Titik)
-            'risk_trend' => [
-                'type' => 'line',
-                'labels' => ['Triwulan 1 (Q1)', 'Triwulan 2 (Q2)', 'Triwulan 3 (Q3)', 'Triwulan 4 (Q4)'],
-                'datasets' => $isSingleCountry && $c ? [
-                    [
-                        'type' => 'line',
-                        'label' => "Skor Risiko Komposit {$c['name']} (/100)",
-                        'data' => [
-                            round(($c['future_7d_risk'] ?? 45) * 0.95, 1),
-                            round(min(100, ($c['future_7d_risk'] ?? 45) * 1.04), 1),
-                            round(($c['future_7d_risk'] ?? 45) * 0.98, 1),
-                            round(min(100, ($c['future_7d_risk'] ?? 45) * 1.02), 1)
-                        ],
-                        'borderColor' => '#f43f5e',
-                        'backgroundColor' => 'rgba(244, 63, 94, 0.15)',
-                        'borderWidth' => 3,
-                        'pointRadius' => 6,
-                        'pointHoverRadius' => 8,
-                        'pointBackgroundColor' => '#f43f5e',
-                        'pointBorderColor' => '#ffffff',
-                        'pointBorderWidth' => 2,
-                        'fill' => true,
-                        'tension' => 0.3
-                    ],
-                    [
-                        'type' => 'line',
-                        'label' => "Risiko Logistik Pelabuhan {$c['name']}",
-                        'data' => [
-                            round(($c['port_risk'] ?? $c['delay_probability_score'] ?? 40) * 0.96, 1),
-                            round(($c['port_risk'] ?? $c['delay_probability_score'] ?? 40) * 1.03, 1),
-                            round(($c['port_risk'] ?? $c['delay_probability_score'] ?? 40) * 0.98, 1),
-                            round(($c['port_risk'] ?? $c['delay_probability_score'] ?? 40) * 1.05, 1)
-                        ],
-                        'borderColor' => '#fb923c',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'pointRadius' => 4,
-                        'pointBackgroundColor' => '#fb923c',
-                        'fill' => false,
-                        'tension' => 0.3
-                    ],
-                    [
-                        'type' => 'line',
-                        'label' => "Risiko Finansial & Cuaca {$c['name']}",
-                        'data' => [
-                            round((($c['inflation_risk'] ?? 30) + ($c['weather_risk'] ?? 30)) / 2, 1),
-                            round(((($c['inflation_risk'] ?? 30) + ($c['weather_risk'] ?? 30)) / 2) + 2.1, 1),
-                            round(((($c['inflation_risk'] ?? 30) + ($c['weather_risk'] ?? 30)) / 2) - 1.5, 1),
-                            round(((($c['inflation_risk'] ?? 30) + ($c['weather_risk'] ?? 30)) / 2) + 1.2, 1)
-                        ],
-                        'borderColor' => '#a855f7',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'pointRadius' => 4,
-                        'pointBackgroundColor' => '#a855f7',
-                        'fill' => false,
-                        'tension' => 0.3
-                    ]
-                ] : [
-                    [
-                        'type' => 'line',
-                        'label' => '- (Pilih Negara Terlebih Dahulu)',
-                        'data' => [0, 0, 0, 0],
-                        'borderColor' => '#475569',
-                        'backgroundColor' => 'transparent',
-                        'borderWidth' => 2,
-                        'pointRadius' => 4,
-                        'fill' => false
-                    ]
-                ]
             ]
         ];
     }
@@ -1201,6 +985,171 @@ class AnalyticsService
             ),
             'filters_applied' => !empty($filters),
             'timestamp' => now()->toIso8601String()
+        ];
+    }
+
+    /**
+     * Generate chart data for Data Visualization Dashboard.
+     * Returns GDP, Inflation, Currency, Risk trend datasets for a given country.
+     */
+    public function getVisualizationChartData(?string $country = null): array
+    {
+        $labels = ['Triwulan 1 (Q1)', 'Triwulan 2 (Q2)', 'Triwulan 3 (Q3)', 'Triwulan 4 (Q4)'];
+        $hasCountry = !empty($country);
+
+        if ($hasCountry) {
+            $rawCountries = $this->predictionService->collectCountriesData([], $country);
+            $cleanReq = trim(preg_replace('/\s*\(.*?\)/', '', $country));
+            $c = collect($rawCountries)->first(function ($item) use ($cleanReq, $country) {
+                return strcasecmp($item['name'], $cleanReq) === 0
+                    || strcasecmp($item['name'], $country) === 0
+                    || strcasecmp($item['iso'], $cleanReq) === 0
+                    || stripos($item['name'], $cleanReq) !== false;
+            });
+        } else {
+            $c = null;
+        }
+
+        if ($c) {
+            $inf  = (float) ($c['inflation_risk'] ?? 30);
+            $curr = (float) ($c['currency_risk'] ?? 25);
+            $risk = (float) ($c['future_7d_risk'] ?? 45);
+            $port = (float) ($c['delay_probability_score'] ?? 40);
+            $weat = (float) ($c['weather_risk'] ?? 30);
+            $name = $c['name'];
+
+            return [
+                'country' => $name,
+                'has_country' => true,
+                'labels' => $labels,
+                'gdp' => [
+                    'datasets' => [
+                        [
+                            'label' => "Pertumbuhan GDP {$name} (%)",
+                            'data' => [
+                                round(max(0.5, 4.8 - ($inf / 18)), 1),
+                                round(max(0.5, 5.1 - ($inf / 17)), 1),
+                                round(max(0.5, 4.7 - ($inf / 19)), 1),
+                                round(max(0.5, 5.3 - ($inf / 16)), 1),
+                            ],
+                            'borderColor' => '#38bdf8',
+                            'backgroundColor' => 'rgba(56,189,248,0.12)',
+                            'fill' => true, 'tension' => 0.3,
+                            'pointRadius' => 6, 'pointHoverRadius' => 8,
+                            'pointBackgroundColor' => '#38bdf8', 'pointBorderColor' => '#fff', 'pointBorderWidth' => 2,
+                        ],
+                        [
+                            'label' => "Target GDP Nasional {$name} (%)",
+                            'data' => [4.5, 4.5, 4.5, 4.5],
+                            'borderColor' => '#4ade80', 'backgroundColor' => 'transparent',
+                            'borderDash' => [5, 5], 'fill' => false, 'tension' => 0,
+                            'pointRadius' => 4, 'pointBackgroundColor' => '#4ade80',
+                        ],
+                    ],
+                ],
+                'inflation' => [
+                    'datasets' => [
+                        [
+                            'label' => "Laju Inflasi Aktual {$name} (%)",
+                            'data' => [
+                                round(max(1.2, $inf / 10), 1),
+                                round(max(1.2, $inf / 10 + 0.3), 1),
+                                round(max(1.2, $inf / 10 - 0.2), 1),
+                                round(max(1.2, $inf / 10 + 0.4), 1),
+                            ],
+                            'borderColor' => '#facc15', 'backgroundColor' => 'rgba(250,204,21,0.12)',
+                            'fill' => true, 'tension' => 0.3,
+                            'pointRadius' => 6, 'pointHoverRadius' => 8,
+                            'pointBackgroundColor' => '#facc15', 'pointBorderColor' => '#fff', 'pointBorderWidth' => 2,
+                        ],
+                        [
+                            'label' => "Target Bank Sentral {$name} (2.5%)",
+                            'data' => [2.5, 2.5, 2.5, 2.5],
+                            'borderColor' => '#4ade80', 'backgroundColor' => 'transparent',
+                            'borderDash' => [5, 5], 'fill' => false, 'tension' => 0,
+                            'pointRadius' => 4, 'pointBackgroundColor' => '#4ade80',
+                        ],
+                    ],
+                ],
+                'currency' => [
+                    'datasets' => [
+                        [
+                            'label' => "Indeks Stabilitas Valas {$name}",
+                            'data' => [
+                                round(max(60, 105 - ($curr * 0.8)), 1),
+                                round(max(60, 104 - ($curr * 0.85)), 1),
+                                round(max(60, 106 - ($curr * 0.75)), 1),
+                                round(max(60, 103 - ($curr * 0.9)), 1),
+                            ],
+                            'borderColor' => '#38bdf8', 'backgroundColor' => 'rgba(56,189,248,0.12)',
+                            'fill' => true, 'tension' => 0.3,
+                            'pointRadius' => 6, 'pointHoverRadius' => 8,
+                            'pointBackgroundColor' => '#38bdf8', 'pointBorderColor' => '#fff', 'pointBorderWidth' => 2,
+                        ],
+                        [
+                            'label' => "Volatilitas Pasar FX {$name} (%)",
+                            'data' => [
+                                round($curr / 6, 1),
+                                round($curr / 6 + 0.8, 1),
+                                round($curr / 6 - 0.5, 1),
+                                round($curr / 6 + 0.4, 1),
+                            ],
+                            'borderColor' => '#f43f5e', 'backgroundColor' => 'transparent',
+                            'fill' => false, 'tension' => 0.3,
+                            'pointRadius' => 4, 'pointBackgroundColor' => '#f43f5e',
+                        ],
+                    ],
+                ],
+                'risk' => [
+                    'datasets' => [
+                        [
+                            'label' => "Skor Risiko Komposit {$name} (/100)",
+                            'data' => [
+                                round($risk * 0.95, 1),
+                                round(min(100, $risk * 1.04), 1),
+                                round($risk * 0.98, 1),
+                                round(min(100, $risk * 1.02), 1),
+                            ],
+                            'borderColor' => '#f43f5e', 'backgroundColor' => 'rgba(244,63,94,0.12)',
+                            'fill' => true, 'tension' => 0.3,
+                            'pointRadius' => 6, 'pointHoverRadius' => 8,
+                            'pointBackgroundColor' => '#f43f5e', 'pointBorderColor' => '#fff', 'pointBorderWidth' => 2,
+                        ],
+                        [
+                            'label' => "Risiko Logistik Pelabuhan {$name}",
+                            'data' => [
+                                round($port * 0.96, 1), round($port * 1.03, 1),
+                                round($port * 0.98, 1), round($port * 1.05, 1),
+                            ],
+                            'borderColor' => '#fb923c', 'backgroundColor' => 'transparent',
+                            'fill' => false, 'tension' => 0.3,
+                            'pointRadius' => 4, 'pointBackgroundColor' => '#fb923c',
+                        ],
+                        [
+                            'label' => "Risiko Finansial & Cuaca {$name}",
+                            'data' => [
+                                round(($inf + $weat) / 2, 1),
+                                round(($inf + $weat) / 2 + 2.1, 1),
+                                round(($inf + $weat) / 2 - 1.5, 1),
+                                round(($inf + $weat) / 2 + 1.2, 1),
+                            ],
+                            'borderColor' => '#a855f7', 'backgroundColor' => 'transparent',
+                            'fill' => false, 'tension' => 0.3,
+                            'pointRadius' => 4, 'pointBackgroundColor' => '#a855f7',
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        // No country selected — return placeholder datasets
+        $placeholder = [['label' => '- (Pilih Negara Terlebih Dahulu)', 'data' => [0, 0, 0, 0], 'borderColor' => '#475569', 'backgroundColor' => 'transparent', 'pointRadius' => 4, 'fill' => false]];
+        return [
+            'country' => null, 'has_country' => false, 'labels' => $labels,
+            'gdp'      => ['datasets' => $placeholder],
+            'inflation'=> ['datasets' => $placeholder],
+            'currency' => ['datasets' => $placeholder],
+            'risk'     => ['datasets' => $placeholder],
         ];
     }
 

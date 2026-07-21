@@ -28,11 +28,29 @@ class AnalyticsController extends Controller
 
         $data = $this->analyticsService->getAnalyticsData($filters);
 
-        if ($request->get('view') === 'charts') {
-            return view('analytics.index', compact('data'));
-        }
-
         return view('analytics.currency', compact('data'));
+    }
+
+    /**
+     * Display the Data Visualization Dashboard (`/data-visualization`).
+     */
+    public function dataVisualization(Request $request): View
+    {
+        $country = $request->get('country', '');
+        $country = (trim($country) === '' || $country === 'Global / Semua Negara' || $country === '-') ? null : trim($country);
+        $chartData = $this->analyticsService->getVisualizationChartData($country);
+        return view('data-visualization', compact('chartData', 'country'));
+    }
+
+    /**
+     * AJAX endpoint for chart data (`/api/data-visualization/charts`).
+     */
+    public function getChartData(Request $request): JsonResponse
+    {
+        $country = $request->get('country', '');
+        $country = (trim($country) === '' || $country === 'Global / Semua Negara' || $country === '-') ? null : trim($country);
+        $chartData = $this->analyticsService->getVisualizationChartData($country);
+        return response()->json(['success' => true, 'chartData' => $chartData]);
     }
 
     /**

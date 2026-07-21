@@ -326,49 +326,15 @@ window.getFeatureStorageKey = function() {
     return 'selected_country_dashboard';
 };
 
-    // 7. Kembalikan negara yang terakhir dipilih KHUSUS di fitur/menu ini saja (independen antar fitur)
+    // 7. Always start unselected on every page load — user must pick a country manually
     const featKey = window.getFeatureStorageKey();
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlCountry = urlParams.get('country');
-
-    if (urlCountry !== null) {
-        if (urlCountry === 'reset' || urlCountry === 'unselected' || urlCountry === '-' || urlCountry === '' || urlCountry === 'Global / Semua Negara' || urlCountry === 'Global / Semua Negara (Feed Artikel Admin)' || urlCountry === 'Global') {
-            sessionStorage.removeItem(featKey);
-            localStorage.removeItem(featKey);
-            sessionStorage.removeItem(featKey + '_curr');
-            localStorage.removeItem(featKey + '_curr');
-            selectCountry('Global / Semua Negara');
-        } else if (countryMetadata[urlCountry]) {
-            sessionStorage.setItem(featKey, urlCountry);
-            localStorage.setItem(featKey, urlCountry);
-            if (countryMetadata[urlCountry].currency) {
-                sessionStorage.setItem(featKey + '_curr', countryMetadata[urlCountry].currency);
-                localStorage.setItem(featKey + '_curr', countryMetadata[urlCountry].currency);
-            }
-            selectCountry(urlCountry);
-        } else {
-            selectCountry('Global / Semua Negara');
-        }
-        if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
-    } else {
-        const savedCountry = sessionStorage.getItem(featKey) || localStorage.getItem(featKey);
-        if (savedCountry && countryMetadata[savedCountry] && savedCountry !== 'Global / Semua Negara' && savedCountry !== 'Global / Semua Negara (Feed Artikel Admin)' && savedCountry !== 'Global') {
-            selectCountry(savedCountry);
-        } else {
-            selectCountry('Global / Semua Negara');
-            setTimeout(() => {
-                const searchInputEl = document.getElementById('countrySearchInput');
-                if (searchInputEl && typeof window.openCountryDropdown === 'function') {
-                    if (document.activeElement !== searchInputEl) {
-                        searchInputEl.focus();
-                    }
-                    window.openCountryDropdown('');
-                }
-            }, 350);
-        }
-    }
+    // Clear any stored country so refresh always starts blank
+    sessionStorage.removeItem(featKey);
+    localStorage.removeItem(featKey);
+    sessionStorage.removeItem(featKey + '_curr');
+    localStorage.removeItem(featKey + '_curr');
+    // Start in unselected state (shows '-')
+    selectCountry('Global / Semua Negara');
 
     // Jika saat ini di halaman Dashboard utama, pasang sinkronisasi negara ke link sidebar
     if (window.location.pathname === '/' || window.location.pathname === '/dashboard') {
@@ -387,14 +353,8 @@ window.getFeatureStorageKey = function() {
 
 window.navigateToFeatureFromDashboard = function(event, targetUrl) {
     if (event) event.preventDefault();
-    const featKey = 'selected_country_dashboard';
-    const currentCountry = sessionStorage.getItem(featKey) || localStorage.getItem(featKey) || '';
-    let param = 'reset';
-    if (currentCountry && currentCountry !== 'Global / Semua Negara' && currentCountry !== 'Global / Semua Negara (Feed Artikel Admin)' && currentCountry !== 'Global' && currentCountry !== '-') {
-        param = encodeURIComponent(currentCountry);
-    }
-    const separator = targetUrl.includes('?') ? '&' : '?';
-    window.location.href = targetUrl + separator + 'country=' + param;
+    // Always navigate without carrying country — target page starts blank
+    window.location.href = targetUrl;
     return false;
 };
 
@@ -451,12 +411,9 @@ async function selectCountry(countryInput) {
         localStorage.removeItem(featKey);
         countryName = 'Global / Semua Negara';
     } else {
-        sessionStorage.setItem(featKey, countryName);
-        localStorage.setItem(featKey, countryName);
-        if (countryMetadata[countryName] && countryMetadata[countryName].currency) {
-            sessionStorage.setItem(featKey + '_curr', countryMetadata[countryName].currency);
-            localStorage.setItem(featKey + '_curr', countryMetadata[countryName].currency);
-        }
+        // Do NOT persist country to storage — every refresh starts blank
+        sessionStorage.removeItem(featKey);
+        localStorage.removeItem(featKey);
     }
 
     const searchInputEl = document.getElementById('countrySearchInput');

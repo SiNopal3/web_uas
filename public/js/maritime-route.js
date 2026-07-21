@@ -88,9 +88,10 @@ function initMaritimeRouteMap() {
         attributionControl: false
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
         maxZoom: 18,
-        subdomains: 'abcd'
+        subdomains: 'abcd',
+        attribution: '&copy; CartoDB'
     }).addTo(maritimeRouteMap);
 
     routeLayerGroup = L.layerGroup().addTo(maritimeRouteMap);
@@ -101,26 +102,65 @@ function populateCountryDropdowns() {
     const destSelect = document.getElementById('destCountrySelect');
     if (!originSelect || !destSelect) return;
 
-    // Urutkan abjad
-    const sorted = [...MARITIME_COUNTRIES_LIST].sort((a, b) => a.name.localeCompare(b.name));
+    // Add blank placeholder first
+    const blankOrigin = document.createElement('option');
+    blankOrigin.value = '';
+    blankOrigin.textContent = '- Select Origin Country -';
+    blankOrigin.selected = true;
+    blankOrigin.disabled = false;
+    originSelect.appendChild(blankOrigin);
 
+    const blankDest = document.createElement('option');
+    blankDest.value = '';
+    blankDest.textContent = '- Select Destination Country -';
+    blankDest.selected = true;
+    blankDest.disabled = false;
+    destSelect.appendChild(blankDest);
+
+    // Populate sorted country list — no default selected
+    const sorted = [...MARITIME_COUNTRIES_LIST].sort((a, b) => a.name.localeCompare(b.name));
     sorted.forEach(c => {
         const optOrigin = document.createElement('option');
         optOrigin.value = c.name;
         optOrigin.textContent = `${c.name} (${c.iso})`;
-        if (c.name === 'Indonesia') optOrigin.selected = true;
         originSelect.appendChild(optOrigin);
 
         const optDest = document.createElement('option');
         optDest.value = c.name;
         optDest.textContent = `${c.name} (${c.iso})`;
-        if (c.name === 'Netherlands') optDest.selected = true;
         destSelect.appendChild(optDest);
     });
 
-    // Load pelabuhan awal untuk Indonesia -> Netherlands
-    loadPortsForSimulator('origin', originSelect.value);
-    loadPortsForSimulator('dest', destSelect.value, true);
+    // Also reset port dropdowns to blank
+    const originPortSelect = document.getElementById('originPortSelect');
+    const destPortSelect = document.getElementById('destPortSelect');
+    if (originPortSelect) {
+        originPortSelect.innerHTML = '<option value="">- Select origin country first -</option>';
+    }
+    if (destPortSelect) {
+        destPortSelect.innerHTML = '<option value="">- Select destination country first -</option>';
+    }
+
+    // Reset Risk Engine Sync display
+    const syncNameEl = document.getElementById('autoSyncCountryName');
+    if (syncNameEl) syncNameEl.textContent = '-';
+    const syncW = document.getElementById('syncWeatherVal');
+    const syncN = document.getElementById('syncNewsVal');
+    const syncI = document.getElementById('syncInflationVal');
+    const syncC = document.getElementById('syncCurrencyVal');
+    if (syncW) syncW.textContent = '-';
+    if (syncN) syncN.textContent = '-';
+    if (syncI) syncI.textContent = '-';
+    if (syncC) syncC.textContent = '-';
+
+    // Reset risk badge
+    const riskBadgeEl = document.getElementById('simRiskCategoryBadge');
+    if (riskBadgeEl) {
+        riskBadgeEl.className = 'badge bg-secondary px-3 py-2 fs-6 fw-bold';
+        riskBadgeEl.innerHTML = '<i class="fa-solid fa-shield me-1"></i> - (Select Countries)';
+    }
+
+    // Do NOT auto-load ports or run simulation on page load
 }
 
 async function loadPortsForSimulator(side, countryName, triggerCalcAfter = false) {
@@ -207,7 +247,11 @@ async function runRouteSimulation() {
     const originPort = document.getElementById('originPortSelect');
     const destPort = document.getElementById('destPortSelect');
     const speedSelect = document.getElementById('vesselSpeedSelect');
+    const originCountryEl = document.getElementById('originCountrySelect');
+    const destCountryEl = document.getElementById('destCountrySelect');
 
+    // Guard: both countries and ports must be selected
+    if (!originCountryEl?.value || !destCountryEl?.value) return;
     if (!originPort || !destPort || !originPort.value || !destPort.value) return;
 
     const [originLat, originLng] = originPort.value.split(',').map(Number);
@@ -289,23 +333,38 @@ function updateSimulatorUI(data) {
     if (totalDurEl) totalDurEl.textContent = `${data.total_duration_days} Hari`;
 
     if (riskBadgeEl) {
-        const badgeColor = data.risk_engine.status_color === 'danger' ? 'danger' : (data.risk_engine.status_color === 'warning' ? 'warning text-dark' : 'success');
-        riskBadgeEl.className = `badge bg-${badgeColor} px-3 py-2 fs-6 fw-bold`;
+        const isHigh    = data.risk_engine.status_color === 'danger';
+        const isMedium  = data.risk_engine.status_color === 'warning';
+        const bg    = isHigh ? '#fef2f2' : isMedium ? '#fffbeb' : '#dcfce7';
+        const color = isHigh ? '#b91c1c' : isMedium ? '#92400e' : '#166534';
+        const border= isHigh ? '#fecaca' : isMedium ? '#fde68a' : '#bbf7d0';
+        riskBadgeEl.style.cssText = `background:${bg};color:${color};border:1px solid ${border};`;
         riskBadgeEl.innerHTML = `<i class="fa-solid fa-shield me-1"></i> ${data.risk_engine.category} (${data.risk_engine.total_score}/100)`;
     }
 
     if (breakdownContainer && Array.isArray(data.delay_breakdown)) {
         breakdownContainer.innerHTML = data.delay_breakdown.map(item => {
-            const icon = item.delay_days > 0 ? 'fa-triangle-exclamation text-warning' : 'fa-check-circle text-success';
+            const hasDelay = item.delay_days > 0;
+            const cardBg     = hasDelay ? '#fef2f2' : '#f0fdf4';
+            const cardBorder = hasDelay ? '#fecaca' : '#bbf7d0';
+            const iconClass  = hasDelay ? 'fa-triangle-exclamation' : 'fa-check-circle';
+            const iconColor  = hasDelay ? '#dc2626' : '#16a34a';
             return `
-                <div class="p-3 mb-2 rounded border border-secondary bg-dark d-flex align-items-start justify-content-between gap-3" style="border-color: rgba(255,255,255,0.12) !important;">
+                <div class="p-3 mb-2 rounded d-flex align-items-start justify-content-between gap-3"
+                     style="background:${cardBg};border:1px solid ${cardBorder};">
                     <div>
-                        <div class="fw-bold text-white mb-1">
-                            <i class="fa-solid ${icon} me-2"></i> ${item.type}
-                            ${item.delay_days > 0 ? `<span class="badge bg-danger ms-2">+${item.delay_days} Hari Delay</span>` : `<span class="badge bg-success ms-2">Normal</span>`}
+                        <div class="fw-bold mb-1" style="color:#0f172a;">
+                            <i class="fa-solid ${iconClass} me-2" style="color:${iconColor};"></i>
+                            ${item.type}
+                            ${hasDelay
+                                ? `<span class="badge ms-2" style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;">+${item.delay_days} Days Delay</span>`
+                                : `<span class="badge ms-2" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;">Normal</span>`
+                            }
                         </div>
-                        <div class="small text-muted mb-1" style="font-size: 13px;">${item.description}</div>
-                        <div class="small text-info fw-semibold" style="font-size: 12px;"><i class="fa-solid fa-lightbulb me-1"></i> Mitigasi: ${item.mitigation}</div>
+                        <div class="small mb-1" style="color:#475569;font-size:13px;">${item.description}</div>
+                        <div class="small fw-semibold" style="color:#3b82f6;font-size:12px;">
+                            <i class="fa-solid fa-lightbulb me-1"></i> Mitigation: ${item.mitigation}
+                        </div>
                     </div>
                 </div>
             `;
@@ -342,18 +401,18 @@ function drawMaritimeRouteOnMap(data) {
     });
 
     const originMarker = L.marker(originCoords, { icon: originIcon }).bindPopup(`
-        <div style="background: #1b1c20; color: #fff; padding: 10px; border-radius: 6px; border: 1px solid #10b981;">
-            <div style="color: #10b981; font-weight: bold; font-size: 13px;"><i class="fa-solid fa-anchor me-1"></i> Pelabuhan Asal</div>
-            <div style="font-size: 12px; margin-top: 4px;"><strong>${data.origin.name}</strong></div>
+        <div style="background:#ffffff;color:#0f172a;padding:10px;border-radius:8px;border:1px solid #bbf7d0;min-width:160px;">
+            <div style="color:#10b981;font-weight:700;font-size:13px;"><i class="fa-solid fa-anchor"></i> Origin Port</div>
+            <div style="font-size:12px;margin-top:4px;color:#0f172a;"><strong>${data.origin.name}</strong></div>
         </div>
-    `, { className: 'custom-dark-popup' });
+    `, { className: 'custom-light-popup' });
 
     const destMarker = L.marker(destCoords, { icon: destIcon }).bindPopup(`
-        <div style="background: #1b1c20; color: #fff; padding: 10px; border-radius: 6px; border: 1px solid #ef4444;">
-            <div style="color: #ef4444; font-weight: bold; font-size: 13px;"><i class="fa-solid fa-flag-checkered me-1"></i> Pelabuhan Tujuan</div>
-            <div style="font-size: 12px; margin-top: 4px;"><strong>${data.destination.name}</strong></div>
+        <div style="background:#ffffff;color:#0f172a;padding:10px;border-radius:8px;border:1px solid #fecaca;min-width:160px;">
+            <div style="color:#ef4444;font-weight:700;font-size:13px;"><i class="fa-solid fa-flag-checkered"></i> Destination Port</div>
+            <div style="font-size:12px;margin-top:4px;color:#0f172a;"><strong>${data.destination.name}</strong></div>
         </div>
-    `, { className: 'custom-dark-popup' });
+    `, { className: 'custom-light-popup' });
 
     routeLayerGroup.addLayer(originMarker);
     routeLayerGroup.addLayer(destMarker);

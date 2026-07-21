@@ -30,10 +30,6 @@ class AnalyticsDashboardTest extends TestCase
         $response->assertStatus(200);
         $response->assertViewIs('analytics.currency');
         $response->assertViewHas('data');
-
-        $responseCharts = $this->actingAs($user)->get('/analytics?view=charts');
-        $responseCharts->assertStatus(200);
-        $responseCharts->assertViewIs('analytics.index');
     }
 
     public function test_authenticated_user_can_fetch_analytics_ajax_json()

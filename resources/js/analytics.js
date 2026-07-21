@@ -54,6 +54,22 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchFilteredAnalytics();
     }
 
+    // MutationObserver: watch #filterCountry value changes set programmatically by dashboard.js
+    // This is the safety net for when selectCountry() is called AFTER analytics.js is ready
+    const filterCountryEl2 = document.getElementById('filterCountry');
+    if (filterCountryEl2) {
+        let _lastFilterVal = filterCountryEl2.value;
+        // Poll every 200ms for value changes (MutationObserver does not catch .value= assignments)
+        setInterval(() => {
+            const currentVal = filterCountryEl2.value;
+            if (currentVal !== _lastFilterVal) {
+                _lastFilterVal = currentVal;
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => fetchFilteredAnalytics(), 300);
+            }
+        }, 200);
+    }
+
     // 2. Setup Interactive Filters & Period Switches (300ms Debounce)
     setupFilterListeners();
     setupPeriodSwitchers();
@@ -218,116 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // 7. Data Visualization Dashboard: GDP Trend Chart (Line Chart dengan Titik)
-        const gdpCtx = document.getElementById('chartGdpTrend');
-        if (gdpCtx && typeof Chart !== 'undefined') {
-            const existingGdp = Chart.getChart(gdpCtx);
-            if (existingGdp) existingGdp.destroy();
-            if (charts.chartGdpTrend) charts.chartGdpTrend.destroy();
-            charts.chartGdpTrend = new Chart(gdpCtx, {
-                type: cData.gdp_trend?.type || 'line',
-                data: cData.gdp_trend || { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10.5 }, color: '#f8fafc' } },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#cbd5e1', font: { weight: 'bold' } } },
-                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8', callback: (val) => val + '%' } }
-                    }
-                }
-            });
-        }
-
-        // 8. Data Visualization Dashboard: Inflation Trend Chart (Line Chart dengan Titik)
-        const infCtx = document.getElementById('chartInflationTrend');
-        if (infCtx && typeof Chart !== 'undefined') {
-            const existingInf = Chart.getChart(infCtx);
-            if (existingInf) existingInf.destroy();
-            if (charts.chartInflationTrend) charts.chartInflationTrend.destroy();
-            charts.chartInflationTrend = new Chart(infCtx, {
-                type: cData.inflation_trend?.type || 'line',
-                data: cData.inflation_trend || { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10.5 }, color: '#f8fafc' } },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#cbd5e1', font: { weight: 'bold' } } },
-                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8', callback: (val) => val + '%' } }
-                    }
-                }
-            });
-        }
-
-        // 9. Data Visualization Dashboard: Currency Trend Chart (Line Chart dengan Titik)
-        const curCtx = document.getElementById('chartCurrencyTrend');
-        if (curCtx && typeof Chart !== 'undefined') {
-            const existingCur = Chart.getChart(curCtx);
-            if (existingCur) existingCur.destroy();
-            if (charts.chartCurrencyTrend) charts.chartCurrencyTrend.destroy();
-            charts.chartCurrencyTrend = new Chart(curCtx, {
-                type: cData.currency_trend?.type || 'line',
-                data: cData.currency_trend || { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10.5 }, color: '#f8fafc' } }
-                    },
-                    scales: {
-                        x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#cbd5e1', font: { weight: 'bold' } } },
-                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8' } }
-                    }
-                }
-            });
-        }
-
-        // 10. Data Visualization Dashboard: Risk Trend Chart (Line Chart dengan Titik)
-        const riskCtx = document.getElementById('chartRiskTrend');
-        if (riskCtx && typeof Chart !== 'undefined') {
-            const existingRisk = Chart.getChart(riskCtx);
-            if (existingRisk) existingRisk.destroy();
-            if (charts.chartRiskTrend) charts.chartRiskTrend.destroy();
-            charts.chartRiskTrend = new Chart(riskCtx, {
-                type: cData.risk_trend?.type || 'line',
-                data: cData.risk_trend || { labels: [], datasets: [] },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10.5 }, color: '#f8fafc' } },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw} / 100`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#cbd5e1', font: { weight: 'bold' } } },
-                        y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#94a3b8', callback: (val) => val } }
-                    }
-                }
-            });
-        }
     }
 
     /**
@@ -541,6 +447,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     window.fetchFilteredAnalytics = fetchFilteredAnalytics;
+
+    // Patch window.selectCountry: intercept country selection from dashboard.js
+    // so that charts always refresh when a new country is picked, regardless of timing.
+    const _originalSelectCountry = window.selectCountry;
+    window.selectCountry = async function(countryInput) {
+        if (typeof _originalSelectCountry === 'function') {
+            await _originalSelectCountry(countryInput);
+        }
+        // After selectCountry completes, sync filterCountry and refresh charts
+        const isReset = !countryInput || countryInput === 'Global / Semua Negara'
+            || countryInput === 'Global / Semua Negara (Feed Artikel Admin)'
+            || countryInput === 'Global' || countryInput === 'Belum Dipilih'
+            || countryInput === '-';
+        const filterEl = document.getElementById('filterCountry');
+        if (filterEl) {
+            const cleanName = isReset ? '' : countryInput.toString().trim().replace(/\s*\(.*?\)/, '');
+            filterEl.value = cleanName;
+        }
+        fetchFilteredAnalytics();
+    };
 
     /**
      * Update DOM elements without page reload.

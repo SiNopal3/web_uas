@@ -194,8 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initialize map centered on global maritime corridor
         leafletMap = L.map('predictionHeatmap').setView([20.0, 80.0], 2);
 
-        // Dark tile layer
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        // Light tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
             subdomains: 'abcd',
             maxZoom: 18

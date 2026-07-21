@@ -184,24 +184,6 @@
             </a>
         </div>
 
-        <div class="col-12 col-md-6 col-xl-3">
-            <a href="{{ url('/analytics?view=charts') }}" onclick="return window.navigateToFeatureFromDashboard && window.navigateToFeatureFromDashboard(event, '{{ url('/analytics?view=charts') }}')" class="text-decoration-none">
-                <div class="glass-card h-100 p-4 d-flex flex-column justify-content-between hover-gold" style="transition: all 0.3s; cursor: pointer;">
-                    <div>
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge bg-dark border border-secondary text-success px-2 py-1">Chart.js + World Bank</span>
-                        </div>
-                        <h5 class="fw-bold text-white mb-2">Visualisasi GDP & Ekonomi</h5>
-                        <p class="small mb-0" style="color: #cbd5e1; line-height: 1.5;">
-                            Visualisasi interaktif tren makroekonomi, pertumbuhan produk domestik bruto (GDP), inflasi, dan fluktuasi nilai tukar.
-                        </p>
-                    </div>
-                    <div class="mt-3 pt-3 border-top d-flex align-items-center justify-content-between small fw-bold text-success" style="border-color: rgba(255,255,255,0.12) !important;">
-                        <span>Buka Visualisasi GDP</span>
-                    </div>
-                </div>
-            </a>
-        </div>
     </div>
 </div>
 @endsection

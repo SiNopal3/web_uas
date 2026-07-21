@@ -73,6 +73,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics.index');
     Route::get('/api/analytics/data', [AnalyticsController::class, 'getData'])->name('analytics.data');
 
+    // Data Visualization Dashboard routes
+    Route::get('/data-visualization', [AnalyticsController::class, 'dataVisualization'])->name('data-visualization.index');
+    Route::get('/api/data-visualization/charts', [AnalyticsController::class, 'getChartData'])->name('data-visualization.charts');
+
     // Smart Notification & Alert Center modular routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/api/notifications', [NotificationController::class, 'getData'])->name('notifications.data');
