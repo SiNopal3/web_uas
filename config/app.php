@@ -52,7 +52,14 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => (function () {
+        $raw = trim(env('APP_URL', 'http://localhost'), " '\"");
+        if (empty($raw)) return 'http://localhost';
+        if (!preg_match('~^https?://~i', $raw)) {
+            return 'https://' . $raw;
+        }
+        return $raw;
+    })(),
 
     /*
     |--------------------------------------------------------------------------
