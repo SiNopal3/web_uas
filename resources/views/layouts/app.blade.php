@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+@if(config('app.env') === 'production' || (request()->getHost() !== '127.0.0.1' && request()->getHost() !== 'localhost'))
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+@endif
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Global Supply Chain Risk Intelligence Platform') - RiskIntel Hub</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
