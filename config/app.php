@@ -53,7 +53,8 @@ return [
     */
 
     'url' => (function () {
-        $raw = trim(env('APP_URL', 'http://localhost'), " '\"");
+        $raw = env('APP_URL', 'http://localhost');
+        $raw = preg_replace('/[\r\n\t\s]+/', '', trim((string)$raw, " '\""));
         if (empty($raw)) return 'http://localhost';
         if (!preg_match('~^https?://~i', $raw)) {
             return 'https://' . $raw;
