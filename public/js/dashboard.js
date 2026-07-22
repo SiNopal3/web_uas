@@ -214,12 +214,7 @@ const countryMetadata = {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Inisialisasi Peta Maritim
-    if (typeof initMaritimeMap === 'function') {
-        initMaritimeMap();
-    }
-
-    // 2. Inisialisasi Input Pencarian Interaktif untuk 195 Negara Berdaulat
+    // 1. Inisialisasi Input Pencarian Interaktif untuk 195 Negara Berdaulat (FAIL-SAFE UTAMA)
     const searchInput = document.getElementById('countrySearchInput');
     const dropdownList = document.getElementById('countryDropdownList');
 
@@ -256,7 +251,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                         <span class="small text-secondary">${escapeHtml(meta.currency)} (${escapeHtml(meta.region)})</span>
                     `;
-                    item.addEventListener('click', () => {
+                    item.addEventListener('click', (e) => {
+                        e.stopPropagation();
                         searchInput.value = `${key} (${meta.iso} - ${meta.currency})`;
                         dropdownList.style.display = 'none';
                         selectCountry(key);
@@ -282,11 +278,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             renderCountryOptions(searchInput.value.replace(/\s*\(.*\)/, ''));
         });
 
+        searchInput.addEventListener('click', (e) => {
+            e.stopPropagation();
+            renderCountryOptions(searchInput.value.replace(/\s*\(.*\)/, ''));
+        });
+
         document.addEventListener('click', (e) => {
             if (!searchInput.contains(e.target) && !dropdownList.contains(e.target)) {
                 dropdownList.style.display = 'none';
             }
         });
+    }
+
+    // 2. Inisialisasi Peta Maritim (Dalam Try-Catch agar tidak memblokir JS jika CDN Leaflet bermasalah)
+    try {
+        if (typeof initMaritimeMap === 'function') {
+            initMaritimeMap();
+        }
+    } catch (err) {
+        console.warn("Maritime map init bypassed gracefully:", err);
     }
 
     // 3. Tombol muat ulang data real-time
