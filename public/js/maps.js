@@ -43,6 +43,9 @@ async function loadPortsForCountry(countryName, abortSignal = null, countryLat =
     
     portLayerGroup.clearLayers();
 
+    const isUnselected = (!countryName || countryName === 'Global / Semua Negara' || countryName === 'Global' || countryName === 'Belum Dipilih' || countryName === '-');
+    if (isUnselected) return;
+
     // Langsung gerakkan peta (zoom & pan) dan pasang banner tanda negara aktif tepat di titik pusat koordinat!
     if (countryLat !== null && countryLng !== null && countryLat !== undefined && countryLng !== undefined) {
         maritimeMap.setView([countryLat, countryLng], 5, { animate: true });

@@ -387,11 +387,11 @@ document.addEventListener('DOMContentLoaded', () => {
      */
     function restoreSavedCurrencyOrInitDefault() {
         const featKey = typeof window.getFeatureStorageKey === 'function' ? window.getFeatureStorageKey() : 'selected_country_currency';
-        const savedCountry = sessionStorage.getItem(featKey);
+        const savedCountry = sessionStorage.getItem(featKey) || localStorage.getItem(featKey);
         const savedCode = sessionStorage.getItem(featKey + '_curr');
 
         let match = null;
-        if (savedCountry) {
+        if (savedCountry && savedCountry !== 'Global / Semua Negara' && savedCountry !== 'Belum Dipilih' && savedCountry !== '-') {
             const scLower = savedCountry.toLowerCase().trim();
             match = SOVEREIGN_195_CURRENCIES.find(c => 
                 c.country.toLowerCase() === scLower || 
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 scLower.includes(c.country.toLowerCase())
             );
         }
-        if (!match && savedCode) {
+        if (!match && savedCode && savedCode !== 'Global' && savedCode !== '-') {
             const scCode = savedCode.toLowerCase().trim();
             match = SOVEREIGN_195_CURRENCIES.find(c => c.code.toLowerCase() === scCode || c.iso.toLowerCase() === scCode);
         }
@@ -408,24 +408,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (match && match.country !== 'Belum Dipilih') {
             const activeRate = (liveRatesData && liveRatesData[match.code]) ? liveRatesData[match.code] : match.rate_usd;
             selectCurrency(match.code, match.symbol, activeRate, match.country, false);
-            const searchInput = document.getElementById('currCountrySearchInput');
+            const searchInput = document.getElementById('currCountrySearchInput') || document.getElementById('countrySearchInput');
             if (searchInput) searchInput.value = `${match.country} (${match.code} - ${match.symbol})`;
         } else {
-            const elCountry = document.getElementById('currSelectedCountryName') || document.getElementById('selectedCountryName');
-            const elCodeBadge = document.getElementById('currSelectedCodeBadge') || document.getElementById('selectedCountryCurrency');
-            const elRateDisplay = document.getElementById('currSelectedRateDisplay');
-            const elChartTitle = document.getElementById('chartCurrTitle');
-            if (elCountry) elCountry.textContent = '-';
-            if (elCodeBadge) elCodeBadge.textContent = '-';
-            if (elRateDisplay) elRateDisplay.textContent = '-';
-            if (elChartTitle) elChartTitle.textContent = '-';
-            setTimeout(() => {
-                const searchInput = document.getElementById('currCountrySearchInput');
-                if (searchInput && typeof window.openCurrCountryDropdown === 'function') {
-                    if (document.activeElement !== searchInput) searchInput.focus();
-                    window.openCurrCountryDropdown('');
-                }
-            }, 350);
+            // Jika belum ada negara terpilih, setel tanda '-' dan kosongkan chart
+            selectCurrency('Global', '-', 0, 'Global / Semua Negara', true);
+            const searchInput = document.getElementById('currCountrySearchInput') || document.getElementById('countrySearchInput');
+            if (searchInput) searchInput.value = '';
         }
     }
 
@@ -437,6 +426,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ctx || typeof Chart === 'undefined') {
             console.warn('Menunggu Chart.js siap dimuat...');
             setTimeout(() => renderTrendChart(code, symbol, baseRate, countryName), 150);
+            return;
+        }
+
+        const isUnselected = (countryName === 'Global / Semua Negara' || countryName === 'Global' || countryName === 'Belum Dipilih' || countryName === '-' || !countryName || code === 'Global' || code === '-');
+
+        const elHigh = document.getElementById('statHighRate');
+        const elLow = document.getElementById('statLowRate');
+        const elAvg = document.getElementById('statAvgRate');
+
+        if (isUnselected) {
+            if (elHigh) elHigh.textContent = '-';
+            if (elLow) elLow.textContent = '-';
+            if (elAvg) elAvg.textContent = '-';
+            if (trendChart) {
+                trendChart.destroy();
+                trendChart = null;
+            }
             return;
         }
 
@@ -464,10 +470,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const highVal = Math.max(...dataPoints);
         const lowVal = Math.min(...dataPoints);
         const avgVal = dataPoints.reduce((a, b) => a + b, 0) / dataPoints.length;
-
-        const elHigh = document.getElementById('statHighRate');
-        const elLow = document.getElementById('statLowRate');
-        const elAvg = document.getElementById('statAvgRate');
 
         if (elHigh) elHigh.textContent = symbol + ' ' + highVal.toLocaleString('id-ID', { maximumFractionDigits: 2 });
         if (elLow) elLow.textContent = symbol + ' ' + lowVal.toLocaleString('id-ID', { maximumFractionDigits: 2 });
@@ -552,6 +554,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn('Fallback ke data kurs simulasi sovereign:', err);
             });
     }
+
+    // Patch window.selectCountry agar saat negara dipilih dari mana saja, grafik kurs langsung ter-update sesuai negara tersebut
+    const _prevSelectCountry = window.selectCountry;
+    window.selectCountry = async function(countryInput) {
+        if (typeof _prevSelectCountry === 'function') {
+            await _prevSelectCountry(countryInput);
+        }
+        if (countryInput) {
+            const scLower = countryInput.toLowerCase().trim();
+            const match = SOVEREIGN_195_CURRENCIES.find(c => 
+                c.country.toLowerCase() === scLower || 
+                c.iso.toLowerCase() === scLower || 
+                c.country.toLowerCase().includes(scLower) || 
+                scLower.includes(c.country.toLowerCase())
+            );
+            if (match) {
+                const activeRate = (liveRatesData && liveRatesData[match.code]) ? liveRatesData[match.code] : match.rate_usd;
+                selectCurrency(match.code, match.symbol, activeRate, match.country, false);
+                const searchInput = document.getElementById('currCountrySearchInput') || document.getElementById('countrySearchInput');
+                if (searchInput) searchInput.value = `${match.country} (${match.code} - ${match.symbol})`;
+            } else if (countryInput === 'Global / Semua Negara' || countryInput === '-' || countryInput === 'Global') {
+                selectCurrency('Global', '-', 0, 'Global / Semua Negara', false);
+                const searchInput = document.getElementById('currCountrySearchInput') || document.getElementById('countrySearchInput');
+                if (searchInput) searchInput.value = '';
+            }
+        }
+    };
 
     function roundToDigits(num, digits) {
         const p = Math.pow(10, digits);
