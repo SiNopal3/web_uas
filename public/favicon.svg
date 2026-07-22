@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#1e293b"/>
+  <g transform="translate(8, 6)">
+    <!-- Left half of shield (Bright Amber) -->
+    <path d="M24 4 C15 4 8 10 8 18 C8 32 18 42 24 46 L24 4 Z" fill="#f59e0b"/>
+    <!-- Right half of shield (Dark Amber/Bronze) -->
+    <path d="M24 4 C33 4 40 10 40 18 C40 32 30 42 24 46 L24 4 Z" fill="#78350f"/>
+    <!-- Outer Shield Border -->
+    <path d="M24 4 C15 4 8 10 8 18 C8 32 18 42 24 46 C30 42 40 32 40 18 C40 10 33 4 24 4 Z" fill="none" stroke="#d97706" stroke-width="2.5" stroke-linejoin="round"/>
+  </g>
+</svg>

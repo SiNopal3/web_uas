@@ -8,9 +8,10 @@
 @endif
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Global Supply Chain Risk Intelligence Platform') - RiskIntel Hub</title>
+    <link rel="icon" href="{{ asset('favicon.svg') }}?v={{ time() }}" type="image/svg+xml">
     <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}?v={{ time() }}">
     
     <!-- Bootstrap 5.3.2 & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
