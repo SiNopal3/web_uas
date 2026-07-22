@@ -24,7 +24,7 @@
             </div>
 
             @auth
-            <form action="{{ secure_url('logout') }}" method="POST" class="m-0" onsubmit="Object.keys(localStorage).forEach(k => { if (k.startsWith('selected_country_')) localStorage.removeItem(k); }); sessionStorage.clear();">
+            <form action="{{ route('logout') }}" method="POST" class="m-0" onsubmit="Object.keys(localStorage).forEach(k => { if (k.startsWith('selected_country_')) localStorage.removeItem(k); }); sessionStorage.clear();">
                 @csrf
                 <button type="submit" class="btn btn-sm px-3 py-1 d-flex align-items-center gap-2 fw-semibold" title="Log out" style="border-radius: 8px; background: #fef2f2; border: 1px solid #fecaca; color: #dc2626;">
                     <div class="d-flex flex-column text-start" style="line-height: 1.2;">

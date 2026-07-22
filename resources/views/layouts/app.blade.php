@@ -6,9 +6,9 @@
     <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Global Supply Chain Risk Intelligence Platform') - RiskIntel Hub</title>
-    <link rel="icon" href="{{ secure_asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
-    <link rel="shortcut icon" href="{{ secure_asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{{ secure_asset('favicon.ico') }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v={{ time() }}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.ico') }}">
     
     <!-- Bootstrap 5.3.2 & Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -402,9 +402,9 @@
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
     <!-- Modular App JS -->
-    <script src="{{ secure_asset('js/escape.js') }}"></script>
-    <script src="{{ secure_asset('js/maps.js') }}"></script>
-    <script src="{{ secure_asset('js/dashboard.js') }}"></script>
+    <script src="{{ asset('js/escape.js') }}"></script>
+    <script src="{{ asset('js/maps.js') }}"></script>
+    <script src="{{ asset('js/dashboard.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     @stack('scripts')
 
