@@ -334,17 +334,107 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        /* ── Responsive Mobile ── */
+        /* ── Master Enterprise Responsive Engine (320px - 3440px) ── */
+        html, body {
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        .main-wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .content-wrapper {
+            flex-grow: 1;
+            min-width: 0;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Fluid Typography System */
+        h1, .h1 { font-size: clamp(1.2rem, 1.8vw + 0.5rem, 1.75rem) !important; line-height: 1.25 !important; }
+        h2, .h2 { font-size: clamp(1.05rem, 1.4vw + 0.4rem, 1.5rem) !important; line-height: 1.3 !important; }
+        h3, .h3 { font-size: clamp(0.95rem, 1.1vw + 0.35rem, 1.25rem) !important; line-height: 1.35 !important; }
+        h4, .h4 { font-size: clamp(0.9rem, 0.9vw + 0.3rem, 1.1rem) !important; }
+        h5, .h5 { font-size: clamp(0.85rem, 0.75vw + 0.25rem, 1rem) !important; }
+        h6, .h6 { font-size: clamp(0.8rem, 0.6vw + 0.2rem, 0.875rem) !important; }
+
+        /* Responsive Layout Containers & Tables */
+        .container-fluid {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding-left: clamp(0.75rem, 1.5vw, 2rem) !important;
+            padding-right: clamp(0.75rem, 1.5vw, 2rem) !important;
+        }
+
+        .table-responsive {
+            width: 100% !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 1rem;
+            border-radius: var(--radius-md);
+        }
+
+        /* Responsive Leaflet Map & Chart Containers */
+        #maritimeMap, #map, .leaflet-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-height: 320px !important;
+            height: clamp(320px, 45vh, 600px) !important;
+            border-radius: 8px !important;
+            z-index: 1 !important;
+        }
+
+        .chart-container, canvas {
+            max-width: 100% !important;
+        }
+
+        /* ── Responsive Mobile & Tablet Offcanvas ── */
         @media (max-width: 991.98px) {
             .sidebar {
-                position: fixed;
-                left: -260px;
-                top: 0;
-                bottom: 0;
-                height: 100vh;
+                position: fixed !important;
+                left: -260px !important;
+                top: 0 !important;
+                bottom: 0 !important;
+                height: 100vh !important;
+                z-index: 1080 !important;
             }
-            .sidebar.show { left: 0; }
+            .sidebar.show { left: 0 !important; }
+            .btn {
+                padding: 6px 12px !important;
+                font-size: 12.5px !important;
+            }
+            .modal-dialog {
+                margin: 0.5rem !important;
+                max-width: calc(100vw - 1rem) !important;
+            }
         }
+
+        @media (max-width: 575.98px) {
+            .w-xs-100 {
+                width: 100% !important;
+            }
+            .country-dropdown-menu {
+                max-height: 250px !important;
+            }
+        }
+
+        @media (min-width: 1921px) {
+            .container-fluid {
+                max-width: 2400px !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+            }
+        }
+
         .sidebar-backdrop {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;

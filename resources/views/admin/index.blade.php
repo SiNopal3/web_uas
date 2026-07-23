@@ -16,7 +16,7 @@
     <div class="row g-3 mb-4">
         <!-- Card 1: Users -->
         <div class="col-12 col-md-4">
-            <div class="glass-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid var(--primary);">
+            <div class="glass-card p-3 d-flex align-items-center justify-content-between h-100">
                 <div>
                     <span class="small text-uppercase fw-semibold text-muted d-block" style="font-size: 11px !important;">Total Users</span>
                     <h2 class="fw-bold text-dark mb-0 mt-0.5" id="kpi-total-users">{{ $kpi['total_users'] ?? 1 }}</h2>
@@ -29,7 +29,7 @@
         </div>
         <!-- Card 2: Sovereign Countries -->
         <div class="col-12 col-md-4">
-            <div class="glass-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid var(--info);">
+            <div class="glass-card p-3 d-flex align-items-center justify-content-between h-100">
                 <div>
                     <span class="small text-uppercase fw-semibold text-muted d-block" style="font-size: 11px !important;">Sovereign Countries</span>
                     <h2 class="fw-bold text-dark mb-0 mt-0.5" id="kpi-total-countries">{{ $kpi['total_countries'] ?? 195 }}</h2>
@@ -42,7 +42,7 @@
         </div>
         <!-- Card 3: Ports Dataset -->
         <div class="col-12 col-md-4">
-            <div class="glass-card p-3 d-flex align-items-center justify-content-between h-100" style="border-left: 4px solid var(--success);">
+            <div class="glass-card p-3 d-flex align-items-center justify-content-between h-100">
                 <div>
                     <span class="small text-uppercase fw-semibold text-muted d-block" style="font-size: 11px !important;">Ports Dataset</span>
                     <h2 class="fw-bold text-dark mb-0 mt-0.5" id="kpi-total-ports">{{ number_format($kpi['total_ports'] ?? 3739, 0, ',', '.') }}</h2>
