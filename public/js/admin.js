@@ -454,9 +454,9 @@
                 'X-CSRF-TOKEN': csrfToken
             }
         })
-        .then(response => response.json())
-        .then(res => {
-            if (res.success) {
+        .then(async response => {
+            const res = await response.json().catch(() => ({ success: false, message: 'Server Error (' + response.status + ')' }));
+            if (response.ok && res.success) {
                 fetchUsersList();
                 alert('Sukses: ' + (res.message || 'Akun pengguna berhasil dihapus.'));
             } else {
@@ -815,9 +815,9 @@
                 'X-CSRF-TOKEN': csrfToken
             }
         })
-        .then(response => response.json())
-        .then(res => {
-            if (res.success) {
+        .then(async response => {
+            const res = await response.json().catch(() => ({ success: false, message: 'Server Error (' + response.status + ')' }));
+            if (response.ok && res.success) {
                 fetchPortsList();
                 alert('Sukses: ' + (res.message || 'Data pelabuhan berhasil dihapus.'));
             } else {
@@ -974,9 +974,9 @@
                 'X-CSRF-TOKEN': csrfToken
             }
         })
-        .then(response => response.json())
-        .then(res => {
-            if (res.success) {
+        .then(async response => {
+            const res = await response.json().catch(() => ({ success: false, message: 'Server Error (' + response.status + ')' }));
+            if (response.ok && res.success) {
                 fetchArticlesList();
                 alert('Sukses: ' + (res.message || 'Artikel berhasil dihapus.'));
             } else {
