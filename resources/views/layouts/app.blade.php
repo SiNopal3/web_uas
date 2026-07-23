@@ -397,7 +397,11 @@
             max-width: 100% !important;
         }
 
-        /* ── Responsive Layout & Sidebar Engine (Enterprise Azure Architecture) ── */
+        /* ── Responsive Push Layout & Sidebar Engine ── */
+        .main-content {
+            transition: margin-left 0.3s ease, width 0.3s ease !important;
+        }
+
         @media (min-width: 992px) {
             .sidebar {
                 position: fixed !important;
@@ -430,13 +434,21 @@
                 width: 260px !important;
                 height: 100vh !important;
                 z-index: 1080 !important;
-                box-shadow: 0 0 20px rgba(15, 23, 42, 0.3) !important;
+                transition: left 0.3s ease !important;
             }
-            .sidebar.show { left: 0 !important; }
+            .sidebar.show {
+                left: 0 !important;
+            }
             .main-content {
                 margin-left: 0 !important;
                 width: 100% !important;
-                max-width: 100vw !important;
+            }
+            .sidebar.show ~ .main-content {
+                margin-left: 260px !important;
+                width: calc(100% - 260px) !important;
+            }
+            .sidebar-backdrop {
+                display: none !important;
             }
             .btn {
                 padding: 6px 12px !important;
@@ -617,18 +629,16 @@
         const sidebarCloseBtn = document.getElementById('sidebarCloseBtn');
         const sidebarBackdrop = document.getElementById('sidebarBackdrop');
 
-        function openSidebar() {
-            if (sidebarElem) sidebarElem.classList.add('show');
-            if (sidebarBackdrop) sidebarBackdrop.classList.add('show');
+        if (sidebarToggleBtn) {
+            sidebarToggleBtn.addEventListener('click', () => {
+                if (sidebarElem) sidebarElem.classList.toggle('show');
+            });
         }
-        function closeSidebar() {
-            if (sidebarElem) sidebarElem.classList.remove('show');
-            if (sidebarBackdrop) sidebarBackdrop.classList.remove('show');
+        if (sidebarCloseBtn) {
+            sidebarCloseBtn.addEventListener('click', () => {
+                if (sidebarElem) sidebarElem.classList.remove('show');
+            });
         }
-
-        if (sidebarToggleBtn) sidebarToggleBtn.addEventListener('click', openSidebar);
-        if (sidebarCloseBtn) sidebarCloseBtn.addEventListener('click', closeSidebar);
-        if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
 
         // Global Real-Time Clock Ticker (Navbar)
         const elGlobalClock = document.getElementById('globalNavbarClock');
