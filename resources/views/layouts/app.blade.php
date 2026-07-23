@@ -397,17 +397,21 @@
             max-width: 100% !important;
         }
 
-        /* ── Responsive Layout & Sidebar Engine ── */
+        /* ── Responsive Layout & Sidebar Engine (Enterprise Azure Architecture) ── */
         @media (min-width: 992px) {
             .sidebar {
-                position: relative !important;
+                position: fixed !important;
+                top: 0 !important;
                 left: 0 !important;
+                bottom: 0 !important;
                 width: 260px !important;
                 min-width: 260px !important;
+                height: 100vh !important;
+                z-index: 1000 !important;
                 flex-shrink: 0 !important;
-                z-index: 100 !important;
             }
             .main-content {
+                margin-left: 260px !important;
                 width: calc(100% - 260px) !important;
                 flex-grow: 1 !important;
                 min-width: 0 !important;
@@ -423,12 +427,14 @@
                 left: -260px !important;
                 top: 0 !important;
                 bottom: 0 !important;
+                width: 260px !important;
                 height: 100vh !important;
                 z-index: 1080 !important;
                 box-shadow: 0 0 20px rgba(15, 23, 42, 0.3) !important;
             }
             .sidebar.show { left: 0 !important; }
             .main-content {
+                margin-left: 0 !important;
                 width: 100% !important;
                 max-width: 100vw !important;
             }
