@@ -682,52 +682,52 @@ async function fetchNews(countryName, signal) {
     if (!newsContainer) return;
 
     const renderCardHtml = (art, isAdminCard) => {
-        const safeTitle = escapeHtml(art.title || 'Tanpa Judul');
-        const safeDesc = escapeHtml(art.description || 'Tidak ada deskripsi rinci.');
+        const safeTitle = escapeHtml(art.title || 'Untitled Article');
+        const safeDesc = escapeHtml(art.description || 'No detailed preview available.');
         const safeUrl = escapeHtml(art.url || '#');
-        const safeAuthor = escapeHtml(art.author || 'Admin RiskIntel');
-        const safeSource = escapeHtml(art.source?.name || (isAdminCard ? 'Analisis Internal (Admin)' : 'GNews API'));
+        const safeAuthor = escapeHtml(art.author || 'RiskIntel Analyst');
+        const safeSource = escapeHtml(art.source?.name || (isAdminCard ? 'Internal Analysis' : 'GNews API'));
         const sentiment = escapeHtml(art.sentiment || 'Neutral');
         const safeDate = escapeHtml(art.created_at || 'Live GNews');
 
-        let badgeColor = 'bg-secondary';
-        if (sentiment === 'Positive') badgeColor = 'bg-success';
-        if (sentiment === 'Negative') badgeColor = 'bg-danger';
+        let badgeColor = 'badge-soft-secondary';
+        if (sentiment === 'Positive') badgeColor = 'badge-soft-success';
+        if (sentiment === 'Negative') badgeColor = 'badge-soft-danger';
 
         const authorBadge = isAdminCard 
-            ? `<div class="small text-warning mb-2" style="font-size: 12px;"><i class="fa-solid fa-user-pen me-1"></i> Penulis: <strong class="text-white">${safeAuthor}</strong></div>` 
+            ? `<div class="small text-muted mb-2" style="font-size: 11.5px;"><i class="fa-solid fa-user-pen me-1 text-primary"></i> Author: <strong class="text-dark">${safeAuthor}</strong></div>` 
             : '';
 
         const footerInfo = isAdminCard 
-            ? `<span class="small text-warning" style="font-size: 11px;"><i class="fa-solid fa-file-lines me-1"></i> Artikel Admin (${safeDate})</span>`
-            : `<span class="small text-muted" style="font-size: 11px;"><i class="fa-solid fa-clock me-1"></i> Live GNews</span>`;
+            ? `<span class="small text-muted" style="font-size: 11px;"><i class="fa-solid fa-file-lines me-1 text-primary"></i> Internal Report</span>`
+            : `<span class="small text-muted" style="font-size: 11px;"><i class="fa-solid fa-clock me-1 text-primary"></i> Live GNews</span>`;
 
         let actionBtn = '';
         if (isAdminCard) {
             if (art.url && art.url !== '#' && art.url !== '') {
-                actionBtn = `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-warning fw-bold px-3 py-1" style="border-radius: 6px;"><i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Kunjungi Tautan</a>`;
+                actionBtn = `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary fw-medium py-1 px-2.5"><i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Visit Source</a>`;
             } else {
-                actionBtn = `<span class="btn btn-sm btn-outline-info fw-bold px-3 py-1" style="border-radius: 6px;"><i class="fa-solid fa-check me-1"></i> Analisis Internal</span>`;
+                actionBtn = `<span class="btn btn-sm btn-outline-secondary fw-medium py-1 px-2.5 disabled"><i class="fa-solid fa-shield-halved me-1 text-primary"></i> Internal</span>`;
             }
         } else {
-            actionBtn = `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-warning fw-bold px-3 py-1" style="border-radius: 6px;">Read More <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a>`;
+            actionBtn = `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary fw-medium py-1 px-2.5">Read More <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i></a>`;
         }
 
         return `
             <div class="col-12 col-md-4 d-flex mb-3">
-                <div class="news-item p-4 rounded glass-card w-100 d-flex flex-column justify-content-between shadow" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-top: 4px solid ${isAdminCard ? '#f59e0b' : '#38bdf8'}; word-break: break-word; overflow-wrap: anywhere;">
+                <div class="news-item p-3.5 rounded-3 glass-card w-100 d-flex flex-column justify-content-between" style="border-top: 3.5px solid ${isAdminCard ? 'var(--primary)' : '#0ea5e9'}; word-break: break-word; overflow-wrap: anywhere;">
                     <div>
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
-                            <span class="badge ${badgeColor} px-3 py-1 fw-bold" style="font-size: 12px;">${sentiment}</span>
-                            <span class="small fw-semibold ${isAdminCard ? 'text-warning' : 'text-info'} text-end" style="font-size: 12px; word-break: break-word;"><i class="fa-solid fa-satellite-dish me-1"></i> ${safeSource}</span>
+                            <span class="badge ${badgeColor} px-2.5 py-1 fw-semibold">${sentiment}</span>
+                            <span class="small fw-semibold text-muted text-end" style="font-size: 11.5px; word-break: break-word;"><i class="fa-solid fa-satellite-dish me-1 text-primary"></i> ${safeSource}</span>
                         </div>
                         ${authorBadge}
-                        <h5 class="mb-3 fw-bold text-white" style="font-size: 16px; line-height: 1.45; word-break: break-word; overflow-wrap: anywhere;">
-                            <a href="${safeUrl !== '#' ? safeUrl : 'javascript:void(0)'}" ${safeUrl !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''} class="text-white text-decoration-none hover-gold">${safeTitle}</a>
+                        <h5 class="mb-2 fw-semibold text-dark" style="font-size: 15px; line-height: 1.4; word-break: break-word; overflow-wrap: anywhere;">
+                            <a href="${safeUrl !== '#' ? safeUrl : 'javascript:void(0)'}" ${safeUrl !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''} class="text-dark text-decoration-none" style="transition: color 0.2s;">${safeTitle}</a>
                         </h5>
-                        <p class="small mb-4" style="color: #cbd5e1; font-size: 13px; line-height: 1.6; word-break: break-word; overflow-wrap: anywhere; white-space: normal;">${safeDesc}</p>
+                        <p class="small mb-3 text-muted" style="font-size: 12.5px; line-height: 1.55; word-break: break-word; overflow-wrap: anywhere; white-space: normal;">${safeDesc}</p>
                     </div>
-                    <div class="mt-auto pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2" style="border-color: rgba(255,255,255,0.1) !important;">
+                    <div class="mt-auto pt-2.5 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
                         ${footerInfo}
                         ${actionBtn}
                     </div>
@@ -955,87 +955,87 @@ async function loadWatchlistsFromServer() {
                 const safeRegion = escapeHtml(item.region || 'Global');
                 const safeId = item.id;
                 return `
-                    <div class="watchlist-item p-3 mb-3 rounded-3 shadow-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.14); border-left: 4px solid var(--accent-gold);">
-                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 pb-2 border-bottom" style="border-color: rgba(255,255,255,0.1) !important;">
+                    <div class="watchlist-item p-3.5 mb-3 rounded-3 shadow-sm glass-card" style="border-left: 4px solid var(--primary);">
+                        <div class="d-flex flex-wrap justify-content-between align-items-center mb-2.5 pb-2 border-bottom">
                             <div class="d-flex align-items-center" style="cursor: pointer;" onclick="selectCountry('${safeName}')">
                                 <i class="fa-solid fa-star text-warning me-2 fs-5"></i>
                                 <div>
-                                    <span class="fw-bold text-white fs-6 me-2">${safeName}</span>
-                                    <span class="badge bg-secondary px-2 py-0.5 me-2" style="font-size: 11px;">${safeRegion}</span>
-                                    <span class="badge bg-dark border border-secondary text-light px-2 py-0.5" style="font-size: 11px;">Mata Uang: ${safeCurr}</span>
+                                    <span class="fw-bold text-dark fs-6 me-2">${safeName}</span>
+                                    <span class="badge badge-soft-secondary px-2 py-0.5 me-2" style="font-size: 11px;">${safeRegion}</span>
+                                    <span class="badge badge-soft-info px-2 py-0.5" style="font-size: 11px;">Currency: ${safeCurr}</span>
                                 </div>
                             </div>
                             <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
-                                <button class="btn btn-sm btn-outline-danger px-2.5 py-1" onclick="removeFromWatchlist(${safeId})" title="Hapus dari daftar pantauan" style="font-size: 12px; border-radius: 6px;">
-                                    <i class="fa-solid fa-trash-can me-1"></i> Hapus
+                                <button class="btn btn-sm btn-outline-danger px-2.5 py-1" onclick="removeFromWatchlist(${safeId})" title="Remove from Watchlist" style="font-size: 12px;">
+                                    <i class="fa-solid fa-trash-can me-1"></i> Remove
                                 </button>
                             </div>
                         </div>
 
-                        <!-- 4 Compact Indicator Cards Grid (Adapted from Image 2) -->
+                        <!-- 4 Compact Indicator Cards Grid -->
                         <div class="row g-2 pt-1">
-                            <!-- 1. Cuaca Maritim (Open-Meteo) -->
+                            <!-- 1. Maritime Weather -->
                             <div class="col-12 col-sm-6 col-xl-3">
-                                <div class="p-2.5 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: rgba(0,0,0,0.28); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="p-2.5 rounded-2 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                                     <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="small fw-bold" style="color: #cbd5e1; font-size: 11px;"><i class="fa-solid fa-cloud-bolt text-info me-1"></i> Cuaca Maritim</span>
-                                        <i class="fa-solid fa-water text-info" style="font-size: 11px;"></i>
+                                        <span class="small fw-semibold text-muted" style="font-size: 11px;"><i class="fa-solid fa-cloud-bolt text-primary me-1"></i> Weather</span>
+                                        <i class="fa-solid fa-water text-primary" style="font-size: 11px;"></i>
                                     </div>
                                     <div class="my-1">
-                                        <div id="wl_weather_temp_${safeId}" class="fw-bold text-white mb-0" style="font-size: 17px;">-- °C</div>
-                                        <div class="d-flex justify-content-between small mt-1" style="color: #94a3b8; font-size: 11px;">
-                                            <span>Angin: <strong id="wl_weather_wind_${safeId}" class="text-white">-- m/s</strong></span>
-                                            <span>Lembap: <strong id="wl_weather_hum_${safeId}" class="text-white">-- %</strong></span>
+                                        <div id="wl_weather_temp_${safeId}" class="fw-bold text-dark mb-0" style="font-size: 16px;">-- °C</div>
+                                        <div class="d-flex justify-content-between small mt-1 text-muted" style="font-size: 11px;">
+                                            <span>Wind: <strong id="wl_weather_wind_${safeId}" class="text-dark">-- m/s</strong></span>
+                                            <span>Humidity: <strong id="wl_weather_hum_${safeId}" class="text-dark">-- %</strong></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 2. Metrik Ekonomi (World Bank) -->
+                            <!-- 2. Economic Metrics -->
                             <div class="col-12 col-sm-6 col-xl-3">
-                                <div class="p-2.5 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: rgba(0,0,0,0.28); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="p-2.5 rounded-2 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                                     <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="small fw-bold" style="color: #cbd5e1; font-size: 11px;"><i class="fa-solid fa-chart-line text-success me-1"></i> Metrik Ekonomi</span>
+                                        <span class="small fw-semibold text-muted" style="font-size: 11px;"><i class="fa-solid fa-chart-line text-success me-1"></i> Economy</span>
                                         <i class="fa-solid fa-building-columns text-success" style="font-size: 11px;"></i>
                                     </div>
                                     <div class="my-1">
-                                        <div id="wl_econ_gdp_${safeId}" class="fw-bold text-white mb-0" style="font-size: 17px;">--</div>
-                                        <div class="d-flex justify-content-between small mt-1" style="color: #94a3b8; font-size: 11px;">
-                                            <span>Inflasi: <strong id="wl_econ_inf_${safeId}" class="text-warning">-- %</strong></span>
-                                            <span>Pop: <strong id="wl_econ_pop_${safeId}" class="text-white">--</strong></span>
+                                        <div id="wl_econ_gdp_${safeId}" class="fw-bold text-dark mb-0" style="font-size: 16px;">--</div>
+                                        <div class="d-flex justify-content-between small mt-1 text-muted" style="font-size: 11px;">
+                                            <span>Inflation: <strong id="wl_econ_inf_${safeId}" class="text-warning">-- %</strong></span>
+                                            <span>Pop: <strong id="wl_econ_pop_${safeId}" class="text-dark">--</strong></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 3. Kurs Valuta (ExchangeRate-API) -->
+                            <!-- 3. Exchange Rate -->
                             <div class="col-12 col-sm-6 col-xl-3">
-                                <div class="p-2.5 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: rgba(0,0,0,0.28); border: 1px solid rgba(255,255,255,0.08);">
+                                <div class="p-2.5 rounded-2 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                                     <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="small fw-bold" style="color: #cbd5e1; font-size: 11px;"><i class="fa-solid fa-money-bill-transfer text-warning me-1"></i> Kurs Valuta (${safeCurr})</span>
-                                        <i class="fa-solid fa-coins text-warning" style="font-size: 11px;"></i>
+                                        <span class="small fw-semibold text-muted" style="font-size: 11px;"><i class="fa-solid fa-money-bill-transfer text-primary me-1"></i> Exchange Rate (${safeCurr})</span>
+                                        <i class="fa-solid fa-coins text-primary" style="font-size: 11px;"></i>
                                     </div>
                                     <div class="my-1">
-                                        <div id="wl_curr_rate_${safeId}" class="fw-bold text-warning mb-0" style="font-size: 15px;">Memuat kurs...</div>
-                                        <div class="small mt-1 text-truncate" style="color: #94a3b8; font-size: 11px;">Base: USD &rarr; Target: ${safeCurr}</div>
+                                        <div id="wl_curr_rate_${safeId}" class="fw-bold text-dark mb-0" style="font-size: 15px;">Loading...</div>
+                                        <div class="small mt-1 text-truncate text-muted" style="font-size: 11px;">Base: USD &rarr; Target: ${safeCurr}</div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 4. Skor Risiko Rantai Pasok AI -->
+                            <!-- 4. AI Risk Score -->
                             <div class="col-12 col-sm-6 col-xl-3">
-                                <div class="p-2.5 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: rgba(0,0,0,0.28); border: 1px solid rgba(224, 180, 114, 0.4);">
+                                <div class="p-2.5 rounded-2 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid var(--primary);">
                                     <div class="d-flex justify-content-between align-items-start mb-1">
-                                        <span class="small fw-bold" style="color: #cbd5e1; font-size: 11px;"><i class="fa-solid fa-shield-halved text-warning me-1"></i> Skor Risiko AI</span>
-                                        <i class="fa-solid fa-robot text-warning" style="font-size: 11px;"></i>
+                                        <span class="small fw-semibold text-muted" style="font-size: 11px;"><i class="fa-solid fa-shield-halved text-primary me-1"></i> Risk Score</span>
+                                        <i class="fa-solid fa-robot text-primary" style="font-size: 11px;"></i>
                                     </div>
                                     <div class="my-1 d-flex align-items-center justify-content-between">
                                         <div>
-                                            <span id="wl_risk_score_${safeId}" class="fw-bold text-white mb-0" style="font-size: 17px;">--</span>
-                                            <span class="small" style="color: #94a3b8; font-size: 11px;">/ 100</span>
+                                            <span id="wl_risk_score_${safeId}" class="fw-bold text-dark mb-0" style="font-size: 16px;">--</span>
+                                            <span class="small text-muted" style="font-size: 11px;">/ 100</span>
                                         </div>
                                         <div>
-                                            <span id="wl_risk_badge_${safeId}" class="badge bg-secondary px-2 py-1 fw-bold text-white" style="font-size: 10px;">ANALYZING</span>
+                                            <span id="wl_risk_badge_${safeId}" class="badge badge-soft-secondary px-2 py-1 fw-semibold" style="font-size: 10px;">ANALYZING</span>
                                         </div>
                                     </div>
                                 </div>

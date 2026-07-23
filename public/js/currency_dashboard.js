@@ -482,15 +482,15 @@ document.addEventListener('DOMContentLoaded', () => {
             data: {
                 labels: labels,
                 datasets: [{
-                    label: `Nilai Tukar ${countryName} (${code}) per 1 USD`,
+                    label: `Exchange Rate ${countryName} (${code}) per 1 USD`,
                     data: dataPoints,
-                    borderColor: '#ffc107',
-                    backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#ffc107',
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                    borderWidth: 2.5,
+                    pointBackgroundColor: '#2563eb',
                     pointBorderColor: '#ffffff',
-                    pointRadius: currentPeriodDays <= 30 ? 4 : 1,
-                    pointHoverRadius: 7,
+                    pointRadius: currentPeriodDays <= 30 ? 3.5 : 1,
+                    pointHoverRadius: 6,
                     fill: true,
                     tension: 0.35
                 }]
@@ -501,15 +501,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 plugins: {
                     legend: {
                         display: true,
-                        labels: { color: '#f8fafc', font: { family: 'Inter', weight: 'bold', size: 14 } }
+                        labels: { color: '#0f172a', font: { family: 'Inter', weight: '600', size: 13 } }
                     },
                     tooltip: {
-                        backgroundColor: 'rgba(15, 23, 42, 0.96)',
-                        titleColor: '#ffc107',
+                        backgroundColor: '#0f172a',
+                        titleColor: '#38bdf8',
                         bodyColor: '#ffffff',
-                        borderColor: '#ffc107',
+                        borderColor: '#334155',
                         borderWidth: 1,
-                        padding: 12,
+                        padding: 10,
                         callbacks: {
                             label: function(context) {
                                 return ` 1 USD = ${symbol} ${context.parsed.y.toLocaleString('id-ID', { maximumFractionDigits: 4 })}`;
@@ -519,14 +519,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 scales: {
                     x: {
-                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
-                        ticks: { color: '#cbd5e1', maxTicksLimit: 12, font: { weight: 'bold' } }
+                        grid: { color: '#f1f5f9' },
+                        ticks: { color: '#64748b', maxTicksLimit: 12, font: { weight: '500', size: 11 } }
                     },
                     y: {
-                        grid: { color: 'rgba(255, 255, 255, 0.08)' },
+                        grid: { color: '#f1f5f9' },
                         ticks: { 
-                            color: '#cbd5e1',
-                            font: { weight: 'bold' },
+                            color: '#64748b',
+                            font: { weight: '500', size: 11 },
                             callback: function(val) {
                                 return symbol + ' ' + val.toLocaleString('id-ID');
                             }

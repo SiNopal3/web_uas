@@ -321,31 +321,31 @@
             const roleName = user.role?.name || (user.roles && user.roles.length > 0 ? user.roles[0].name : 'User');
             const isOnline = user.is_online !== undefined ? user.is_online : (user.status === 'active' || user.status === 'online');
             const statusBadge = isOnline 
-                ? '<span class="badge bg-success bg-opacity-25 text-success border border-success px-3 py-1"><i class="fa-solid fa-circle me-1" style="font-size: 8px;"></i> ONLINE</span>' 
-                : '<span class="badge bg-danger bg-opacity-25 text-danger border border-danger px-3 py-1"><i class="fa-solid fa-circle me-1" style="font-size: 8px;"></i> OFFLINE</span>';
+                ? '<span class="badge badge-soft-success px-2.5 py-1"><i class="fa-solid fa-circle me-1" style="font-size: 7px;"></i> ONLINE</span>' 
+                : '<span class="badge badge-soft-secondary px-2.5 py-1"><i class="fa-solid fa-circle me-1" style="font-size: 7px;"></i> OFFLINE</span>';
             const lastLogin = user.last_login_at ? new Date(user.last_login_at).toLocaleString('id-ID') : 'Never';
 
             const escapedUser = JSON.stringify(user).replace(/'/g, "&#39;");
 
             return `
                 <tr>
-                    <td class="px-3 fw-bold text-muted">#${rowNum}</td>
+                    <td class="px-3 fw-semibold text-muted">#${rowNum}</td>
                     <td>
                         <div class="d-flex align-items-center">
-                            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center text-dark fw-bold me-3" style="width: 38px; height: 38px;">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold me-2.5 flex-shrink-0" style="width: 34px; height: 34px; font-size: 13px;">
                                 ${firstLetter}
                             </div>
                             <div>
-                                <div class="fw-bold text-white">${user.name}</div>
+                                <div class="fw-semibold text-dark">${user.name}</div>
                                 <div class="small text-muted">${user.email} ${user.username ? '(@'+user.username+')' : ''}</div>
                             </div>
                         </div>
                     </td>
-                    <td><span class="badge bg-info bg-opacity-25 text-info border border-info px-3 py-1">${roleName}</span></td>
+                    <td><span class="badge badge-soft-info">${roleName}</span></td>
                     <td>${statusBadge}</td>
                     <td class="small text-muted">${lastLogin}</td>
                     <td class="text-end px-3">
-                        <button class="btn btn-sm btn-outline-info me-1" onclick='editUserModal(${escapedUser})' title="Edit User"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary me-1" onclick='editUserModal(${escapedUser})' title="Edit User"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteUserAction(${user.id})" title="Delete User"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
@@ -712,12 +712,12 @@
             const escapedPort = JSON.stringify(port).replace(/'/g, "&#39;");
             return `
                 <tr>
-                    <td class="px-3 fw-bold text-muted">#${port.id}</td>
-                    <td><div class="fw-bold text-white"><i class="fa-solid fa-ship text-info me-2"></i>${port.name}</div></td>
-                    <td><span class="badge bg-secondary bg-opacity-50 text-light border border-secondary px-3 py-1">${port.country}</span></td>
-                    <td class="font-monospace small text-info">${port.location}</td>
+                    <td class="px-3 fw-semibold text-muted">#${port.id}</td>
+                    <td><div class="fw-semibold text-dark"><i class="fa-solid fa-ship text-primary me-2"></i>${port.name}</div></td>
+                    <td><span class="badge badge-soft-secondary">${port.country}</span></td>
+                    <td class="font-monospace small text-primary">${port.location}</td>
                     <td class="text-end px-3">
-                        <button class="btn btn-sm btn-outline-info me-1" onclick='editPortModal(${escapedPort})' title="Edit Pelabuhan"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary me-1" onclick='editPortModal(${escapedPort})' title="Edit Pelabuhan"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deletePortAction(${port.id})" title="Hapus Pelabuhan"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
@@ -738,7 +738,7 @@
         document.getElementById('modalPortName').value = '';
         document.getElementById('modalPortLocation').value = '';
         document.getElementById('modalPortCountry').value = '';
-        document.getElementById('portModalTitle').innerHTML = '<i class="fa-solid fa-anchor text-info me-2"></i> Tambah Dataset Pelabuhan';
+        document.getElementById('portModalTitle').innerHTML = '<i class="fa-solid fa-anchor text-primary me-2"></i> Tambah Dataset Pelabuhan';
 
         const modalElem = document.getElementById('portModal');
         const modal = new bootstrap.Modal(modalElem);
@@ -750,7 +750,7 @@
         document.getElementById('modalPortName').value = port.name;
         document.getElementById('modalPortLocation').value = port.location;
         document.getElementById('modalPortCountry').value = port.country;
-        document.getElementById('portModalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-info me-2"></i> Edit Dataset Pelabuhan';
+        document.getElementById('portModalTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-primary me-2"></i> Edit Dataset Pelabuhan';
 
         const modalElem = document.getElementById('portModal');
         const modal = new bootstrap.Modal(modalElem);
@@ -862,20 +862,20 @@
             const timeStr = new Date(article.created_at || Date.now()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
             const preview = article.content.length > 120 ? article.content.substring(0, 120) + '...' : article.content;
             const author = article.author || 'Admin RiskIntel';
-            const urlLink = article.url ? `<a href="${article.url}" target="_blank" class="text-info ms-2 small text-decoration-none"><i class="fa-solid fa-link"></i> Link Sumber</a>` : '';
+            const urlLink = article.url ? `<a href="${article.url}" target="_blank" class="text-primary ms-2 small text-decoration-none"><i class="fa-solid fa-link"></i> Link Sumber</a>` : '';
             const escapedArticle = JSON.stringify(article).replace(/'/g, "&#39;");
 
             return `
                 <tr>
-                    <td class="px-3 fw-bold text-muted">#${article.id}</td>
+                    <td class="px-3 fw-semibold text-muted">#${article.id}</td>
                     <td style="word-break: break-word; overflow-wrap: anywhere; white-space: normal; max-width: 450px;">
-                        <div class="fw-bold text-white mb-1" style="word-break: break-word; overflow-wrap: anywhere;">${article.title}</div>
-                        <div class="small text-muted mb-1 d-flex flex-wrap align-items-center gap-1" style="word-break: break-word; overflow-wrap: anywhere;"><i class="fa-solid fa-user-pen me-1 text-warning"></i> Penulis: <span class="text-white">${author}</span> ${urlLink}</div>
+                        <div class="fw-semibold text-dark mb-1" style="word-break: break-word; overflow-wrap: anywhere;">${article.title}</div>
+                        <div class="small text-muted mb-1 d-flex flex-wrap align-items-center gap-1" style="word-break: break-word; overflow-wrap: anywhere;"><i class="fa-solid fa-user-pen me-1 text-primary"></i> Penulis: <span class="text-dark fw-medium">${author}</span> ${urlLink}</div>
                         <div class="small text-muted" style="word-break: break-word; overflow-wrap: anywhere; white-space: normal;">${preview}</div>
                     </td>
                     <td class="small text-muted text-nowrap">${timeStr}</td>
                     <td class="text-end px-3 text-nowrap">
-                        <button class="btn btn-sm btn-outline-info me-1" onclick='editArticleModal(${escapedArticle})' title="Edit Artikel"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-sm btn-outline-secondary me-1" onclick='editArticleModal(${escapedArticle})' title="Edit Artikel"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deleteArticleAction(${article.id})" title="Hapus Artikel"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>

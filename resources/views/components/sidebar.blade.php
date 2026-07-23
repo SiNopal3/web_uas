@@ -1,66 +1,75 @@
-<aside id="sidebarMain" class="sidebar shadow-lg">
-    <div class="p-4 d-flex justify-content-between align-items-center border-bottom" style="border-color: rgba(255,255,255,0.08) !important;">
+<aside id="sidebarMain" class="sidebar shadow-sm">
+    <!-- Sidebar Header / Brand -->
+    <div class="px-4 py-3 d-flex justify-content-between align-items-center border-bottom" style="border-color: rgba(255,255,255,0.08) !important;">
         <div class="d-flex align-items-center">
-            <div class="d-flex align-items-center justify-content-center me-2" style="width:36px;height:36px;background:rgba(217,119,6,0.15);border-radius:10px;">
-                <i class="fa-solid fa-shield-halved" style="color: #d97706; font-size:18px;"></i>
+            <div class="d-flex align-items-center justify-content-center me-2.5 rounded-2" style="width:34px;height:34px;background:#2563eb;">
+                <i class="fa-solid fa-shield-halved text-white" style="font-size:16px;"></i>
             </div>
             <div>
-                <h5 class="fw-bold mb-0" style="color:#ffffff !important; letter-spacing: 0.5px; font-size:16px;">RiskIntel</h5>
-                <span class="badge" style="font-size: 9px; background:rgba(59,130,246,0.2); color:#93c5fd; border:1px solid rgba(59,130,246,0.3);">PROD v3.0</span>
+                <h5 class="fw-bold mb-0 text-white" style="letter-spacing: -0.3px; font-size:15px;">RiskIntel <span style="font-weight:400; opacity:0.7;">Hub</span></h5>
+                <span class="badge px-1.5 py-0.5" style="font-size: 9px; background:rgba(37,99,235,0.25); color:#93c5fd; border:1px solid rgba(59,130,246,0.3);">ENTERPRISE v3.0</span>
             </div>
         </div>
-        <button id="sidebarCloseBtn" class="btn btn-sm btn-link d-lg-none p-0" style="color:#94a3b8;">
+        <button id="sidebarCloseBtn" class="btn btn-sm btn-link d-lg-none p-0 text-muted">
             <i class="fa-solid fa-xmark fa-lg"></i>
         </button>
     </div>
 
-    <div class="py-3 flex-grow-1" style="overflow-y: auto; overflow-x: hidden;">
+    <!-- Sidebar Navigation Links -->
+    <div class="py-2 flex-grow-1" style="overflow-y: auto; overflow-x: hidden;">
+        <div class="sidebar-section-title">Monitoring Core</div>
         <a href="{{ url('/') }}" class="sidebar-link {{ request()->is('/') ? 'active' : '' }}">
-            Global Country Dashboard
+            <i class="fa-solid fa-globe"></i> Global Dashboard
         </a>
         <a href="{{ url('/ports') }}" class="sidebar-link {{ request()->is('ports*') ? 'active' : '' }}">
-            Maritime Weather & Port Hub
+            <i class="fa-solid fa-ship"></i> Maritime & Ports
         </a>
         <a href="{{ url('/maritime-route') }}" class="sidebar-link {{ request()->is('maritime-route') ? 'active' : '' }}">
-            Route & Delay Simulation
+            <i class="fa-solid fa-route"></i> Route Simulator
         </a>
+
+        <div class="sidebar-section-title">Analytics & Intelligence</div>
         <a href="{{ url('/analytics') }}" class="sidebar-link {{ request()->is('analytics') && !request()->has('view') ? 'active' : '' }}">
-            Currency Impact Dashboard
+            <i class="fa-solid fa-chart-line"></i> Currency Impact
         </a>
         <a href="{{ url('/news-sentiment') }}" class="sidebar-link {{ request()->is('news-sentiment') ? 'active' : '' }}">
-            News Intelligence
+            <i class="fa-solid fa-newspaper"></i> News Intelligence
         </a>
         <a href="{{ url('/data-visualization') }}" class="sidebar-link {{ request()->is('data-visualization') ? 'active' : '' }}">
-            Data Visualization Dashboard
+            <i class="fa-solid fa-chart-column"></i> Data Visualization
         </a>
         <a href="{{ url('/decision-support') }}" class="sidebar-link {{ request()->is('decision-support') ? 'active' : '' }}">
-            Country Comparison Engine
+            <i class="fa-solid fa-scale-balanced"></i> Country Comparison
         </a>
         <a href="{{ url('/watchlist') }}" class="sidebar-link {{ request()->is('watchlist') ? 'active' : '' }}">
-            Favorite Monitoring List
+            <i class="fa-solid fa-bookmark"></i> Favorite Watchlist
         </a>
+        <a href="{{ url('/reports') }}" class="sidebar-link {{ request()->is('reports*') ? 'active' : '' }}">
+            <i class="fa-solid fa-file-invoice"></i> Reports Suite
+        </a>
+
         @if(auth()->check() && auth()->user()->isAdmin())
-        <a href="{{ url('/admin') }}" class="sidebar-link {{ request()->is('admin*') ? 'active' : '' }}" style="color: #fbbf24;">
-            <i class="fa-solid fa-user-shield me-2"></i> Admin Dashboard
+        <div class="sidebar-section-title">Administration</div>
+        <a href="{{ url('/admin') }}" class="sidebar-link {{ request()->is('admin*') ? 'active' : '' }}" style="color: #60a5fa;">
+            <i class="fa-solid fa-user-shield me-2" style="color:#60a5fa;"></i> Admin Console
         </a>
         @endif
-
-
     </div>
 
+    <!-- Sidebar User Footer -->
     <div class="p-3 border-top mt-auto" style="border-color: rgba(255,255,255,0.08) !important;">
         @auth
-            <div class="d-flex align-items-center p-2 rounded" style="background: rgba(255,255,255,0.06);">
-                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold me-2 flex-shrink-0" style="width:32px;height:32px;background:#d97706;color:#ffffff;font-size:13px;">
+            <div class="d-flex align-items-center p-2 rounded-2" style="background: rgba(255,255,255,0.04);">
+                <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold me-2 flex-shrink-0" style="width:32px;height:32px;background:#2563eb;color:#ffffff;font-size:12px;">
                     {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
                 </div>
-                <div class="overflow-hidden">
-                    <div class="fw-semibold text-truncate" style="color:#f1f5f9;font-size:13px;">{{ Auth::user()->name }}</div>
+                <div class="overflow-hidden me-auto">
+                    <div class="fw-semibold text-truncate text-white" style="font-size:12.5px;">{{ Auth::user()->name }}</div>
                     <div class="text-truncate" style="font-size:11px;color:#94a3b8;">{{ Auth::user()->email }}</div>
                 </div>
             </div>
         @else
-            <a href="{{ route('login') }}" class="btn w-100 small fw-semibold" style="background:rgba(59,130,246,0.15);color:#93c5fd;border:1px solid rgba(59,130,246,0.3);border-radius:8px;">
+            <a href="{{ route('login') }}" class="btn btn-primary w-100 btn-sm">
                 <i class="fa-solid fa-right-to-bracket me-1"></i> Sign In
             </a>
         @endauth

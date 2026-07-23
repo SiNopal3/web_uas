@@ -123,29 +123,29 @@ async function loadPortsForCountry(countryName, abortSignal = null, countryLat =
                     const latStr = typeof port.lat === 'number' ? port.lat.toFixed(4) : port.lat;
                     const lngStr = typeof port.lng === 'number' ? port.lng.toFixed(4) : port.lng;
                     return `
-                        <div class="glass-card p-3 rounded w-100 shadow-sm flex-shrink-0" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15); border-left: 4px solid var(--accent-gold);">
+                        <div class="glass-card p-3 rounded-2 w-100 shadow-sm flex-shrink-0" style="border-left: 3.5px solid var(--primary);">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="badge bg-success small px-2 py-1 fw-bold" style="font-size: 11px;"><i class="fa-solid fa-circle-check me-1"></i> Active Terminal</span>
-                                <span class="small fw-semibold text-warning" style="font-size: 11px;">NGA Satellite ID</span>
+                                <span class="badge badge-soft-success"><i class="fa-solid fa-circle-check me-1"></i> Active Terminal</span>
+                                <span class="small fw-semibold text-muted" style="font-size: 11px;">NGA Satellite ID</span>
                             </div>
-                            <h5 class="fw-bold text-white mb-2" style="font-size: 15px; line-height: 1.3;">
-                                <i class="fa-solid fa-anchor me-2 text-warning"></i> ${safeName}
+                            <h5 class="fw-semibold text-dark mb-2" style="font-size: 14px; line-height: 1.3;">
+                                <i class="fa-solid fa-anchor me-1.5 text-primary"></i> ${safeName}
                             </h5>
-                            <div class="small mb-3" style="color: #cbd5e1; font-size: 12.5px; line-height: 1.6;">
-                                <div class="mb-1"><strong><i class="fa-solid fa-location-dot text-info me-1"></i> Koordinat:</strong> Lat ${latStr}, Lng ${lngStr}</div>
-                                <div class="mb-1"><strong><i class="fa-solid fa-ship text-success me-1"></i> Kapasitas Logistik:</strong> Deep-Sea Cargo Hub</div>
-                                <div><strong><i class="fa-solid fa-shield-halved text-warning me-1"></i> Status:</strong> Operational / Clear</div>
+                            <div class="small mb-3 text-muted" style="font-size: 12px; line-height: 1.6;">
+                                <div class="mb-1"><strong><i class="fa-solid fa-location-dot text-primary me-1"></i> Coordinates:</strong> Lat ${latStr}, Lng ${lngStr}</div>
+                                <div class="mb-1"><strong><i class="fa-solid fa-ship text-success me-1"></i> Cargo Capacity:</strong> Deep-Sea Cargo Hub</div>
+                                <div><strong><i class="fa-solid fa-shield-halved text-info me-1"></i> Status:</strong> Operational / Clear</div>
                             </div>
-                            <div class="pt-2 border-top" style="border-color: rgba(255,255,255,0.1) !important;">
-                                <button class="btn btn-sm btn-outline-warning w-100 fw-bold py-1.5" onclick="focusOnPort(${port.lat}, ${port.lng}, '${safeName.replace(/'/g, "\\'")}')" style="border-radius: 6px;">
-                                    Fokus Peta & Koordinat <i class="fa-solid fa-location-crosshairs ms-1"></i>
+                            <div class="pt-2 border-top">
+                                <button class="btn btn-sm btn-outline-secondary w-100 fw-semibold py-1" onclick="focusOnPort(${port.lat}, ${port.lng}, '${safeName.replace(/'/g, "\\'")}')">
+                                    Focus Map <i class="fa-solid fa-location-crosshairs ms-1 text-primary"></i>
                                 </button>
                             </div>
                         </div>
                     `;
                 }).join('');
             } else {
-                portContainer.innerHTML = `<div class="w-100 small p-5 text-center" style="color: #cbd5e1;">Tidak terdeteksi data koordinat terminal maritim untuk negara ini.</div>`;
+                portContainer.innerHTML = `<div class="w-100 small p-4 text-center text-muted">No maritime port terminals detected for this country.</div>`;
             }
         }
     } catch (e) {
