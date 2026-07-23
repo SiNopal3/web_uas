@@ -249,6 +249,13 @@ class UserManagementService
             $user = User::findOrFail($userId);
             $email = $user->email;
 
+            // Detach & cleanup user associations safely
+            \App\Models\Watchlist::where('user_id', $userId)->delete();
+            \App\Models\Notification::where('user_id', $userId)->delete();
+            \App\Models\Article::where('user_id', $userId)->delete();
+            \App\Models\ReportHistory::where('user_id', $userId)->delete();
+            \App\Models\ScheduledReport::where('user_id', $userId)->delete();
+
             $user->roles()->detach();
             $deleted = $user->delete();
 

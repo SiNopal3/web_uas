@@ -346,7 +346,7 @@
                     <td class="small text-muted">${lastLogin}</td>
                     <td class="text-end px-3">
                         <button class="btn btn-sm btn-outline-info me-1" onclick='editUserModal(${escapedUser})' title="Edit User"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUserAction(${user.id}, '${user.name.replace(/'/g, "\\'")}')" title="Delete User"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteUserAction(${user.id})" title="Delete User"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
             `;
@@ -442,13 +442,14 @@
         });
     };
 
-    window.deleteUserAction = function (id, name) {
-        if (!confirm(`Are you sure you want to permanently delete user "${name}"?`)) return;
+    window.deleteUserAction = function (id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus data pengguna ini secara permanen?')) return;
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         fetch(`/admin/users/${id}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             }
@@ -457,12 +458,15 @@
         .then(res => {
             if (res.success) {
                 fetchUsersList();
-                alert('Success: ' + res.message);
+                alert('Sukses: ' + (res.message || 'Akun pengguna berhasil dihapus.'));
             } else {
-                alert('Notice: ' + (res.message || 'Failed to delete user.'));
+                alert('Pemberitahuan: ' + (res.message || 'Gagal menghapus pengguna.'));
             }
         })
-        .catch(err => console.error('Delete error:', err));
+        .catch(err => {
+            console.error('Delete error:', err);
+            alert('Terjadi kesalahan saat menghapus pengguna.');
+        });
     };
 
     /**
@@ -714,7 +718,7 @@
                     <td class="font-monospace small text-info">${port.location}</td>
                     <td class="text-end px-3">
                         <button class="btn btn-sm btn-outline-info me-1" onclick='editPortModal(${escapedPort})' title="Edit Pelabuhan"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deletePortAction(${port.id}, '${port.name.replace(/'/g, "\\'")}')" title="Hapus Pelabuhan"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deletePortAction(${port.id})" title="Hapus Pelabuhan"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
             `;
@@ -799,13 +803,14 @@
         });
     };
 
-    window.deletePortAction = function (id, name) {
-        if (!confirm(`Apakah Anda yakin ingin menghapus data pelabuhan "${name}"?`)) return;
+    window.deletePortAction = function (id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus data pelabuhan ini secara permanen?')) return;
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         fetch(`/admin/ports/${id}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             }
@@ -814,12 +819,15 @@
         .then(res => {
             if (res.success) {
                 fetchPortsList();
-                alert('Sukses: ' + res.message);
+                alert('Sukses: ' + (res.message || 'Data pelabuhan berhasil dihapus.'));
             } else {
                 alert('Pemberitahuan: ' + (res.message || 'Gagal menghapus data pelabuhan.'));
             }
         })
-        .catch(err => console.error('Delete error:', err));
+        .catch(err => {
+            console.error('Delete port error:', err);
+            alert('Terjadi kesalahan saat menghapus data pelabuhan.');
+        });
     };
 
     /**
@@ -868,7 +876,7 @@
                     <td class="small text-muted text-nowrap">${timeStr}</td>
                     <td class="text-end px-3 text-nowrap">
                         <button class="btn btn-sm btn-outline-info me-1" onclick='editArticleModal(${escapedArticle})' title="Edit Artikel"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteArticleAction(${article.id}, '${article.title.replace(/'/g, "\\'")}')" title="Hapus Artikel"><i class="fa-solid fa-trash-can"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteArticleAction(${article.id})" title="Hapus Artikel"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
             `;
@@ -954,13 +962,14 @@
         });
     };
 
-    window.deleteArticleAction = function (id, title) {
-        if (!confirm(`Apakah Anda yakin ingin menghapus artikel "${title}"?`)) return;
+    window.deleteArticleAction = function (id) {
+        if (!confirm('Apakah Anda yakin ingin menghapus artikel ini secara permanen?')) return;
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         fetch(`/admin/articles/${id}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'Accept': 'application/json',
                 'X-CSRF-TOKEN': csrfToken
             }
@@ -969,12 +978,15 @@
         .then(res => {
             if (res.success) {
                 fetchArticlesList();
-                alert('Sukses: ' + res.message);
+                alert('Sukses: ' + (res.message || 'Artikel berhasil dihapus.'));
             } else {
                 alert('Pemberitahuan: ' + (res.message || 'Gagal menghapus artikel.'));
             }
         })
-        .catch(err => console.error('Delete error:', err));
+        .catch(err => {
+            console.error('Delete article error:', err);
+            alert('Terjadi kesalahan saat menghapus artikel.');
+        });
     };
 
 })();
