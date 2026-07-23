@@ -443,30 +443,24 @@
     };
 
     window.deleteUserAction = function (id) {
-        if (!confirm('Apakah Anda yakin ingin menghapus data pengguna ini secara permanen?')) return;
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        fetch(`/admin/users/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            }
-        })
-        .then(async response => {
+        window.confirmDelete(async () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(`/admin/users/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
             const res = await response.json().catch(() => ({ success: false, message: 'Server Error (' + response.status + ')' }));
             if (response.ok && res.success) {
                 fetchUsersList();
-                alert('Sukses: ' + (res.message || 'Akun pengguna berhasil dihapus.'));
+                return { success: true, message: res.message || 'Akun pengguna berhasil dihapus.' };
             } else {
-                alert('Pemberitahuan: ' + (res.message || 'Gagal menghapus pengguna.'));
+                return { success: false, message: res.message || 'Gagal menghapus pengguna.' };
             }
-        })
-        .catch(err => {
-            console.error('Delete error:', err);
-            alert('Terjadi kesalahan saat menghapus pengguna.');
-        });
+        }, 'Apakah Anda yakin ingin menghapus data pengguna ini secara permanen?\nData yang telah dihapus tidak dapat dikembalikan.');
     };
 
     /**
@@ -804,30 +798,24 @@
     };
 
     window.deletePortAction = function (id) {
-        if (!confirm('Apakah Anda yakin ingin menghapus data pelabuhan ini secara permanen?')) return;
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        fetch(`/admin/ports/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            }
-        })
-        .then(async response => {
+        window.confirmDelete(async () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(`/admin/ports/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
             const res = await response.json().catch(() => ({ success: false, message: 'Server Error (' + response.status + ')' }));
             if (response.ok && res.success) {
                 fetchPortsList();
-                alert('Sukses: ' + (res.message || 'Data pelabuhan berhasil dihapus.'));
+                return { success: true, message: res.message || 'Data pelabuhan berhasil dihapus.' };
             } else {
-                alert('Pemberitahuan: ' + (res.message || 'Gagal menghapus data pelabuhan.'));
+                return { success: false, message: res.message || 'Gagal menghapus data pelabuhan.' };
             }
-        })
-        .catch(err => {
-            console.error('Delete port error:', err);
-            alert('Terjadi kesalahan saat menghapus data pelabuhan.');
-        });
+        }, 'Apakah Anda yakin ingin menghapus data pelabuhan ini secara permanen?\nData yang telah dihapus tidak dapat dikembalikan.');
     };
 
     /**
@@ -963,30 +951,24 @@
     };
 
     window.deleteArticleAction = function (id) {
-        if (!confirm('Apakah Anda yakin ingin menghapus artikel ini secara permanen?')) return;
-
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        fetch(`/admin/articles/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            }
-        })
-        .then(async response => {
+        window.confirmDelete(async () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const response = await fetch(`/admin/articles/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
             const res = await response.json().catch(() => ({ success: false, message: 'Server Error (' + response.status + ')' }));
             if (response.ok && res.success) {
                 fetchArticlesList();
-                alert('Sukses: ' + (res.message || 'Artikel berhasil dihapus.'));
+                return { success: true, message: res.message || 'Artikel berhasil dihapus.' };
             } else {
-                alert('Pemberitahuan: ' + (res.message || 'Gagal menghapus artikel.'));
+                return { success: false, message: res.message || 'Gagal menghapus artikel.' };
             }
-        })
-        .catch(err => {
-            console.error('Delete article error:', err);
-            alert('Terjadi kesalahan saat menghapus artikel.');
-        });
+        }, 'Apakah Anda yakin ingin menghapus artikel ini secara permanen?\nData yang telah dihapus tidak dapat dikembalikan.');
     };
 
 })();

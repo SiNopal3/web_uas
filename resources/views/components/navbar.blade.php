@@ -24,7 +24,7 @@
             </div>
 
             @auth
-            <form action="{{ route('logout') }}" method="POST" class="m-0" onsubmit="Object.keys(localStorage).forEach(k => { if (k.startsWith('selected_country_')) localStorage.removeItem(k); }); sessionStorage.clear();">
+            <form action="{{ route('logout') }}" method="POST" class="m-0" onsubmit="window.confirmLogout ? window.confirmLogout(event, this) : true;">
                 @csrf
                 <button type="submit" class="btn btn-sm btn-outline-secondary px-2.5 py-1 d-flex align-items-center gap-1.5" title="Log out">
                     <span style="font-size: 11.5px;" class="d-none d-sm-inline fw-medium text-slate-700">{{ Auth::user()->name }}</span>

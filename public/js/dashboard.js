@@ -372,22 +372,45 @@ window.navigateToFeatureFromDashboard = function(event, targetUrl) {
 };
 
 window.resetToAdminFeed = function() {
-    const featKey = typeof window.getFeatureStorageKey === 'function' ? window.getFeatureStorageKey() : 'selected_country_dashboard';
-    sessionStorage.removeItem(featKey);
-    localStorage.removeItem(featKey);
-    sessionStorage.removeItem(featKey + '_curr');
-    localStorage.removeItem(featKey + '_curr');
-    const searchInputEl = document.getElementById('countrySearchInput');
-    if (searchInputEl) {
-        searchInputEl.value = '';
-    }
-    selectCountry('Global / Semua Negara');
-    setTimeout(() => {
-        if (searchInputEl && typeof window.openCountryDropdown === 'function') {
-            searchInputEl.focus();
-            window.openCountryDropdown('');
+    if (typeof window.showConfirmDialog === 'function') {
+        window.showConfirmDialog({
+            title: 'Konfirmasi Reset',
+            text: 'Apakah Anda yakin ingin mereset pilihan negara ke mode Global?',
+            confirmButtonText: 'Ya, Reset',
+            cancelButtonText: 'Batalkan',
+            icon: 'warning',
+            onConfirm: async () => {
+                const featKey = typeof window.getFeatureStorageKey === 'function' ? window.getFeatureStorageKey() : 'selected_country_dashboard';
+                sessionStorage.removeItem(featKey);
+                localStorage.removeItem(featKey);
+                sessionStorage.removeItem(featKey + '_curr');
+                localStorage.removeItem(featKey + '_curr');
+                const searchInputEl = document.getElementById('countrySearchInput');
+                if (searchInputEl) {
+                    searchInputEl.value = '';
+                }
+                selectCountry('Global / Semua Negara');
+                setTimeout(() => {
+                    if (searchInputEl && typeof window.openCountryDropdown === 'function') {
+                        searchInputEl.focus();
+                        window.openCountryDropdown('');
+                    }
+                }, 150);
+                return { success: true, title: 'Berhasil', message: 'Pilihan negara telah direset ke mode Global.' };
+            }
+        });
+    } else {
+        const featKey = typeof window.getFeatureStorageKey === 'function' ? window.getFeatureStorageKey() : 'selected_country_dashboard';
+        sessionStorage.removeItem(featKey);
+        localStorage.removeItem(featKey);
+        sessionStorage.removeItem(featKey + '_curr');
+        localStorage.removeItem(featKey + '_curr');
+        const searchInputEl = document.getElementById('countrySearchInput');
+        if (searchInputEl) {
+            searchInputEl.value = '';
         }
-    }, 150);
+        selectCountry('Global / Semua Negara');
+    }
 };
 
 window.getFlagEmoji = function(countryCode) {
@@ -1187,21 +1210,40 @@ async function addToWatchlist() {
 }
 
 async function removeFromWatchlist(id) {
-    try {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        const res = await fetch(`/api/watchlist/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
+    if (typeof window.confirmDelete === 'function') {
+        window.confirmDelete(async () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const res = await fetch(`/api/watchlist/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
+            const result = await res.json().catch(() => ({ success: false, message: 'Server Error' }));
+            if (res.ok && result.success) {
+                await loadWatchlistsFromServer();
+                return { success: true, message: 'Data berhasil dihapus dari Daftar Pantauan.' };
+            } else {
+                return { success: false, message: result.message || 'Gagal menghapus data dari Daftar Pantauan.' };
             }
-        });
+        }, 'Apakah Anda yakin ingin menghapus negara ini dari Daftar Pantauan Favorit?\nData yang telah dihapus tidak dapat dikembalikan.');
+    } else {
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const res = await fetch(`/api/watchlist/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            });
 
-        const result = await res.json();
-        if (result.success) {
-            await loadWatchlistsFromServer();
+            const result = await res.json();
+            if (result.success) {
+                await loadWatchlistsFromServer();
+            }
+        } catch (e) {
+            console.error("Gagal menghapus Watchlist:", e);
         }
-    } catch (e) {
-        console.error("Gagal menghapus Watchlist:", e);
     }
 }
 

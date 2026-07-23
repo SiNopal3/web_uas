@@ -24,6 +24,7 @@
     <!-- Leaflet & Choices.js CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         :root {
@@ -546,6 +547,132 @@
                 }
             }
         });
+
+        // Enterprise Confirmation Dialog Reusable Helper System
+        window.showConfirmDialog = function(options = {}) {
+            const title = options.title || 'Konfirmasi Penghapusan';
+            const text = options.text || 'Apakah Anda yakin ingin menghapus data ini?\nData yang telah dihapus tidak dapat dikembalikan.';
+            const confirmButtonText = options.confirmButtonText || 'Ya, Hapus';
+            const cancelButtonText = options.cancelButtonText || 'Batalkan';
+            const icon = options.icon || 'warning';
+            const onConfirm = options.onConfirm || (async () => {});
+
+            if (typeof Swal === 'undefined') {
+                if (window.confirm(text)) {
+                    onConfirm();
+                }
+                return;
+            }
+
+            Swal.fire({
+                title: title,
+                html: text.replace(/\n/g, '<br>'),
+                icon: icon,
+                iconColor: icon === 'warning' ? '#F59E0B' : (icon === 'danger' || icon === 'error' ? '#EF4444' : '#2563EB'),
+                showCancelButton: true,
+                confirmButtonText: confirmButtonText,
+                cancelButtonText: cancelButtonText,
+                reverseButtons: true,
+                focusCancel: true,
+                customClass: {
+                    popup: 'enterprise-swal-popup',
+                    title: 'enterprise-swal-title',
+                    htmlContainer: 'enterprise-swal-text',
+                    confirmButton: 'btn-swal-confirm',
+                    cancelButton: 'btn-swal-cancel'
+                },
+                buttonsStyling: false,
+                showClass: {
+                    popup: 'swal2-show'
+                },
+                hideClass: {
+                    popup: 'swal2-hide'
+                }
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan Loading State saat request berjalan
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Mohon tunggu sebentar',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    try {
+                        const res = await onConfirm();
+                        if (res && res.success !== false) {
+                            Swal.fire({
+                                icon: 'success',
+                                iconColor: '#22C55E',
+                                title: res.title || 'Berhasil',
+                                text: res.message || 'Data berhasil dihapus.',
+                                confirmButtonText: 'OK',
+                                customClass: {
+                                    confirmButton: 'btn-swal-confirm-success'
+                                },
+                                buttonsStyling: false
+                            });
+                        } else if (res && res.success === false) {
+                            Swal.fire({
+                                icon: 'error',
+                                iconColor: '#EF4444',
+                                title: res.title || 'Gagal',
+                                text: res.message || 'Data gagal dihapus.',
+                                confirmButtonText: 'Tutup',
+                                customClass: {
+                                    confirmButton: 'btn-swal-cancel'
+                                },
+                                buttonsStyling: false
+                            });
+                        }
+                    } catch (err) {
+                        console.error('Action error:', err);
+                        Swal.fire({
+                            icon: 'error',
+                            iconColor: '#EF4444',
+                            title: 'Gagal',
+                            text: err.message || 'Terjadi kesalahan pada server.',
+                            confirmButtonText: 'Tutup',
+                            customClass: {
+                                confirmButton: 'btn-swal-cancel'
+                            },
+                            buttonsStyling: false
+                        });
+                    }
+                }
+            });
+        };
+
+        window.confirmDelete = function(onConfirmCallback, customText = null, customTitle = null) {
+            window.showConfirmDialog({
+                title: customTitle || 'Konfirmasi Penghapusan',
+                text: customText || 'Apakah Anda yakin ingin menghapus data ini?\nData yang telah dihapus tidak dapat dikembalikan.',
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batalkan',
+                icon: 'warning',
+                onConfirm: onConfirmCallback
+            });
+        };
+
+        window.confirmLogout = function(e, formEl) {
+            e.preventDefault();
+            window.showConfirmDialog({
+                title: 'Konfirmasi Keluar (Logout)',
+                text: 'Apakah Anda yakin ingin keluar dari sesi aplikasi RiskIntel Hub?',
+                confirmButtonText: 'Ya, Log Out',
+                cancelButtonText: 'Batalkan',
+                icon: 'warning',
+                onConfirm: () => {
+                    Object.keys(localStorage).forEach(k => { if (k.startsWith('selected_country_')) localStorage.removeItem(k); });
+                    sessionStorage.clear();
+                    formEl.submit();
+                }
+            });
+        };
     </script>
 </body>
 </html>
