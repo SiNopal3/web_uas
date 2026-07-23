@@ -230,35 +230,38 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const meta = countryMetadata[key];
                 if (key.toLowerCase().includes(cleanQuery)) return true;
                 if (meta.iso.toLowerCase().includes(cleanQuery)) return true;
-                if (meta.currency.toLowerCase().includes(cleanQuery)) return true;
                 if (meta.aliases && meta.aliases.some(alias => alias.toLowerCase().includes(cleanQuery))) return true;
                 return false;
             });
 
             if (filtered.length === 0) {
-                dropdownList.innerHTML = `<div class="p-3 text-muted small text-center">Negara "${escapeHtml(query)}" tidak ditemukan. Coba nama/kode ISO lain.</div>`;
+                dropdownList.innerHTML = `<div class="p-3 text-muted small text-center">No country found matching "${escapeHtml(query)}".</div>`;
             } else {
                 filtered.slice(0, 100).forEach(key => {
                     const meta = countryMetadata[key];
+                    const flag = getFlagEmoji(meta.iso);
                     const item = document.createElement('div');
-                    item.className = 'dropdown-item d-flex justify-content-between align-items-center py-2 px-3 text-white border-bottom border-secondary';
+                    item.className = 'dropdown-item py-2.5 px-3.5 border-bottom text-decoration-none d-flex align-items-center justify-content-between';
                     item.style.cursor = 'pointer';
-                    item.style.fontSize = '13px';
+                    item.style.borderColor = '#f1f5f9';
+                    item.style.transition = 'background 0.15s ease-in-out';
                     item.innerHTML = `
-                        <div>
-                            <span class="fw-bold me-1">${escapeHtml(key)}</span>
-                            <span class="badge bg-dark border border-secondary text-warning small">${escapeHtml(meta.iso)}</span>
+                        <div class="d-flex align-items-center gap-2.5">
+                            <span class="fs-5 flex-shrink-0" style="line-height: 1;">${flag}</span>
+                            <div>
+                                <div class="fw-semibold text-dark" style="font-size: 13.5px; line-height: 1.25;">${escapeHtml(key)}</div>
+                                <div class="small text-muted" style="font-size: 11px; margin-top: 1px;">${escapeHtml(meta.iso)} &bull; ${escapeHtml(meta.region)}</div>
+                            </div>
                         </div>
-                        <span class="small text-secondary">${escapeHtml(meta.currency)} (${escapeHtml(meta.region)})</span>
                     `;
                     item.addEventListener('click', (e) => {
                         e.stopPropagation();
-                        searchInput.value = `${key} (${meta.iso} - ${meta.currency})`;
+                        searchInput.value = key;
                         dropdownList.style.display = 'none';
                         selectCountry(key);
                     });
-                    item.addEventListener('mouseenter', () => item.style.background = 'rgba(200, 156, 98, 0.2)');
-                    item.addEventListener('mouseleave', () => item.style.background = 'transparent');
+                    item.addEventListener('mouseenter', () => item.style.background = '#f1f5f9');
+                    item.addEventListener('mouseleave', () => item.style.background = '#ffffff');
                     dropdownList.appendChild(item);
                 });
             }
@@ -290,7 +293,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // 2. Inisialisasi Peta Maritim (Dalam Try-Catch agar tidak memblokir JS jika CDN Leaflet bermasalah)
+    // 2. Inisialisasi Peta Maritim
     try {
         if (typeof initMaritimeMap === 'function') {
             initMaritimeMap();
@@ -336,17 +339,14 @@ window.getFeatureStorageKey = function() {
     return 'selected_country_dashboard';
 };
 
-    // 7. Always start unselected on every page load — user must pick a country manually
+    // 7. Always start unselected on every page load
     const featKey = window.getFeatureStorageKey();
-    // Clear any stored country so refresh always starts blank
     sessionStorage.removeItem(featKey);
     localStorage.removeItem(featKey);
     sessionStorage.removeItem(featKey + '_curr');
     localStorage.removeItem(featKey + '_curr');
-    // Start in unselected state (shows '-')
     selectCountry('Global / Semua Negara');
 
-    // Jika saat ini di halaman Dashboard utama, pasang sinkronisasi negara ke link sidebar
     if (window.location.pathname === '/' || window.location.pathname === '/dashboard') {
         const sidebarLinks = document.querySelectorAll('#sidebarMain a.sidebar-link');
         sidebarLinks.forEach(link => {
@@ -363,7 +363,6 @@ window.getFeatureStorageKey = function() {
 
 window.navigateToFeatureFromDashboard = function(event, targetUrl) {
     if (event) event.preventDefault();
-    // Always navigate without carrying country — target page starts blank
     window.location.href = targetUrl;
     return false;
 };
@@ -385,6 +384,15 @@ window.resetToAdminFeed = function() {
             window.openCountryDropdown('');
         }
     }, 150);
+};
+
+window.getFlagEmoji = function(countryCode) {
+    if (!countryCode || countryCode === '-' || countryCode.length !== 2) return '🌐';
+    const codePoints = countryCode
+        .toUpperCase()
+        .split('')
+        .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
 };
 
 /**
@@ -412,7 +420,6 @@ async function selectCountry(countryInput) {
     }
     if (!isUnselectedInput && !countryMetadata[countryName]) return;
 
-    // Simpan pilihan secara independen per fitur ke sessionStorage & localStorage
     const featKey = typeof window.getFeatureStorageKey === 'function' ? window.getFeatureStorageKey() : 'selected_country_dashboard';
     const isUnselected = isUnselectedInput || (countryName === 'Global / Semua Negara' || countryName === 'Global / Semua Negara (Feed Artikel Admin)' || countryName === 'Global' || countryName === 'Belum Dipilih' || countryName === '-' || !countryName);
 
@@ -421,7 +428,6 @@ async function selectCountry(countryInput) {
         localStorage.removeItem(featKey);
         countryName = 'Global / Semua Negara';
     } else {
-        // Do NOT persist country to storage — every refresh starts blank
         sessionStorage.removeItem(featKey);
         localStorage.removeItem(featKey);
     }
@@ -431,12 +437,10 @@ async function selectCountry(countryInput) {
         if (isUnselected) {
             searchInputEl.value = '';
         } else {
-            const meta = countryMetadata[countryName];
-            searchInputEl.value = `${countryName} (${meta.iso} - ${meta.currency})`;
+            searchInputEl.value = countryName;
         }
     }
 
-    // Batalkan request yang sedang berjalan agar tidak terjadi race condition
     if (currentAbortController) {
         currentAbortController.abort();
     }
@@ -445,21 +449,23 @@ async function selectCountry(countryInput) {
 
     activeCountryData = isUnselected ? { name: 'Global / Semua Negara', iso: '-', currency: 'USD', lat: 0.0000, lng: 0.0000, region: 'Global' } : { name: countryName, ...countryMetadata[countryName] };
 
-    // Update UI Header Negara
+    // Update UI Header Negara (Sleek Azure Style Empty State)
     const nameEl = document.getElementById('selectedCountryName');
     const regionEl = document.getElementById('selectedCountryRegion');
     const currEl = document.getElementById('selectedCountryCurrency');
     if (isUnselected) {
-        if (nameEl) nameEl.textContent = '-';
-        if (regionEl) regionEl.textContent = '-';
-        if (currEl) currEl.textContent = '-';
+        if (nameEl) nameEl.innerHTML = '<span class="text-muted fw-normal" style="font-size:14px;">Select a country to begin monitoring</span>';
+        if (regionEl) regionEl.textContent = 'Global';
+        if (currEl) currEl.textContent = 'All Currencies';
     } else {
-        if (nameEl) nameEl.textContent = escapeHtml(activeCountryData.name);
+        if (nameEl) {
+            const flag = window.getFlagEmoji(activeCountryData.iso);
+            nameEl.innerHTML = `<span class="me-1.5 fs-5">${flag}</span> <span class="fw-bold text-dark">${escapeHtml(activeCountryData.name)}</span>`;
+        }
         if (regionEl) regionEl.textContent = escapeHtml(activeCountryData.region);
         if (currEl) currEl.textContent = escapeHtml(activeCountryData.currency);
     }
 
-    // Sinkronisasi dengan filterCountry (Data Visualization Dashboard / analytics/index.blade.php)
     const filterCountryEl = document.getElementById('filterCountry');
     if (filterCountryEl) {
         filterCountryEl.value = isUnselected ? '' : activeCountryData.name;
@@ -470,7 +476,6 @@ async function selectCountry(countryInput) {
         }
     }
 
-    // Sinkronisasi dengan Currency Impact Dashboard jika aktif
     const currNameEl = document.getElementById('currSelectedCountryName');
     if (currNameEl && typeof selectCurrency === 'function' && activeCountryData.currency) {
         if (typeof currentSelectedCountry === 'undefined' || currentSelectedCountry !== activeCountryData.name) {
@@ -482,49 +487,46 @@ async function selectCountry(countryInput) {
         }
     }
 
-    // Sinkronisasi dengan Decision Support Center jika aktif
     if (typeof window.triggerAjaxSimulation === 'function') {
         window.triggerAjaxSimulation();
     }
 
     if (isUnselected) {
-        // Reset kartu Cuaca Maritim ke '-'
+        // Reset kartu Cuaca Maritim
         const tempEl = document.getElementById('valWeatherTemp');
         const windEl = document.getElementById('valWeatherWind');
         const windDirEl = document.getElementById('valWeatherWindDir');
         const rainEl = document.getElementById('valWeatherRain');
         const humidityEl = document.getElementById('valWeatherHumidity');
         const cloudEl = document.getElementById('valWeatherCloud');
-        const pressureEl = document.getElementById('valWeatherPressure');
-        if (tempEl) tempEl.textContent = '-';
-        if (windEl) windEl.textContent = '-';
-        if (windDirEl) windDirEl.textContent = '-';
-        if (rainEl) rainEl.textContent = '-';
-        if (humidityEl) humidityEl.textContent = '-';
-        if (cloudEl) cloudEl.textContent = '-';
-        if (pressureEl) pressureEl.textContent = '-';
+        if (tempEl) tempEl.innerHTML = '<span class="text-muted fs-6 fw-normal">Select Country</span>';
+        if (windEl) windEl.textContent = 'Select Country';
+        if (windDirEl) windDirEl.textContent = 'Select Country';
+        if (rainEl) rainEl.textContent = 'Select Country';
+        if (humidityEl) humidityEl.textContent = 'Select Country';
+        if (cloudEl) cloudEl.textContent = 'Select Country';
 
-        // Reset kartu Metrik Ekonomi ke '-'
+        // Reset kartu Metrik Ekonomi
         const gdpEl = document.getElementById('valEconGdp');
         const infEl = document.getElementById('valEconInf');
         const popEl = document.getElementById('valEconPop');
-        if (gdpEl) gdpEl.textContent = '-';
-        if (infEl) infEl.textContent = '-';
-        if (popEl) popEl.textContent = '-';
+        if (gdpEl) gdpEl.innerHTML = '<span class="text-muted fs-6 fw-normal">Select Country</span>';
+        if (infEl) infEl.textContent = 'Select Country';
+        if (popEl) popEl.textContent = 'Select Country';
 
-        // Reset kartu Kurs Valuta ke '-'
+        // Reset kartu Kurs Valuta
         const rateEl = document.getElementById('valCurrencyRate');
         const baseEl = document.getElementById('valCurrencyBase');
-        if (rateEl) rateEl.textContent = '-';
-        if (baseEl) baseEl.textContent = '-';
+        if (rateEl) rateEl.innerHTML = '<span class="text-muted fs-6 fw-normal">Select Country</span>';
+        if (baseEl) baseEl.textContent = 'Base: USD';
 
-        // Reset kartu Skor Risiko ke '-'
+        // Reset kartu Skor Risiko
         const riskScoreEl = document.getElementById('valTotalRiskScore');
         const riskStatusEl = document.getElementById('valRiskStatusBadge');
-        if (riskScoreEl) riskScoreEl.textContent = '-';
+        if (riskScoreEl) riskScoreEl.innerHTML = '<span class="text-muted fs-6 fw-normal">--</span>';
         if (riskStatusEl) {
-            riskStatusEl.textContent = '-';
-            riskStatusEl.className = 'badge bg-secondary px-3 py-2 fw-bold text-white';
+            riskStatusEl.textContent = 'SELECT COUNTRY';
+            riskStatusEl.className = 'badge badge-soft-secondary px-3 py-1.5 fw-semibold';
         }
 
         unsetCardLoading('weatherCard');

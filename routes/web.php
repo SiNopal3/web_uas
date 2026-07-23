@@ -85,14 +85,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/api/notifications/clear', [NotificationController::class, 'clear'])->name('notifications.clear');
     Route::delete('/api/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 
-    // Enterprise Reporting & Export Suite modular routes
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::get('/reports/executive', [ReportController::class, 'executiveReports'])->name('reports.executive');
-    Route::get('/reports/analytics', [ReportController::class, 'analyticsReports'])->name('reports.analytics');
-    Route::get('/reports/system', [ReportController::class, 'systemReports'])->name('reports.system');
-    Route::get('/api/reports', [ReportController::class, 'getApiReports'])->name('api.reports');
-    Route::post('/api/reports/scheduled', [ReportController::class, 'storeScheduledReport'])->name('api.reports.scheduled.store');
-
     // Export Center routes
     Route::post('/export/pdf', [ExportController::class, 'exportPdf'])->name('export.pdf');
     Route::post('/export/excel', [ExportController::class, 'exportExcel'])->name('export.excel');

@@ -44,9 +44,6 @@
         <a href="{{ url('/watchlist') }}" class="sidebar-link {{ request()->is('watchlist') ? 'active' : '' }}">
             <i class="fa-solid fa-bookmark"></i> Favorite Watchlist
         </a>
-        <a href="{{ url('/reports') }}" class="sidebar-link {{ request()->is('reports*') ? 'active' : '' }}">
-            <i class="fa-solid fa-file-invoice"></i> Reports Suite
-        </a>
 
         @if(auth()->check() && auth()->user()->isAdmin())
         <div class="sidebar-section-title">Administration</div>
