@@ -237,8 +237,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const allCountryNames = Object.keys(GLOBAL_195_COUNTRIES).sort();
 
-        // Setup Dropdown for Country A
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        // Setup Dropdown for Country A and Country B using Enterprise Selector Component
         const setupDropdown = (inputEl, dropdownEl, hiddenEl, otherHiddenEl) => {
+            if (!inputEl || !dropdownEl) return;
+            dropdownEl.classList.add('country-dropdown-menu');
+
             const renderList = (query = '') => {
                 dropdownEl.innerHTML = '';
                 const qClean = query.trim().toLowerCase();
@@ -246,33 +259,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 const filtered = allCountryNames.filter(name => {
                     if (!qClean) return true;
                     const meta = GLOBAL_195_COUNTRIES[name];
-                    return name.toLowerCase().includes(qClean) || meta.iso.toLowerCase().includes(qClean) || meta.currency.toLowerCase().includes(qClean);
+                    return name.toLowerCase().includes(qClean) || (meta.iso && meta.iso.toLowerCase().includes(qClean)) || (meta.currency && meta.currency.toLowerCase().includes(qClean));
                 });
 
                 if (filtered.length === 0) {
-                    dropdownEl.innerHTML = `<div class="p-2 text-muted text-center" style="font-size: 11.5px;">Negara tidak ditemukan</div>`;
+                    dropdownEl.innerHTML = `<div class="p-3 text-muted small text-center">No country found matching "${escapeHtml(query)}"</div>`;
                 } else {
-                    filtered.slice(0, 80).forEach(name => {
+                    const currentSelected = hiddenEl.value;
+                    filtered.slice(0, 100).forEach(name => {
                         const meta = GLOBAL_195_COUNTRIES[name];
+                        const flag = typeof window.getFlagEmoji === 'function' ? window.getFlagEmoji(meta.iso) : getFlagEmoji(meta.iso);
+                        const isSelected = currentSelected === name;
                         const item = document.createElement('div');
-                        item.className = 'dropdown-item d-flex justify-content-between align-items-center py-1 px-2 text-white border-bottom border-secondary';
-                        item.style.cursor = 'pointer';
-                        item.style.fontSize = '12px';
+                        item.className = `country-dropdown-item ${isSelected ? 'selected' : ''}`;
+                        item.tabIndex = 0;
                         item.innerHTML = `
-                            <div>
-                                <span class="fw-bold me-1">${name}</span>
-                                <span class="badge bg-dark border border-secondary text-info" style="font-size: 10px;">${meta.iso}</span>
+                            <div class="d-flex align-items-center gap-2.5">
+                                <span class="fs-5 flex-shrink-0" style="line-height: 1;">${flag}</span>
+                                <div>
+                                    <div class="country-name">${escapeHtml(name)}</div>
+                                    <div class="country-meta">${escapeHtml(meta.iso)} &bull; ${escapeHtml(meta.region)}</div>
+                                </div>
                             </div>
-                            <span class="text-secondary" style="font-size: 11px;">${meta.region}</span>
                         `;
-                        item.addEventListener('click', () => {
+                        item.addEventListener('click', (e) => {
+                            e.stopPropagation();
                             inputEl.value = `${name} (${meta.iso})`;
                             hiddenEl.value = name;
                             dropdownEl.style.display = 'none';
                             renderComparisonEngine(dssData || data, selectA.value, selectB.value);
                         });
-                        item.addEventListener('mouseenter', () => item.style.background = 'rgba(56, 189, 248, 0.2)');
-                        item.addEventListener('mouseleave', () => item.style.background = 'transparent');
+                        item.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                item.click();
+                            }
+                        });
                         dropdownEl.appendChild(item);
                     });
                 }
@@ -281,6 +303,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             inputEl.addEventListener('input', (e) => renderList(e.target.value));
             inputEl.addEventListener('focus', () => renderList(inputEl.value.replace(/\s*\(.*\)/, '')));
+            inputEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                renderList(inputEl.value.replace(/\s*\(.*\)/, ''));
+            });
         };
 
         setupDropdown(searchA, dropdownA, selectA, selectB);

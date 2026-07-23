@@ -4,65 +4,65 @@
 
 @section('content')
 <div class="container-fluid py-2">
-    <!-- MASTER CONTAINER: 1 KOTAK MENCAKUP SEMUA SUPER KOMPAKS & TANPA SCROLL -->
-    <div class="glass-card p-3 p-xl-4 mb-3 border-top border-info border-4 shadow-lg" style="border-radius: 12px;">
+    <!-- MASTER CONTAINER -->
+    <div class="glass-card p-3 p-xl-4 mb-3" style="border-radius: 12px;">
         
-        <!-- 1. HEADER SECTION (COMPACT & CLEAN) -->
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-2 pb-2 border-bottom" style="border-color: #e2e8f0 !important;">
+        <!-- 1. HEADER SECTION -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 pb-2 border-bottom" style="border-color: #e2e8f0 !important;">
             <div>
                 <h1 class="h4 fw-bold mb-0 d-flex align-items-center" style="color:#0f172a !important;">
-                    Country Comparison Engine
+                    <i class="fa-solid fa-code-compare me-2 text-primary"></i> Country Comparison Engine
                 </h1>
-                <p class="mb-0 fw-semibold" style="font-size: 12px; color:#64748b;">Bandingkan 5 parameter fundamental &amp; rantai pasok antar negara dalam 1 tabel terpadu tanpa scroll.</p>
+                <p class="mb-0 fw-semibold mt-1" style="font-size: 12.5px; color:#64748b;">Bandingkan 5 parameter fundamental &amp; rantai pasok antar negara dalam 1 tabel terpadu tanpa scroll.</p>
             </div>
         </div>
 
-        <!-- 2. COMPARISON SELECTOR CONTROLS (SEARCH 195 COUNTRIES) -->
-        <div class="p-3 px-4 rounded-3 mb-3 shadow-sm" style="background: #f8fafc; border: 1px solid #e2e8f0;">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-2">
+        <!-- 2. COMPARISON SELECTOR CONTROLS (ENTERPRISE COUNTRY SELECTOR) -->
+        <div class="glass-card p-3 p-xl-4 mb-4" style="background: #ffffff; border: 1px solid #e2e8f0;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <span class="text-uppercase fw-bold" style="font-size: 13px; letter-spacing: 0.8px; color:#3b82f6;">Perbandingan:</span>
-                    <span id="comparisonTitleText" class="fw-bold" style="font-size: 15px; color:#d97706;">Belum Ada Negara Dipilih (Kosong)</span>
+                    <span class="text-uppercase fw-semibold" style="font-size: 12px; letter-spacing: 0.05em; color:#475569;">Target Comparison:</span>
+                    <span id="comparisonTitleText" class="fw-bold" style="font-size: 15px; color:#2563eb;">Select 2 Sovereign Countries</span>
                 </div>
                 <div class="mt-2 mt-md-0">
-                    <button type="button" id="btnResetComparison" class="btn btn-sm px-3 fw-bold" style="font-size: 12.5px; background:#eff6ff; color:#3b82f6; border:1px solid #bfdbfe; border-radius:6px;" title="Kosongkan pilihan negara agar tidak ada yang dibandingin">
-                        <i class="fa-solid fa-rotate-left me-1"></i> Reset (Kosongkan Pilihan)
+                    <button type="button" id="btnResetComparison" class="btn btn-secondary btn-sm px-3 fw-semibold" title="Reset Country Selection">
+                        <i class="fa-solid fa-rotate-left me-1"></i> Reset Selection
                     </button>
                 </div>
             </div>
 
-            <!-- SELECTOR SEARCHABLE INPUTS (195 COUNTRIES) -->
-            <div class="row g-2 align-items-center">
+            <!-- SELECTOR SEARCHABLE INPUTS (195 SOVEREIGN COUNTRIES) -->
+            <div class="row g-3 align-items-center country-selector-row">
                 <!-- COUNTRY A SEARCH -->
-                <div class="col-12 col-md-5">
-                    <label for="searchCountryA" class="form-label fw-bold text-uppercase mb-1 d-flex justify-content-between" style="font-size: 12px; color:#3b82f6;">
-                        <span><i class="fa-solid fa-flag me-1"></i> Negara 1 (Country A)</span>
-                        <span class="fw-normal" style="font-size: 11.5px; color:#94a3b8;">Cari dari 195 Negara</span>
+                <div class="col-12 col-md-5 country-selector-card">
+                    <label for="searchCountryA" class="form-label small mb-1.5 fw-semibold d-block text-slate-700">
+                        <i class="fa-solid fa-flag text-primary me-1"></i> Country A (Target 1):
                     </label>
                     <div style="position: relative;">
-                        <input type="text" id="searchCountryA" class="form-control shadow-none py-1 px-3 fw-bold" placeholder="Ketik nama/awalan negara 1 (contoh: Germany, Indonesia...)" autocomplete="off" style="border-radius: 6px; font-size: 13.5px; border-color:#3b82f6;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #475569 !important; font-size: 14px; z-index: 5; pointer-events: none;"></i>
+                        <input type="text" id="searchCountryA" class="form-control ps-5" placeholder="Search Country A..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
                         <input type="hidden" id="selectCountryA" value="">
-                        <div id="dropdownCountryA" class="dropdown-menu w-100 shadow-lg p-0" style="position: absolute; top: 100%; left: 0; z-index: 9999; max-height: 220px; overflow-y: auto; display: none; margin-top: 4px; border-radius: 6px; font-size: 13.5px; background:#ffffff; border:1px solid #bfdbfe;"></div>
+                        <div id="dropdownCountryA" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                     </div>
                 </div>
 
                 <!-- SWAP BUTTON -->
-                <div class="col-12 col-md-2 text-center pt-md-3">
-                    <button type="button" id="btnSwapCountries" class="btn w-100 fw-bold shadow-sm" style="font-size: 12.5px; border-radius: 6px; background:#fffbeb; color:#d97706; border:1px solid #fde68a;" title="Tukar posisi negara 1 & 2">
-                        <i class="fa-solid fa-right-left me-1"></i> Tukar (Swap)
+                <div class="col-12 col-md-2 text-center pt-md-4">
+                    <button type="button" id="btnSwapCountries" class="btn btn-secondary w-100 fw-semibold shadow-sm" style="height: 44px; font-size: 13px;" title="Swap Country A & Country B">
+                        <i class="fa-solid fa-right-left me-1"></i> Swap
                     </button>
                 </div>
 
                 <!-- COUNTRY B SEARCH -->
-                <div class="col-12 col-md-5">
-                    <label for="searchCountryB" class="form-label fw-bold text-uppercase mb-1 d-flex justify-content-between" style="font-size: 12px; color:#d97706;">
-                        <span><i class="fa-solid fa-flag me-1"></i> Negara 2 (Country B)</span>
-                        <span class="fw-normal" style="font-size: 11.5px; color:#94a3b8;">Cari dari 195 Negara</span>
+                <div class="col-12 col-md-5 country-selector-card">
+                    <label for="searchCountryB" class="form-label small mb-1.5 fw-semibold d-block text-slate-700">
+                        <i class="fa-solid fa-flag text-warning me-1"></i> Country B (Target 2):
                     </label>
                     <div style="position: relative;">
-                        <input type="text" id="searchCountryB" class="form-control shadow-none py-1 px-3 fw-bold" placeholder="Ketik nama/awalan negara 2 (contoh: Australia, Japan...)" autocomplete="off" style="border-radius: 6px; font-size: 13.5px; border-color:#d97706;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #475569 !important; font-size: 14px; z-index: 5; pointer-events: none;"></i>
+                        <input type="text" id="searchCountryB" class="form-control ps-5" placeholder="Search Country B..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
                         <input type="hidden" id="selectCountryB" value="">
-                        <div id="dropdownCountryB" class="dropdown-menu w-100 shadow-lg p-0" style="position: absolute; top: 100%; left: 0; z-index: 9999; max-height: 220px; overflow-y: auto; display: none; margin-top: 4px; border-radius: 6px; font-size: 13.5px; background:#ffffff; border:1px solid #fde68a;"></div>
+                        <div id="dropdownCountryB" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                     </div>
                 </div>
             </div>
