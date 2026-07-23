@@ -121,12 +121,12 @@
         .sidebar {
             width: 260px;
             min-width: 260px;
+            flex-shrink: 0;
             background-color: var(--secondary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: var(--transition);
-            z-index: 1080 !important;
+            transition: left 0.25s ease-in-out;
             border-right: 1px solid rgba(255,255,255,0.06);
         }
         .sidebar-section-title {
@@ -397,7 +397,26 @@
             max-width: 100% !important;
         }
 
-        /* ── Responsive Mobile & Tablet Offcanvas ── */
+        /* ── Responsive Layout & Sidebar Engine ── */
+        @media (min-width: 992px) {
+            .sidebar {
+                position: relative !important;
+                left: 0 !important;
+                width: 260px !important;
+                min-width: 260px !important;
+                flex-shrink: 0 !important;
+                z-index: 100 !important;
+            }
+            .main-content {
+                width: calc(100% - 260px) !important;
+                flex-grow: 1 !important;
+                min-width: 0 !important;
+            }
+            .sidebar-backdrop {
+                display: none !important;
+            }
+        }
+
         @media (max-width: 991.98px) {
             .sidebar {
                 position: fixed !important;
@@ -406,8 +425,13 @@
                 bottom: 0 !important;
                 height: 100vh !important;
                 z-index: 1080 !important;
+                box-shadow: 0 0 20px rgba(15, 23, 42, 0.3) !important;
             }
             .sidebar.show { left: 0 !important; }
+            .main-content {
+                width: 100% !important;
+                max-width: 100vw !important;
+            }
             .btn {
                 padding: 6px 12px !important;
                 font-size: 12.5px !important;
