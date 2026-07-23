@@ -721,7 +721,7 @@ async function fetchNews(countryName, signal) {
 
         return `
             <div class="col-12 col-md-4 d-flex mb-3">
-                <div class="news-item p-3.5 rounded-3 glass-card w-100 d-flex flex-column justify-content-between" style="border-top: 3.5px solid ${isAdminCard ? 'var(--primary)' : '#0ea5e9'}; word-break: break-word; overflow-wrap: anywhere;">
+                <div class="news-item p-3.5 rounded-3 glass-card w-100 d-flex flex-column justify-content-between" style="word-break: break-word; overflow-wrap: anywhere;">
                     <div>
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
                             <span class="badge ${badgeColor} px-2.5 py-1 fw-semibold">${sentiment}</span>
@@ -961,7 +961,7 @@ async function loadWatchlistsFromServer() {
                 const safeRegion = escapeHtml(item.region || 'Global');
                 const safeId = item.id;
                 return `
-                    <div class="watchlist-item p-3.5 mb-3 rounded-3 shadow-sm glass-card" style="border-left: 4px solid var(--primary);">
+                    <div class="watchlist-item p-3.5 mb-3 rounded-3 shadow-sm glass-card">
                         <div class="d-flex flex-wrap justify-content-between align-items-center mb-2.5 pb-2 border-bottom">
                             <div class="d-flex align-items-center" style="cursor: pointer;" onclick="selectCountry('${safeName}')">
                                 <i class="fa-solid fa-star text-warning me-2 fs-5"></i>
@@ -1030,7 +1030,7 @@ async function loadWatchlistsFromServer() {
 
                             <!-- 4. AI Risk Score -->
                             <div class="col-12 col-sm-6 col-xl-3">
-                                <div class="p-2.5 rounded-2 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid var(--primary);">
+                                <div class="p-2.5 rounded-2 h-100 d-flex flex-column justify-content-between" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                                     <div class="d-flex justify-content-between align-items-start mb-1">
                                         <span class="small fw-semibold text-muted" style="font-size: 11px;"><i class="fa-solid fa-shield-halved text-primary me-1"></i> Risk Score</span>
                                         <i class="fa-solid fa-robot text-primary" style="font-size: 11px;"></i>

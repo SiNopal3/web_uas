@@ -33,7 +33,7 @@
                     Search Sovereign Country:
                 </label>
                 <div style="position: relative;">
-                    <i class="fa-solid fa-magnifying-glass text-muted" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 13.5px; z-index: 5;"></i>
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #475569 !important; font-size: 14px; z-index: 5; pointer-events: none;"></i>
                     <input type="text" id="countrySearchInput" class="form-control ps-5" placeholder="Search country..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
                     <div id="countryDropdownList" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                 </div>
@@ -41,31 +41,24 @@
         </div>
     </div>
 
-    <!-- 4 Real-time KPI Summary Cards -->
+    <!-- 4 Core Logistics & Intelligence Cards Grid -->
     <div class="row g-3 mb-4">
         <!-- Weather Card -->
         <div class="col-12 col-sm-6 col-xl-3">
             <div id="weatherCard" class="glass-card h-100 d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="small fw-semibold text-muted">Maritime Weather</span>
-                    <span class="badge badge-soft-info"><i class="fa-solid fa-cloud-sun me-1"></i> Open-Meteo</span>
+                    <span class="badge badge-soft-info"><i class="fa-solid fa-cloud-bolt me-1"></i> Open-Meteo</span>
                 </div>
                 <div class="my-1">
-                    <h3 id="valWeatherTemp" class="fw-bold text-dark mb-1">-</h3>
-                    <div class="d-flex justify-content-between small mb-1 text-muted">
-                        <span>Wind: <strong id="valWeatherWind" class="text-dark">-</strong></span>
-                        <span>Dir: <strong id="valWeatherWindDir" class="text-primary">-</strong></span>
-                    </div>
-                    <div class="d-flex justify-content-between small mb-1 text-muted">
-                        <span>Rain: <strong id="valWeatherRain" class="text-dark">-</strong></span>
-                        <span>Humidity: <strong id="valWeatherHumidity" class="text-dark">-</strong></span>
-                    </div>
+                    <h2 id="valWeatherTemp" class="fw-bold text-dark mb-1">-</h2>
                     <div class="d-flex justify-content-between small text-muted">
-                        <span>Clouds: <strong id="valWeatherCloud" class="text-dark">-</strong></span>
+                        <span>Wind: <strong id="valWeatherWind" class="text-dark">-</strong></span>
+                        <span>Rain: <strong id="valWeatherRain" class="text-dark">-</strong></span>
                     </div>
                 </div>
                 <div class="border-top pt-2 mt-2 text-muted" style="font-size: 11px !important;">
-                    Live oceanic satellite weather telemetry
+                    Real-time oceanic weather telemetry
                 </div>
             </div>
         </div>
@@ -75,7 +68,7 @@
             <div id="economyCard" class="glass-card h-100 d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="small fw-semibold text-muted">Economic Metrics</span>
-                    <span class="badge badge-soft-secondary"><i class="fa-solid fa-building-columns me-1"></i> World Bank</span>
+                    <span class="badge badge-soft-success"><i class="fa-solid fa-chart-line me-1"></i> World Bank</span>
                 </div>
                 <div class="my-1">
                     <h3 id="valEconGdp" class="fw-bold text-dark mb-1">-</h3>
@@ -109,7 +102,7 @@
 
         <!-- AI Real-time Risk Score Card -->
         <div class="col-12 col-sm-6 col-xl-3">
-            <div class="glass-card h-100 d-flex flex-column justify-content-between" style="border-left: 4px solid var(--primary);">
+            <div class="glass-card h-100 d-flex flex-column justify-content-between">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="small fw-semibold text-muted">AI Supply Chain Risk Score</span>
                     <span class="badge badge-soft-info">AI Engine</span>

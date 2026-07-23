@@ -4,7 +4,7 @@
 <div class="container-fluid py-2">
 
     {{-- HEADER --}}
-    <div class="glass-card mb-4 p-4 border-start border-info border-4 shadow-lg d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3">
+    <div class="glass-card mb-4 p-4 d-flex flex-column flex-xl-row justify-content-between align-items-xl-center gap-3">
         <div>
             <h1 class="h3 fw-bold mb-0" style="color:#0f172a !important;"><i class="fa-solid fa-chart-line me-2" style="color:#3b82f6;"></i>Data Visualization Dashboard</h1>
             <p class="mb-0 fw-semibold mt-1" style="color:#64748b;">Visualisasi tren makroekonomi, pertumbuhan GDP, inflasi, nilai tukar, dan skor risiko komposit</p>
@@ -36,7 +36,7 @@
                     Search Sovereign Country:
                 </label>
                 <div style="position: relative;">
-                    <i class="fa-solid fa-magnifying-glass text-muted" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 13.5px; z-index: 5;"></i>
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #475569 !important; font-size: 14px; z-index: 5; pointer-events: none;"></i>
                     <input type="text" id="countrySearchInput" class="form-control ps-5" placeholder="Search country..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
                     <div id="countryDropdownList" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                 </div>
@@ -52,13 +52,13 @@
 
         {{-- GDP Trend --}}
         <div class="col-12 col-xl-6">
-            <div class="glass-card p-4 h-100 d-flex flex-column border-top border-success border-3 shadow-lg">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h6 class="fw-bold mb-0" style="color:#0f172a !important;"><i class="fa-solid fa-arrow-trend-up text-success me-2"></i>Grafik: GDP Trend</h6>
                         <p class="small text-muted mb-0" style="font-size:11px;">Pertumbuhan Produk Domestik Bruto global vs pasar berkembang</p>
                     </div>
-                    <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25 py-1 px-2" style="font-size:11px;">Macro Growth</span>
+                    <span class="badge badge-soft-success py-1 px-2" style="font-size:11px;">Macro Growth</span>
                 </div>
                 <div style="position:relative;height:220px;width:100%;">
                     <canvas id="chartGdpTrend"></canvas>
@@ -68,13 +68,13 @@
 
         {{-- Inflation Trend --}}
         <div class="col-12 col-xl-6">
-            <div class="glass-card p-4 h-100 d-flex flex-column border-top border-warning border-3 shadow-lg">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h6 class="fw-bold mb-0" style="color:#0f172a !important;"><i class="fa-solid fa-chart-line text-warning me-2"></i>Grafik: Inflation Trend</h6>
                         <p class="small text-muted mb-0" style="font-size:11px;">Fluktuasi laju inflasi komposit dan syok harga terhadap target sentral</p>
                     </div>
-                    <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25 py-1 px-2" style="font-size:11px;">Price Index</span>
+                    <span class="badge badge-soft-warning py-1 px-2" style="font-size:11px;">Price Index</span>
                 </div>
                 <div style="position:relative;height:220px;width:100%;">
                     <canvas id="chartInflationTrend"></canvas>
@@ -84,13 +84,13 @@
 
         {{-- Currency Trend --}}
         <div class="col-12 col-xl-6">
-            <div class="glass-card p-4 h-100 d-flex flex-column border-top border-info border-3 shadow-lg">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h6 class="fw-bold mb-0" style="color:#0f172a !important;"><i class="fa-solid fa-coins text-info me-2"></i>Grafik: Currency Trend</h6>
                         <p class="small text-muted mb-0" style="font-size:11px;">Pergerakan kekuatan indeks mata uang (DXY) dan stabilitas pasar FX</p>
                     </div>
-                    <span class="badge bg-info bg-opacity-25 text-info border border-info border-opacity-25 py-1 px-2" style="font-size:11px;">FX Stability</span>
+                    <span class="badge badge-soft-info py-1 px-2" style="font-size:11px;">FX Stability</span>
                 </div>
                 <div style="position:relative;height:220px;width:100%;">
                     <canvas id="chartCurrencyTrend"></canvas>
@@ -100,13 +100,13 @@
 
         {{-- Risk Trend --}}
         <div class="col-12 col-xl-6">
-            <div class="glass-card p-4 h-100 d-flex flex-column border-top border-danger border-3 shadow-lg">
+            <div class="glass-card p-4 h-100 d-flex flex-column">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <div>
                         <h6 class="fw-bold mb-0" style="color:#0f172a !important;"><i class="fa-solid fa-shield-halved text-danger me-2"></i>Grafik: Risk Trend</h6>
                         <p class="small text-muted mb-0" style="font-size:11px;">Tren skor risiko komposit global, logistik pelabuhan, dan makroekonomi</p>
                     </div>
-                    <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25 py-1 px-2" style="font-size:11px;">Risk Composite</span>
+                    <span class="badge badge-soft-danger py-1 px-2" style="font-size:11px;">Risk Composite</span>
                 </div>
                 <div style="position:relative;height:220px;width:100%;">
                     <canvas id="chartRiskTrend"></canvas>

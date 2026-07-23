@@ -39,7 +39,7 @@
                     Search Sovereign Country:
                 </label>
                 <div style="position: relative;">
-                    <i class="fa-solid fa-magnifying-glass text-muted" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 13.5px; z-index: 5;"></i>
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #475569 !important; font-size: 14px; z-index: 5; pointer-events: none;"></i>
                     <input type="text" id="countrySearchInput" class="form-control ps-5" placeholder="Search country..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
                     <div id="countryDropdownList" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                 </div>
