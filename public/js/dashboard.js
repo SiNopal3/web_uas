@@ -237,20 +237,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (filtered.length === 0) {
                 dropdownList.innerHTML = `<div class="p-3 text-muted small text-center">No country found matching "${escapeHtml(query)}".</div>`;
             } else {
+                dropdownList.classList.add('country-dropdown-menu');
                 filtered.slice(0, 100).forEach(key => {
                     const meta = countryMetadata[key];
                     const flag = getFlagEmoji(meta.iso);
+                    const isSelected = activeCountryData && activeCountryData.name === key;
                     const item = document.createElement('div');
-                    item.className = 'dropdown-item py-2.5 px-3.5 border-bottom text-decoration-none d-flex align-items-center justify-content-between';
-                    item.style.cursor = 'pointer';
-                    item.style.borderColor = '#f1f5f9';
-                    item.style.transition = 'background 0.15s ease-in-out';
+                    item.className = `country-dropdown-item ${isSelected ? 'selected' : ''}`;
+                    item.tabIndex = 0;
                     item.innerHTML = `
                         <div class="d-flex align-items-center gap-2.5">
                             <span class="fs-5 flex-shrink-0" style="line-height: 1;">${flag}</span>
                             <div>
-                                <div class="fw-semibold text-dark" style="font-size: 13.5px; line-height: 1.25;">${escapeHtml(key)}</div>
-                                <div class="small text-muted" style="font-size: 11px; margin-top: 1px;">${escapeHtml(meta.iso)} &bull; ${escapeHtml(meta.region)}</div>
+                                <div class="country-name">${escapeHtml(key)}</div>
+                                <div class="country-meta">${escapeHtml(meta.iso)} &bull; ${escapeHtml(meta.region)}</div>
                             </div>
                         </div>
                     `;
@@ -260,8 +260,12 @@ document.addEventListener('DOMContentLoaded', async () => {
                         dropdownList.style.display = 'none';
                         selectCountry(key);
                     });
-                    item.addEventListener('mouseenter', () => item.style.background = '#f1f5f9');
-                    item.addEventListener('mouseleave', () => item.style.background = '#ffffff');
+                    item.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            item.click();
+                        }
+                    });
                     dropdownList.appendChild(item);
                 });
             }

@@ -12,8 +12,8 @@
         </div>
     </div>
 
-    <!-- Top Selector -->
-    <div class="row align-items-center mb-4 g-3">
+    <!-- Top Selector and Country Header -->
+    <div class="row align-items-center mb-4 g-3 country-selector-row">
         <!-- Selected Country & Currency Card -->
         <div class="col-12 col-xl-5">
             <div class="glass-card p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
@@ -33,8 +33,7 @@
             </div>
         </div>
 
-        <!-- Search Input -->
-        <div class="col-12 col-xl-7" style="position: relative; z-index: 100;">
+        <div class="col-12 col-xl-7 country-selector-card">
             <div class="glass-card p-3" style="overflow: visible !important;">
                 <label for="countrySearchInput" class="form-label small mb-1.5 fw-semibold d-block text-slate-700">
                     Search Sovereign Country:
@@ -42,7 +41,7 @@
                 <div style="position: relative;">
                     <i class="fa-solid fa-magnifying-glass text-muted" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 13.5px; z-index: 5;"></i>
                     <input type="text" id="countrySearchInput" class="form-control ps-5" placeholder="Search country..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
-                    <div id="countryDropdownList" class="dropdown-menu w-100 p-0 border-0" style="position: absolute; top: 100%; left: 0; z-index: 9999; max-height: 340px; overflow-y: auto; display: none; margin-top: 6px; border-radius: 10px; background: #ffffff; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15) !important;"></div>
+                    <div id="countryDropdownList" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                 </div>
             </div>
         </div>

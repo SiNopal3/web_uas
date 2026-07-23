@@ -12,38 +12,33 @@
     </div>
 
     {{-- COUNTRY SELECTOR --}}
-    <div class="row align-items-center mb-4 g-3">
+    <div class="row align-items-center mb-4 g-3 country-selector-row">
         <div class="col-12 col-xl-5">
             <div class="glass-card p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div class="overflow-hidden text-truncate pe-2">
-                    <span class="small text-uppercase fw-bold d-block text-truncate" style="color:#64748b;letter-spacing:.8px;">Negara Analisis Aktif</span>
-                    <h3 id="selectedCountryName" class="fw-bold mb-0 mt-1 text-truncate" style="color:#0f172a !important;">{{ $country ?: '-' }}</h3>
+                    <span class="small text-uppercase fw-semibold d-block text-truncate text-muted" style="letter-spacing: 0.05em; font-size: 11px !important;">Active Target Country</span>
+                    <h3 id="selectedCountryName" class="fw-bold text-dark mb-0 mt-0.5 text-truncate" style="font-size: 16px !important;"><span class="text-muted fw-normal" style="font-size: 14px;">Select a country to begin monitoring</span></h3>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
-                    <button type="button" class="btn btn-sm btn-outline-info fw-bold px-3 py-2 flex-shrink-0"
-                        onclick="window.resetToAdminFeed && window.resetToAdminFeed()" style="border-radius:8px;">
+                    <button type="button" class="btn btn-secondary btn-sm fw-semibold px-3 py-1.5 flex-shrink-0" onclick="window.resetToAdminFeed && window.resetToAdminFeed()" title="Reset Country Selection">
                         <i class="fa-solid fa-rotate-left me-1"></i> Reset
                     </button>
                     <div class="text-end ms-1 flex-shrink-0">
-                        <span id="selectedCountryRegion" class="badge bg-secondary mb-1 px-3 py-1 fw-bold text-white">-</span>
-                        <div id="selectedCountryCurrency" class="text-warning small fw-bold mt-1" style="font-size:14px;">-</div>
+                        <span id="selectedCountryRegion" class="badge badge-soft-secondary px-2.5 py-1 fw-semibold text-slate-700">Global</span>
+                        <div id="selectedCountryCurrency" class="small fw-semibold mt-1 text-primary" style="font-size: 13px !important;">All Currencies</div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-xl-7" style="position:relative;z-index:100;">
-            <div class="glass-card p-3" style="overflow:visible !important;">
-                <label for="countrySearchInput" class="form-label small mb-2 fw-bold d-block" style="color:#475569;font-size:13px;">
-                    <i class="fa-solid fa-magnifying-glass me-1" style="color:#d97706;"></i> Cari Negara:
+        <div class="col-12 col-xl-7 country-selector-card">
+            <div class="glass-card p-3" style="overflow: visible !important;">
+                <label for="countrySearchInput" class="form-label small mb-1.5 fw-semibold d-block text-slate-700">
+                    Search Sovereign Country:
                 </label>
-                <div style="position:relative;">
-                    <input type="text" id="countrySearchInput"
-                        class="form-control bg-dark text-white border-secondary shadow-none"
-                        placeholder="Ketik nama negara (contoh: Indonesia, Germany, Japan...)"
-                        autocomplete="off" style="border-radius:6px;">
-                    <div id="countryDropdownList"
-                        class="dropdown-menu w-100 bg-dark border border-warning shadow-lg p-0"
-                        style="position:absolute;top:100%;left:0;z-index:9999;max-height:280px;overflow-y:auto;display:none;margin-top:4px;border-radius:6px;"></div>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-magnifying-glass text-muted" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 13.5px; z-index: 5;"></i>
+                    <input type="text" id="countrySearchInput" class="form-control ps-5" placeholder="Search country..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
+                    <div id="countryDropdownList" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                 </div>
             </div>
         </div>
