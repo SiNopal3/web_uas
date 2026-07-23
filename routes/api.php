@@ -6,8 +6,8 @@ use App\Http\Controllers\ApiController;
 use App\Http\Controllers\RiskEngineController;
 use App\Http\Controllers\WatchlistController;
 
-// Rute Bawaan
-Route::middleware('auth:sanctum')->group(function () {
+// Rute Bawaan (Menggunakan Web Session Auth agar konsisten di Localhost & Railway)
+Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
