@@ -44,6 +44,12 @@
         </div>
 
         <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            @if (session('success'))
+                <div class="mb-4 font-medium text-sm text-green-600 bg-green-50 p-3 rounded-md border border-green-200">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="mb-4 font-medium text-sm text-red-600">
                     {{ $errors->first() }}

@@ -33,7 +33,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Proses registrasi user baru.
+     * Proses registrasi user baru (publik SELALU mendapatkan role = 'user').
      */
     public function register(Request $request)
     {
@@ -43,7 +43,12 @@ class AuthController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $userRole = \App\Models\Role::where('name', 'User')->first() ?: \App\Models\Role::firstOrCreate(['name' => 'User']);
+        // Role ditetapkan secara eksplisit sebagai User (Role id untuk User)
+        $userRole = \App\Models\Role::firstOrCreate(
+            ['name' => 'User'],
+            ['description' => 'General User with standard access']
+        );
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -53,10 +58,8 @@ class AuthController extends Controller
         ]);
         $user->roles()->sync([$userRole->id]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
-
-        return redirect('/');
+        // JANGAN Melakukan Auth::login($user) & JANGAN redirect ke Dashboard
+        return redirect()->route('login')->with('success', 'Registrasi berhasil. Silakan login menggunakan akun Anda.');
     }
 
     /**

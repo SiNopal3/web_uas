@@ -129,13 +129,14 @@ class User extends Authenticatable
     }
 
     /**
-     * Memeriksa apakah pengguna adalah Administrator (atau akun admin default).
+     * Memeriksa apakah pengguna adalah Administrator (memiliki role Admin / Administrator).
      */
     public function isAdmin(): bool
     {
-        return $this->hasRole(['Administrator', 'Admin']) ||
-               $this->role_id === 1 ||
-               $this->email === 'admin@gmail.com' ||
-               str_contains(strtolower((string) $this->email), 'admin');
+        if ($this->role && in_array(strtolower($this->role->name), ['admin', 'administrator'])) {
+            return true;
+        }
+
+        return $this->roles()->whereIn('name', ['Admin', 'Administrator'])->exists();
     }
 }
