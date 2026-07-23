@@ -345,18 +345,18 @@
             box-sizing: inherit;
         }
 
-        .main-wrapper {
+        .app-layout {
             display: flex;
             width: 100%;
             min-height: 100vh;
             overflow-x: hidden;
         }
 
-        .content-wrapper {
-            flex-grow: 1;
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             min-width: 0;
-            width: 100%;
-            overflow-x: hidden;
         }
 
         /* Fluid Typography System */
@@ -576,12 +576,12 @@
 </head>
 <body>
     <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
-    <div class="d-flex app-wrapper" style="width: 100%; overflow-x: hidden; min-height: 100vh; align-items: stretch;">
+    <div class="app-layout">
         <!-- Sidebar Navigation Component -->
         @include('components.sidebar')
 
         <!-- Main Content Area -->
-        <div class="main-content flex-grow-1 d-flex flex-column" style="min-width: 0; max-width: 100%;">
+        <div class="main-content">
             @include('components.navbar')
 
             <main class="flex-grow-1 p-3 p-md-4">
