@@ -311,12 +311,12 @@
             border: 1px solid #e2e8f0 !important;
         }
 
-        /* ── Modals ── */
+        /* ── Modals & Backdrop Contrast System ── */
         .modal-content {
             background: #ffffff !important;
             border: 1px solid var(--border) !important;
             border-radius: var(--radius-lg) !important;
-            box-shadow: var(--shadow-lg) !important;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.25) !important;
             color: var(--text-primary) !important;
         }
         .modal-header {
@@ -326,6 +326,31 @@
         .modal-footer {
             border-top: 1px solid var(--border) !important;
             padding: 14px 20px;
+        }
+        .modal-backdrop {
+            z-index: 100000 !important;
+            background-color: #0f172a !important;
+        }
+        .modal-backdrop.show {
+            opacity: 0.70 !important;
+            backdrop-filter: blur(4px) !important;
+            -webkit-backdrop-filter: blur(4px) !important;
+        }
+        .modal {
+            z-index: 100010 !important;
+        }
+
+        /* ── SweetAlert2 High-Contrast Backdrop Overlay ── */
+        .swal2-container.swal2-backdrop-show,
+        .swal2-container.swal2-noanimation {
+            background: rgba(15, 23, 42, 0.70) !important;
+            backdrop-filter: blur(4px) !important;
+            -webkit-backdrop-filter: blur(4px) !important;
+            z-index: 100000 !important;
+        }
+        .swal2-popup {
+            z-index: 100010 !important;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.3) !important;
         }
 
         /* ── Custom Scrollbar ── */
