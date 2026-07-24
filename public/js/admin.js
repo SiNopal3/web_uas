@@ -235,12 +235,14 @@
      * Switch visible admin tab section
      */
     window.switchAdminTab = function (tabName) {
-        // Update navigation buttons
+        // Update navigation buttons styling and active states
         document.querySelectorAll('#adminNavTabs .nav-link').forEach((btn) => {
             if (btn.getAttribute('data-tab') === tabName) {
-                btn.classList.add('active');
+                btn.classList.add('active', 'btn-primary');
+                btn.classList.remove('btn-secondary');
             } else {
-                btn.classList.remove('active');
+                btn.classList.remove('active', 'btn-primary');
+                btn.classList.add('btn-secondary');
             }
         });
 
@@ -253,21 +255,18 @@
         const target = document.getElementById('tab-' + tabName);
         if (target) {
             target.classList.remove('d-none');
-        } else if (tabName !== 'users') {
-            switchAdminTab('users');
-            return;
         }
 
-        // If tab requires dynamic fetch, trigger it
-        if (tabName === 'users') {
+        // Trigger dynamic AJAX fetch for active tab data
+        if (tabName === 'users' && typeof fetchUsersList === 'function') {
             fetchUsersList();
-        } else if (tabName === 'ports') {
+        } else if (tabName === 'ports' && typeof fetchPortsList === 'function') {
             fetchPortsList();
-        } else if (tabName === 'articles') {
+        } else if (tabName === 'articles' && typeof fetchArticlesList === 'function') {
             fetchArticlesList();
-        } else if (tabName === 'logs') {
+        } else if (tabName === 'logs' && typeof fetchAuditLogsList === 'function') {
             fetchAuditLogsList();
-        } else if (tabName === 'system' || tabName === 'health' || tabName === 'api' || tabName === 'database') {
+        } else if ((tabName === 'system' || tabName === 'health' || tabName === 'api' || tabName === 'database') && typeof window.refreshAdminTelemetry === 'function') {
             window.refreshAdminTelemetry();
         }
     };

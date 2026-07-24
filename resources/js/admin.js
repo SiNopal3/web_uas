@@ -198,12 +198,14 @@
      * Switch visible admin tab section
      */
     window.switchAdminTab = function (tabName) {
-        // Update navigation buttons
+        // Update navigation buttons styling and active states
         document.querySelectorAll('#adminNavTabs .nav-link').forEach((btn) => {
             if (btn.getAttribute('data-tab') === tabName) {
-                btn.classList.add('active');
+                btn.classList.add('active', 'btn-primary');
+                btn.classList.remove('btn-secondary');
             } else {
-                btn.classList.remove('active');
+                btn.classList.remove('active', 'btn-primary');
+                btn.classList.add('btn-secondary');
             }
         });
 
@@ -218,12 +220,16 @@
             target.classList.remove('d-none');
         }
 
-        // If tab is users or logs, trigger initial fetch if needed
-        if (tabName === 'users') {
+        // Trigger dynamic AJAX fetch for active tab data
+        if (tabName === 'users' && typeof fetchUsersList === 'function') {
             fetchUsersList();
-        } elseif (tabName === 'logs') {
+        } else if (tabName === 'ports' && typeof fetchPortsList === 'function') {
+            fetchPortsList();
+        } else if (tabName === 'articles' && typeof fetchArticlesList === 'function') {
+            fetchArticlesList();
+        } else if (tabName === 'logs' && typeof fetchAuditLogsList === 'function') {
             fetchAuditLogsList();
-        } elseif (tabName === 'system' || tabName === 'health' || tabName === 'api' || tabName === 'database') {
+        } else if ((tabName === 'system' || tabName === 'health' || tabName === 'api' || tabName === 'database') && typeof window.refreshAdminTelemetry === 'function') {
             window.refreshAdminTelemetry();
         }
     };
