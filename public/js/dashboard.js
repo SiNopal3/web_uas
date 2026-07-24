@@ -1255,14 +1255,12 @@ window.removeFromWatchlist = removeFromWatchlist;
 // Real-Time Event-Driven Handler Functions
 window.handleRealtimeRiskScore = function(data) {
     if (!data) return;
-    if (data.country && activeCountryData.name && data.country.toLowerCase() === activeCountryData.name.toLowerCase()) {
-        const scoreEl = document.getElementById('aiRiskScoreValue');
-        const badgeEl = document.getElementById('aiRiskScoreStatusBadge');
-        if (scoreEl) scoreEl.textContent = data.total_risk_score ?? '-';
-        if (badgeEl) {
-            badgeEl.textContent = data.risk_status ?? 'NORMAL';
-            badgeEl.className = 'badge ' + (data.risk_status === 'HIGH RISK' ? 'bg-danger' : (data.risk_status === 'ELEVATED' ? 'bg-warning text-dark' : 'bg-success'));
-        }
+    const scoreEl = document.getElementById('valTotalRiskScore') || document.getElementById('aiRiskScoreValue');
+    const badgeEl = document.getElementById('valRiskStatusBadge') || document.getElementById('aiRiskScoreStatusBadge');
+    if (scoreEl) scoreEl.textContent = data.total_risk_score ?? '-';
+    if (badgeEl) {
+        badgeEl.textContent = data.risk_status ?? 'NORMAL';
+        badgeEl.className = 'badge ' + (data.risk_status === 'HIGH RISK' ? 'badge-soft-danger' : (data.risk_status === 'ELEVATED' ? 'badge-soft-warning' : 'badge-soft-success'));
     }
 };
 
