@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('BROADCAST_CONNECTION', 'reverb'),
+    'default' => env('BROADCAST_CONNECTION', 'log'),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ return [
             'app_id' => env('REVERB_APP_ID', 'riskintel_app'),
             'options' => [
                 'host' => env('REVERB_SERVER_HOST', '127.0.0.1'),
-                'port' => env('REVERB_SERVER_PORT', 8080),
+                'port' => (int) env('REVERB_SERVER_PORT', 8080),
                 'scheme' => env('REVERB_SERVER_SCHEME', 'http'),
                 'useTLS' => env('REVERB_SERVER_SCHEME', 'http') === 'https',
             ],
