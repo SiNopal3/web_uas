@@ -54,6 +54,18 @@ class ArticleController extends Controller
 
         $article = $this->articleService->createArticle($validated, Auth::user());
 
+        try {
+            \App\Events\NewsArticleCreated::dispatch([
+                'id' => $article->id,
+                'title' => $article->title,
+                'description' => $article->content,
+                'url' => $article->url ?: '#',
+                'author' => $article->author ?: 'Admin RiskIntel',
+                'source' => ['name' => 'Analisis Internal (Admin)'],
+                'created_at' => $article->created_at ? $article->created_at->format('d M Y') : date('d M Y')
+            ]);
+        } catch (\Throwable $ex) {}
+
         return response()->json([
             'success' => true,
             'message' => 'Artikel analisis berhasil ditambahkan.',

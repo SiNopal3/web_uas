@@ -1251,3 +1251,59 @@ async function removeFromWatchlist(id) {
 window.selectCountry = selectCountry;
 window.addToWatchlist = addToWatchlist;
 window.removeFromWatchlist = removeFromWatchlist;
+
+// Real-Time Event-Driven Handler Functions
+window.handleRealtimeRiskScore = function(data) {
+    if (!data) return;
+    if (data.country && activeCountryData.name && data.country.toLowerCase() === activeCountryData.name.toLowerCase()) {
+        const scoreEl = document.getElementById('aiRiskScoreValue');
+        const badgeEl = document.getElementById('aiRiskScoreStatusBadge');
+        if (scoreEl) scoreEl.textContent = data.total_risk_score ?? '-';
+        if (badgeEl) {
+            badgeEl.textContent = data.risk_status ?? 'NORMAL';
+            badgeEl.className = 'badge ' + (data.risk_status === 'HIGH RISK' ? 'bg-danger' : (data.risk_status === 'ELEVATED' ? 'bg-warning text-dark' : 'bg-success'));
+        }
+    }
+};
+
+window.handleRealtimeWeather = function(event) {
+    if (!event || !event.weatherData) return;
+    const w = event.weatherData;
+    const tempEl = document.getElementById('weatherTemp');
+    const windEl = document.getElementById('weatherWind');
+    if (tempEl) tempEl.textContent = `${w.temperature_2m ?? '--'}°C`;
+    if (windEl) windEl.textContent = `${w.wind_speed_10m ?? '--'} km/h`;
+};
+
+window.handleRealtimeCurrency = function(event) {
+    if (!event || !event.rates) return;
+    const idrRate = event.rates['IDR'];
+    if (idrRate) {
+        const rateEl = document.getElementById('idrExchangeRate');
+        if (rateEl) rateEl.textContent = `Rp ${Number(idrRate).toLocaleString('id-ID')}`;
+    }
+};
+
+window.handleRealtimeNews = function(article) {
+    if (!article) return;
+    const newsContainer = document.getElementById('newsFeedContainer');
+    if (newsContainer) {
+        const itemHtml = `
+            <div class="news-item border-bottom pb-2.5 mb-2.5 animate__animated animate__fadeInDown">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="badge ${article.sentiment === 'Positive' ? 'bg-success' : (article.sentiment === 'Negative' ? 'bg-danger' : 'bg-secondary')}">${article.sentiment}</span>
+                    <span class="text-muted" style="font-size: 11px;">${article.created_at}</span>
+                </div>
+                <a href="${article.url}" target="_blank" class="fw-semibold text-slate-800 text-decoration-none d-block mb-1">${article.title}</a>
+                <div class="small text-muted">${article.description ? article.description.substring(0, 100) + '...' : ''}</div>
+            </div>
+        `;
+        newsContainer.insertAdjacentHTML('afterbegin', itemHtml);
+    }
+};
+
+window.handleRealtimeWatchlist = function(event) {
+    if (typeof loadWatchlistsFromServer === 'function') {
+        loadWatchlistsFromServer();
+    }
+};

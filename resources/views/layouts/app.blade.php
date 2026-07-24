@@ -829,5 +829,96 @@
             });
         };
     </script>
+
+    <!-- Real-Time WebSocket Echo Engine -->
+    <script>
+        window.currentUserId = {{ auth()->check() ? auth()->id() : 'null' }};
+        window.currentUserIsAdmin = {{ (auth()->check() && auth()->user()->isAdmin()) ? 'true' : 'false' }};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.Echo) {
+                // 1. Listen to Public Dashboard Channel
+                window.Echo.channel('dashboard.global')
+                    .listen('.RiskScoreUpdated', (e) => {
+                        console.log('⚡ Real-time Event: RiskScoreUpdated', e);
+                        if (window.handleRealtimeRiskScore) window.handleRealtimeRiskScore(e.data);
+                    })
+                    .listen('.WeatherUpdated', (e) => {
+                        console.log('⚡ Real-time Event: WeatherUpdated', e);
+                        if (window.handleRealtimeWeather) window.handleRealtimeWeather(e);
+                    })
+                    .listen('.ExchangeRateUpdated', (e) => {
+                        console.log('⚡ Real-time Event: ExchangeRateUpdated', e);
+                        if (window.handleRealtimeCurrency) window.handleRealtimeCurrency(e);
+                    })
+                    .listen('.NewsArticleCreated', (e) => {
+                        console.log('⚡ Real-time Event: NewsArticleCreated', e);
+                        if (window.handleRealtimeNews) window.handleRealtimeNews(e.article);
+                    })
+                    .listen('.PortDataUpdated', (e) => {
+                        console.log('⚡ Real-time Event: PortDataUpdated', e);
+                        if (window.handleRealtimePort) window.handleRealtimePort(e.port);
+                    });
+
+                // 2. Listen to User Private Channel
+                if (window.currentUserId) {
+                    window.Echo.private(`App.Models.User.${window.currentUserId}`)
+                        .listen('.UserNotificationSent', (e) => {
+                            console.log('⚡ Real-time Event: UserNotificationSent', e);
+                            if (window.handleRealtimeNotification) window.handleRealtimeNotification(e.notification);
+                        })
+                        .listen('.UserStatusChanged', (e) => {
+                            console.log('⚡ Real-time Event: UserStatusChanged', e);
+                            if (e.action === 'disabled' || e.action === 'deleted') {
+                                if (typeof Swal !== 'undefined') {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Sesi Dihentikan',
+                                        text: e.message || 'Akun Anda telah dinonaktifkan oleh Administrator.',
+                                        confirmButtonText: 'OK',
+                                        allowOutsideClick: false
+                                    }).then(() => {
+                                        window.location.href = '/login';
+                                    });
+                                } else {
+                                    alert(e.message);
+                                    window.location.href = '/login';
+                                }
+                            }
+                        })
+                        .listen('.WatchlistUpdated', (e) => {
+                            console.log('⚡ Real-time Event: WatchlistUpdated', e);
+                            if (window.handleRealtimeWatchlist) window.handleRealtimeWatchlist(e);
+                        });
+                }
+
+                // 3. Listen to Admin Private Channel
+                if (window.currentUserIsAdmin) {
+                    window.Echo.private('admin.console')
+                        .listen('.AuditLogCreated', (e) => {
+                            console.log('⚡ Real-time Event: AuditLogCreated', e);
+                            if (window.handleRealtimeAuditLog) window.handleRealtimeAuditLog(e.auditLog);
+                        });
+                }
+
+                // 4. Presence Channel for Online Tracking
+                try {
+                    window.Echo.join('presence-online')
+                        .here((users) => {
+                            console.log('⚡ Presence Channel Online Users:', users);
+                            if (window.updateOnlineUsersBadge) window.updateOnlineUsersBadge(users);
+                        })
+                        .joining((user) => {
+                            console.log('⚡ User Joined:', user);
+                            if (window.userJoinedPresence) window.userJoinedPresence(user);
+                        })
+                        .leaving((user) => {
+                            console.log('⚡ User Left:', user);
+                            if (window.userLeftPresence) window.userLeftPresence(user);
+                        });
+                } catch (err) {}
+            }
+        });
+    </script>
 </body>
 </html>

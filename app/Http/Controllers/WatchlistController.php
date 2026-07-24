@@ -62,6 +62,10 @@ class WatchlistController extends Controller
             'country_id' => $country->id,
         ]);
 
+        try {
+            \App\Events\WatchlistUpdated::dispatch($user->id, $country->name, true);
+        } catch (\Throwable $ex) {}
+
         return response()->json([
             'success' => true,
             'message' => 'Negara berhasil ditambahkan ke daftar pantauan.',
@@ -80,9 +84,18 @@ class WatchlistController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = $request->user();
+        $targetCountryName = (string) $id;
 
         // Hapus berdasarkan ID watchlist, atau berdasarkan country_id / country_name
         if (is_numeric($id)) {
+            $watchlistObj = Watchlist::with('country')->where('user_id', $user->id)
+                ->where(function ($q) use ($id) {
+                    $q->where('id', $id)->orWhere('country_id', $id);
+                })->first();
+            if ($watchlistObj && $watchlistObj->country) {
+                $targetCountryName = $watchlistObj->country->name;
+            }
+
             $deleted = Watchlist::where('user_id', $user->id)
                 ->where(function ($q) use ($id) {
                     $q->where('id', $id)->orWhere('country_id', $id);
@@ -92,11 +105,16 @@ class WatchlistController extends Controller
             $country = Country::where('name', $id)->first();
             $deleted = 0;
             if ($country) {
+                $targetCountryName = $country->name;
                 $deleted = Watchlist::where('user_id', $user->id)
                     ->where('country_id', $country->id)
                     ->delete();
             }
         }
+
+        try {
+            \App\Events\WatchlistUpdated::dispatch($user->id, $targetCountryName, false);
+        } catch (\Throwable $ex) {}
 
         return response()->json([
             'success' => true,

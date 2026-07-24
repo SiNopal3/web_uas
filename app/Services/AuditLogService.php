@@ -24,7 +24,7 @@ class AuditLogService
             $details = ['note' => $details];
         }
 
-        return AuditLog::create([
+        $log = AuditLog::create([
             'user_id' => $userId,
             'user_name' => $userName,
             'action' => $action,
@@ -33,6 +33,19 @@ class AuditLogService
             'user_agent' => substr((string)$userAgent, 0, 500),
             'details' => $details,
         ]);
+
+        try {
+            \App\Events\AuditLogCreated::dispatch([
+                'id' => $log->id,
+                'user_name' => $log->user_name,
+                'action' => $log->action,
+                'module' => $log->module,
+                'ip_address' => $log->ip_address,
+                'created_at' => $log->created_at ? $log->created_at->format('Y-m-d H:i:s') : date('Y-m-d H:i:s')
+            ]);
+        } catch (\Throwable $ex) {}
+
+        return $log;
     }
 
     /**

@@ -122,18 +122,29 @@ class ApiController extends Controller
             }
         }
 
+        $resultPayload = [
+            'total_risk_score' => $totalRiskScore,
+            'risk_status' => $status,
+            'country' => $countryName,
+            'country_iso' => $country_iso,
+            'details' => [
+                'weather' => $weatherScore,
+                'inflation' => $inflationScore,
+                'exchange' => $exchangeScore,
+                'news' => $newsScore
+            ]
+        ];
+
+        // Broadcast Event Realtime ke Seluruh Client Browser via WebSocket
+        try {
+            \App\Events\RiskScoreUpdated::dispatch($resultPayload);
+        } catch (\Throwable $ex) {
+            Log::warning("RiskScoreUpdated Event Broadcast Note: " . $ex->getMessage());
+        }
+
         return response()->json([
             'success' => true,
-            'prediction' => [
-                'total_risk_score' => $totalRiskScore,
-                'risk_status' => $status,
-                'details' => [
-                    'weather' => $weatherScore,
-                    'inflation' => $inflationScore,
-                    'exchange' => $exchangeScore,
-                    'news' => $newsScore
-                ]
-            ]
+            'prediction' => $resultPayload
         ]);
     }
 
@@ -233,18 +244,24 @@ class ApiController extends Controller
                 $cloudCover = $weather['current']['cloud_cover'] ?? ($weather['hourly']['cloudcover'][0] ?? ($weather['hourly']['cloud_cover'][0] ?? 45));
                 $surfacePressure = $weather['current']['surface_pressure'] ?? ($weather['hourly']['surface_pressure'][0] ?? 1012.8);
 
+                $weatherData = [
+                    'temperature_2m' => round((float) $temp, 1),
+                    'wind_speed_10m' => round((float) $windSpeed, 1),
+                    'rain' => round((float) $rain, 1),
+                    'humidity' => round((float) $humidity, 0),
+                    'precipitation' => round((float) $rain, 1),
+                    'wind_direction' => round((float) $windDir, 0),
+                    'cloud_cover' => round((float) $cloudCover, 0),
+                    'surface_pressure' => round((float) $surfacePressure, 1),
+                ];
+
+                try {
+                    \App\Events\WeatherUpdated::dispatch("{$lat},{$lng}", $weatherData);
+                } catch (\Throwable $ex) {}
+
                 return response()->json([
                     'success' => true,
-                    'data' => [
-                        'temperature_2m' => round((float) $temp, 1),
-                        'wind_speed_10m' => round((float) $windSpeed, 1),
-                        'rain' => round((float) $rain, 1),
-                        'humidity' => round((float) $humidity, 0),
-                        'precipitation' => round((float) $rain, 1),
-                        'wind_direction' => round((float) $windDir, 0),
-                        'cloud_cover' => round((float) $cloudCover, 0),
-                        'surface_pressure' => round((float) $surfacePressure, 1),
-                    ]
+                    'data' => $weatherData
                 ]);
             } catch (Throwable $e) {
                 Log::error("Weather Error: " . $e->getMessage());
@@ -269,6 +286,10 @@ class ApiController extends Controller
                 $data = $response->json();
                 
                 if (isset($data['conversion_rates'])) {
+                    try {
+                        \App\Events\ExchangeRateUpdated::dispatch($base_currency, $data['conversion_rates']);
+                    } catch (\Throwable $ex) {}
+
                     return response()->json([
                         'success' => true, 
                         'rates' => $data['conversion_rates']

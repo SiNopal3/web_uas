@@ -230,6 +230,12 @@ class UserManagementService
 
             $user->update($updateFields);
 
+            if (isset($updateFields['status']) && $updateFields['status'] !== 'active') {
+                try {
+                    \App\Events\UserStatusChanged::dispatch($user->id, 'disabled', 'Akun Anda telah dinonaktifkan oleh Administrator.');
+                } catch (\Throwable $ex) {}
+            }
+
             $this->auditLogService->logAction($editor, 'UPDATE_USER', 'User Management', [
                 'updated_user_id' => $user->id,
                 'updated_user_email' => $user->email,
@@ -254,6 +260,10 @@ class UserManagementService
             try { \App\Models\Notification::where('user_id', $userId)->delete(); } catch (\Throwable $e) {}
             try { \App\Models\ReportHistory::where('user_id', $userId)->delete(); } catch (\Throwable $e) {}
             try { \App\Models\ScheduledReport::where('user_id', $userId)->delete(); } catch (\Throwable $e) {}
+
+            try {
+                \App\Events\UserStatusChanged::dispatch($userId, 'deleted', 'Akun Anda telah dihapus oleh Administrator.');
+            } catch (\Throwable $ex) {}
 
             $user->roles()->detach();
             $deleted = $user->delete();
