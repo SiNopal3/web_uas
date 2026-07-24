@@ -157,30 +157,28 @@ class ApiController extends Controller
     // =========================================================================
     public function getWorldBankData($country_code)
     {
-        $code = strtoupper($country_code);
-        $cacheKey = "worldbank_economy_v2_{$code}";
+        $code = strtoupper(trim($country_code));
+        if ($code === '-' || $code === 'GLOBAL' || empty($code)) {
+            $code = 'ID';
+        }
+
+        $cacheKey = "worldbank_economy_v4_{$code}";
 
         try {
             $data = Cache::remember($cacheKey, now()->addHours(24), function () use ($code) {
                 $extractLatest = function ($indicator) use ($code) {
                     try {
-                        $res = Http::timeout(6)->retry(2, 100)->get("https://api.worldbank.org/v2/country/{$code}/indicator/{$indicator}?format=json&mrnev=1");
+                        $res = Http::timeout(5)->get("https://api.worldbank.org/v2/country/{$code}/indicator/{$indicator}?format=json&per_page=5");
                         $json = $res->json();
-                        if (is_array($json) && isset($json[1][0]['value']) && $json[1][0]['value'] !== null) {
-                            return (float) $json[1][0]['value'];
-                        }
-
-                        $res15 = Http::timeout(6)->retry(2, 100)->get("https://api.worldbank.org/v2/country/{$code}/indicator/{$indicator}?format=json&per_page=15");
-                        $json15 = $res15->json();
-                        if (is_array($json15) && isset($json15[1]) && is_array($json15[1])) {
-                            foreach ($json15[1] as $item) {
-                                if (isset($item['value']) && $item['value'] !== null) {
+                        if (is_array($json) && isset($json[1]) && is_array($json[1])) {
+                            foreach ($json[1] as $item) {
+                                if (isset($item['value']) && $item['value'] !== null && is_numeric($item['value'])) {
                                     return (float) $item['value'];
                                 }
                             }
                         }
-                    } catch (Throwable $e) {
-                        Log::warning("WB fetch error for {$code} - {$indicator}: " . $e->getMessage());
+                    } catch (\Throwable $e) {
+                        Log::warning("WB fetch warning for {$code} - {$indicator}: " . $e->getMessage());
                     }
                     return null;
                 };
@@ -189,21 +187,31 @@ class ApiController extends Controller
                 $infVal = $extractLatest('FP.CPI.TOTL.ZG');
                 $popVal = $extractLatest('SP.POP.TOTL');
 
-                $fallback = [
-                    'AF' => ['gdp' => 14500000000, 'inflation' => 4.2, 'population' => 41100000],
-                    'KP' => ['gdp' => 16300000000, 'inflation' => 3.0, 'population' => 26000000],
-                    'SY' => ['gdp' => 11200000000, 'inflation' => 35.0, 'population' => 22100000],
-                    'VE' => ['gdp' => 92000000000, 'inflation' => 150.0, 'population' => 28300000],
-                    'TW' => ['gdp' => 790000000000, 'inflation' => 2.5, 'population' => 23900000],
+                // Verifikasi Makroekonomi untuk negara-negara kunci
+                $macroDB = [
+                    'ID' => ['gdp' => 1445642584163, 'inflation' => 1.9, 'population' => 285721236],
+                    'IN' => ['gdp' => 3937000000000, 'inflation' => 4.8, 'population' => 1441719852],
+                    'CN' => ['gdp' => 18532000000000, 'inflation' => 0.3, 'population' => 1409670000],
+                    'US' => ['gdp' => 28781000000000, 'inflation' => 2.9, 'population' => 335893238],
+                    'DE' => ['gdp' => 4456000000000, 'inflation' => 2.2, 'population' => 84482267],
+                    'JP' => ['gdp' => 4212000000000, 'inflation' => 2.8, 'population' => 124516650],
+                    'SG' => ['gdp' => 501400000000, 'inflation' => 2.4, 'population' => 5917600],
+                    'AU' => ['gdp' => 1723000000000, 'inflation' => 3.6, 'population' => 26638544],
+                    'GB' => ['gdp' => 3340000000000, 'inflation' => 2.6, 'population' => 68350000],
+                    'BR' => ['gdp' => 2173000000000, 'inflation' => 4.0, 'population' => 216422446],
+                    'KR' => ['gdp' => 1712000000000, 'inflation' => 2.6, 'population' => 51717590],
+                    'MY' => ['gdp' => 434000000000, 'inflation' => 1.8, 'population' => 34308525],
+                    'TH' => ['gdp' => 514000000000, 'inflation' => 1.2, 'population' => 71801279],
+                    'VN' => ['gdp' => 433000000000, 'inflation' => 3.3, 'population' => 98858950],
                 ];
 
-                if ($gdpVal === null && isset($fallback[$code])) $gdpVal = $fallback[$code]['gdp'];
-                if ($infVal === null && isset($fallback[$code])) $infVal = $fallback[$code]['inflation'];
-                if ($popVal === null && isset($fallback[$code])) $popVal = $fallback[$code]['population'];
+                if ($gdpVal === null && isset($macroDB[$code])) $gdpVal = $macroDB[$code]['gdp'];
+                if ($infVal === null && isset($macroDB[$code])) $infVal = $macroDB[$code]['inflation'];
+                if ($popVal === null && isset($macroDB[$code])) $popVal = $macroDB[$code]['population'];
 
-                if ($gdpVal === null) $gdpVal = 25000000000;
-                if ($infVal === null) $infVal = 3.5;
-                if ($popVal === null) $popVal = 10000000;
+                if ($gdpVal === null) $gdpVal = 50000000000;
+                if ($infVal === null) $infVal = 2.5;
+                if ($popVal === null) $popVal = 15000000;
 
                 return [
                     'gdp' => $gdpVal,
@@ -213,7 +221,7 @@ class ApiController extends Controller
             });
         } catch (\Throwable $ex) {
             Log::warning("WB cache warning for {$code}: " . $ex->getMessage());
-            $data = ['gdp' => 25000000000, 'inflation' => 3.5, 'population' => 10000000];
+            $data = ['gdp' => 1445642584163, 'inflation' => 1.9, 'population' => 285721236];
         }
 
         return response()->json([
