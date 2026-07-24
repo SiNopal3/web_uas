@@ -814,6 +814,19 @@ async function fetchNews(countryName, signal) {
                         </div>
                     `;
                     html += liveList.map(art => renderCardHtml(art, false)).join('');
+                } else {
+                    html += `
+                        <div class="col-12 mt-4 mb-1">
+                            <div class="d-flex align-items-center justify-content-between p-3 rounded" style="background: rgba(148, 163, 184, 0.1); border-left: 4px solid #64748b;">
+                                <div class="fw-semibold text-muted mb-0"><i class="fa-solid fa-circle-info me-2"></i>Berita Live GNews - Negara Tujuan: ${escapeHtml(countryName)}</div>
+                                <span class="badge bg-secondary text-white fw-semibold">0 Live News</span>
+                            </div>
+                            <div class="p-4 text-center text-muted small rounded mt-2" style="background: rgba(15, 23, 42, 0.4); border: 1px dashed rgba(255,255,255,0.15);">
+                                <i class="fa-solid fa-newspaper fs-4 mb-2 d-block text-slate-400"></i>
+                                No live news available for this country.
+                            </div>
+                        </div>
+                    `;
                 }
 
                 newsContainer.innerHTML = html;

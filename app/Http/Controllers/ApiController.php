@@ -383,15 +383,15 @@ class ApiController extends Controller
             ]);
         }
 
-        $cacheKey = "global_news_" . md5($cleanTopic);
+        $cacheKey = "global_news_v2_" . md5($cleanTopic);
 
         $liveArticles = Cache::remember($cacheKey, now()->addHours(2), function () use ($cleanTopic) {
             try {
                 $apiKey = config('services.gnews.key', 'cbfd4c366cead10eca7b2e7b7e1a829c');
-                $query = '"' . $cleanTopic . '" AND (logistics OR "supply chain" OR shipping)';
+                $primaryQuery = '"' . $cleanTopic . '" AND (logistics OR "supply chain" OR shipping)';
 
-                $response = Http::timeout(3.5)->retry(1, 50)->get("https://gnews.io/api/v4/search", [
-                    'q' => $query, 
+                $response = Http::timeout(4)->retry(1, 50)->get("https://gnews.io/api/v4/search", [
+                    'q' => $primaryQuery, 
                     'max' => 3, 
                     'lang' => 'en', 
                     'apikey' => $apiKey
@@ -399,6 +399,19 @@ class ApiController extends Controller
                 
                 $data = $response->json();
                 $articles = $data['articles'] ?? [];
+
+                // Jika query spesifik logistik 0 artikel, coba query lebih luas (trade, port, economy, shipping)
+                if ((!is_array($articles) || count($articles) === 0) && !empty($cleanTopic)) {
+                    $broaderQuery = '"' . $cleanTopic . '" AND (shipping OR trade OR port OR economy OR logistics)';
+                    $fallbackResponse = Http::timeout(4)->retry(1, 50)->get("https://gnews.io/api/v4/search", [
+                        'q' => $broaderQuery,
+                        'max' => 3,
+                        'lang' => 'en',
+                        'apikey' => $apiKey
+                    ]);
+                    $fallbackData = $fallbackResponse->json();
+                    $articles = $fallbackData['articles'] ?? [];
+                }
 
                 if (is_array($articles) && count($articles) > 0) {
                     foreach ($articles as &$article) {
