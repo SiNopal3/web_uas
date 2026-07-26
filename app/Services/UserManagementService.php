@@ -45,23 +45,19 @@ class UserManagementService
         }
 
         if ($userRole && $adminRole) {
-            // Pastikan semua user admin maupun user reguler ter-assign role_id dengan benar (termasuk yang null)
+            // Pastikan semua user admin maupun user reguler ter-assign role_id dan relasi roles dengan sinkron
             $allUsers = User::all();
             foreach ($allUsers as $u) {
-                if ($u->isAdmin()) {
+                if ($u->role_id === $adminRole->id || ($u->role && in_array(strtolower($u->role->name), ['admin', 'administrator']))) {
                     if ($u->role_id !== $adminRole->id) {
                         $u->update(['role_id' => $adminRole->id]);
                     }
-                    if (!$u->roles()->where('roles.id', $adminRole->id)->exists()) {
-                        $u->roles()->sync([$adminRole->id]);
-                    }
+                    $u->roles()->sync([$adminRole->id]);
                 } else {
                     if ($u->role_id !== $userRole->id || $u->role_id === null) {
                         $u->update(['role_id' => $userRole->id]);
                     }
-                    if (!$u->roles()->where('roles.id', $userRole->id)->exists()) {
-                        $u->roles()->sync([$userRole->id]);
-                    }
+                    $u->roles()->sync([$userRole->id]);
                 }
             }
 
