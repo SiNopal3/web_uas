@@ -273,15 +273,19 @@ class UserManagementService
         }
 
         $onlineCount = count(array_unique($onlineUserIds));
-        $adminRole = Role::whereIn('name', ['Admin', 'Administrator'])->first();
-        $adminRoleId = $adminRole ? $adminRole->id : 1;
+        $allUsersList = User::with('role', 'roles')->get();
 
-        $adminCount = User::where('role_id', $adminRoleId)->count();
-        if ($adminCount === 0) {
-            $adminCount = User::where('email', 'admin@gmail.com')->orWhere('username', 'admin')->count();
+        $adminCount = 0;
+        $userCount = 0;
+
+        foreach ($allUsersList as $u) {
+            $roleName = strtolower($u->role ? $u->role->name : ($u->roles->first() ? $u->roles->first()->name : 'user'));
+            if ($roleName === 'admin' || $roleName === 'administrator') {
+                $adminCount++;
+            } else {
+                $userCount++;
+            }
         }
-
-        $userCount = max(0, $totalCount - $adminCount);
 
         return [
             'total_users' => $totalCount,
