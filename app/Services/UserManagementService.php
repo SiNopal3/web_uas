@@ -26,26 +26,21 @@ class UserManagementService
         $adminRole = Role::firstOrCreate(['name' => 'Admin'], ['description' => 'Enterprise System Administrator']);
         $userRole = Role::firstOrCreate(['name' => 'User'], ['description' => 'General User']);
 
-        // Explicitly set role_id in users table
+        // Assign role default hanya untuk pengguna yang role_id-nya masih NULL
         DB::table('users')
-            ->where('email', 'admin@gmail.com')
-            ->orWhere('username', 'admin')
+            ->where(function ($q) {
+                $q->where('email', 'admin@gmail.com')->orWhere('username', 'admin');
+            })
+            ->whereNull('role_id')
             ->update(['role_id' => $adminRole->id]);
 
         DB::table('users')
-            ->where('email', '!=', 'admin@gmail.com')
-            ->where(function ($q) {
-                $q->whereNull('username')->orWhere('username', '!=', 'admin');
-            })
+            ->whereNull('role_id')
             ->update(['role_id' => $userRole->id]);
 
-        $allUsers = User::all();
+        $allUsers = User::whereDoesntHave('roles')->get();
         foreach ($allUsers as $u) {
-            if ($u->role_id === $adminRole->id) {
-                $u->roles()->sync([$adminRole->id]);
-            } else {
-                $u->roles()->sync([$userRole->id]);
-            }
+            $u->roles()->sync([$u->role_id ?: $userRole->id]);
         }
 
         $permissions = [
@@ -274,15 +269,11 @@ class UserManagementService
 
         $onlineCount = count(array_unique($onlineUserIds));
         $totalCount = User::count();
-        $adminCount = User::where('email', 'admin@gmail.com')->orWhere('username', 'admin')->count();
-        $otherAdmins = User::whereNotIn('email', ['admin@gmail.com'])
-            ->where(function ($q) {
-                $q->whereNull('username')->orWhere('username', '!=', 'admin');
-            })
-            ->whereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']))
-            ->count();
+        $adminCount = User::where(function ($q) {
+            $q->whereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']))
+              ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']));
+        })->count();
 
-        $adminCount = $adminCount + $otherAdmins;
         $userCount = max(0, $totalCount - $adminCount);
 
         return [

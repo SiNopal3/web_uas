@@ -422,7 +422,7 @@
         .then(response => response.json())
         .then(res => {
             saveBtn.disabled = false;
-            saveBtn.innerHTML = 'Save User';
+            saveBtn.innerHTML = 'Save';
 
             if (res.success) {
                 const modalElem = bootstrap.Modal.getInstance(document.getElementById('userModal'));
@@ -435,7 +435,7 @@
         })
         .catch(err => {
             saveBtn.disabled = false;
-            saveBtn.innerHTML = 'Save User';
+            saveBtn.innerHTML = 'Save';
             console.error('Error saving user:', err);
             alert('An unexpected error occurred while communicating with the server.');
         });

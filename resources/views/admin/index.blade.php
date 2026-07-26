@@ -260,7 +260,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary px-4" id="btnSaveUserModal">Save User</button>
+                    <button type="submit" class="btn btn-primary px-4" id="btnSaveUserModal">Save</button>
                 </div>
             </form>
         </div>
