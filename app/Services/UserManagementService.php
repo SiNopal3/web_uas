@@ -305,9 +305,9 @@ class UserManagementService
         $adminCount = User::where(function ($q) use ($adminRoleObj) {
             if ($adminRoleObj) {
                 $q->where('role_id', $adminRoleObj->id);
-            } else {
-                $q->whereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']));
             }
+            $q->orWhere('email', 'admin@gmail.com')
+              ->orWhere('username', 'admin');
         })->count();
 
         $userCount = max(0, $totalCount - $adminCount);
