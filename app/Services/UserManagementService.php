@@ -45,10 +45,10 @@ class UserManagementService
         }
 
         if ($userRole && $adminRole) {
-            // Sinkronkan role_id & relasi pivot roles secara tegas dan presisi
+            // Sinkronkan role_id & relasi pivot roles secara presisi
             $allUsers = User::all();
             foreach ($allUsers as $u) {
-                $isSystemAdmin = ($u->email === 'admin@gmail.com' || $u->username === 'admin' || ($u->role && in_array(strtolower($u->role->name), ['admin', 'administrator'])));
+                $isSystemAdmin = ($u->email === 'admin@gmail.com' || $u->username === 'admin');
                 if ($isSystemAdmin) {
                     if ($u->role_id !== $adminRole->id) {
                         $u->update(['role_id' => $adminRole->id]);
@@ -295,13 +295,22 @@ class UserManagementService
         $onlineCount = count(array_unique($onlineUserIds));
         $totalCount = User::count();
 
-        $adminCount = User::where(function ($q) {
-            $q->whereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']))
+        $adminRoleObj = Role::whereIn('name', ['Admin', 'Administrator'])->first();
+        $userRoleObj = Role::whereIn('name', ['User', 'user'])->first();
+
+        $adminCount = User::where(function ($q) use ($adminRoleObj) {
+            if ($adminRoleObj) {
+                $q->where('role_id', $adminRoleObj->id);
+            }
+            $q->orWhereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']))
               ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']));
         })->count();
 
-        $userCount = User::where(function ($q) {
-            $q->whereHas('role', fn($r) => $r->whereIn('name', ['User', 'user']))
+        $userCount = User::where(function ($q) use ($userRoleObj) {
+            if ($userRoleObj) {
+                $q->where('role_id', $userRoleObj->id);
+            }
+            $q->orWhereHas('role', fn($r) => $r->whereIn('name', ['User', 'user']))
               ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['User', 'user']));
         })->count();
 
