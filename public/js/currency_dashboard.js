@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem(featKey);
         sessionStorage.removeItem(featKey + '_curr');
         localStorage.removeItem(featKey + '_curr');
-        const searchInput = document.getElementById('currCountrySearchInput');
+        const searchInput = document.getElementById('currCountrySearchInput') || document.getElementById('countrySearchInput');
         if (searchInput) searchInput.value = '';
         const elCountry = document.getElementById('currSelectedCountryName') || document.getElementById('selectedCountryName');
         const elCodeBadge = document.getElementById('currSelectedCodeBadge') || document.getElementById('selectedCountryCurrency');
