@@ -48,7 +48,7 @@ class UserManagementService
             // Sinkronkan role_id & relasi pivot roles secara presisi
             $allUsers = User::all();
             foreach ($allUsers as $u) {
-                $isSystemAdmin = ($u->email === 'admin@gmail.com' || $u->username === 'admin');
+                $isSystemAdmin = ($u->email === 'admin@gmail.com' || $u->username === 'admin' || ($u->role_id === $adminRole->id && $u->email !== 'gamau.ah@gmail.com'));
                 if ($isSystemAdmin) {
                     if ($u->role_id !== $adminRole->id) {
                         $u->update(['role_id' => $adminRole->id]);
@@ -296,27 +296,16 @@ class UserManagementService
         $totalCount = User::count();
 
         $adminRoleObj = Role::whereIn('name', ['Admin', 'Administrator'])->first();
-        $userRoleObj = Role::whereIn('name', ['User', 'user'])->first();
 
         $adminCount = User::where(function ($q) use ($adminRoleObj) {
             if ($adminRoleObj) {
                 $q->where('role_id', $adminRoleObj->id);
+            } else {
+                $q->whereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']));
             }
-            $q->orWhereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']))
-              ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']));
         })->count();
 
-        $userCount = User::where(function ($q) use ($userRoleObj) {
-            if ($userRoleObj) {
-                $q->where('role_id', $userRoleObj->id);
-            }
-            $q->orWhereHas('role', fn($r) => $r->whereIn('name', ['User', 'user']))
-              ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['User', 'user']));
-        })->count();
-
-        if (($adminCount + $userCount) < $totalCount) {
-            $userCount = max(0, $totalCount - $adminCount);
-        }
+        $userCount = max(0, $totalCount - $adminCount);
 
         return [
             'total_users' => $totalCount,
