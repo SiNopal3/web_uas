@@ -366,8 +366,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const countrySearchInputEl = document.getElementById('countrySearchInput');
         
         let rawVal = filterCountryEl ? filterCountryEl.value : '';
-        if (!rawVal && countrySearchInputEl && countrySearchInputEl.value) {
-            rawVal = countrySearchInputEl.value;
+        if (!rawVal && typeof currentSelectedCountry !== 'undefined' && currentSelectedCountry) {
+            rawVal = currentSelectedCountry;
         }
         if (!rawVal && typeof activeCountryData !== 'undefined' && activeCountryData?.name) {
             rawVal = activeCountryData.name;

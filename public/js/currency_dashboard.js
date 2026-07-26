@@ -237,33 +237,43 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (filtered.length === 0) {
-                dropdownList.innerHTML = `<div class="p-3 text-muted small text-center">Negara atau mata uang "${query}" tidak ditemukan. Coba nama lain.</div>`;
+                const safeQuery = query.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+                dropdownList.innerHTML = `<div class="p-3 text-muted small text-center">Negara atau mata uang "${safeQuery}" tidak ditemukan. Coba nama lain.</div>`;
             } else {
                 filtered.slice(0, 100).forEach(item => {
+                    const isSelected = currentSelectedCountry && (
+                        currentSelectedCountry.toLowerCase() === item.country.toLowerCase() ||
+                        currentSelectedCountry.toLowerCase() === item.code.toLowerCase()
+                    );
+
                     const el = document.createElement('div');
-                    el.className = 'dropdown-item d-flex justify-content-between align-items-center py-2 px-3 text-white border-bottom border-secondary';
+                    el.className = `dropdown-item d-flex justify-content-between align-items-center py-2 px-3 border-bottom border-secondary ${isSelected ? 'active bg-primary text-white fw-bold' : 'text-white'}`;
                     el.style.cursor = 'pointer';
                     el.style.fontSize = '13px';
+                    if (isSelected) {
+                        el.style.background = '#0d6efd';
+                    }
 
                     // Gunakan live rate jika tersedia
                     const activeRate = (liveRatesData && liveRatesData[item.code]) ? liveRatesData[item.code] : item.rate_usd;
 
                     el.innerHTML = `
                         <div>
-                            <span class="fw-bold me-1">${item.country}</span>
-                            <span class="badge bg-dark border border-secondary text-warning small">${item.code}</span>
+                            <span class="fw-bold me-1">${item.country} ${isSelected ? '✓' : ''}</span>
+                            <span class="badge ${isSelected ? 'bg-light text-dark' : 'bg-dark text-warning'} border border-secondary small">${item.code}</span>
                         </div>
-                        <span class="small text-info fw-bold">${item.symbol} ${activeRate.toLocaleString('id-ID', { maximumFractionDigits: 2 })} (${item.region})</span>
+                        <span class="small ${isSelected ? 'text-light' : 'text-info'} fw-bold">${item.symbol} ${activeRate.toLocaleString('id-ID', { maximumFractionDigits: 2 })} (${item.region})</span>
                     `;
 
-                    el.addEventListener('click', () => {
+                    el.addEventListener('click', (e) => {
+                        e.stopPropagation();
                         searchInput.value = `${item.country} (${item.code} - ${item.symbol})`;
                         dropdownList.style.display = 'none';
                         selectCurrency(item.code, item.symbol, activeRate, item.country);
                     });
 
-                    el.addEventListener('mouseenter', () => el.style.background = 'rgba(255, 193, 7, 0.2)');
-                    el.addEventListener('mouseleave', () => el.style.background = 'transparent');
+                    el.addEventListener('mouseenter', () => { if (!isSelected) el.style.background = 'rgba(255, 193, 7, 0.2)'; });
+                    el.addEventListener('mouseleave', () => { if (!isSelected) el.style.background = 'transparent'; });
                     dropdownList.appendChild(el);
                 });
             }
@@ -280,13 +290,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         searchInput.addEventListener('focus', () => {
-            renderCountryOptions(searchInput.value.replace(/\s*\(.*\)/, ''));
+            renderCountryOptions('');
         });
 
-        // Klik di luar tutup dropdown
+        searchInput.addEventListener('click', (e) => {
+            e.stopPropagation();
+            renderCountryOptions('');
+        });
+
+        // Klik di luar tutup dropdown & kembalikan tampilan selected country pada input jika ada
         document.addEventListener('click', (e) => {
             if (!searchInput.contains(e.target) && !dropdownList.contains(e.target)) {
                 dropdownList.style.display = 'none';
+                if (currentSelectedCountry && currentSelectedCountry !== 'Global / Semua Negara' && currentSelectedCountry !== 'Global' && currentSelectedCountry !== '-') {
+                    const match = SOVEREIGN_195_CURRENCIES.find(c => c.country.toLowerCase() === currentSelectedCountry.toLowerCase());
+                    if (match) {
+                        searchInput.value = `${match.country} (${match.code} - ${match.symbol})`;
+                    } else {
+                        searchInput.value = currentSelectedCountry;
+                    }
+                } else {
+                    searchInput.value = '';
+                }
             }
         });
     }

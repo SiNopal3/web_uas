@@ -241,15 +241,17 @@ document.addEventListener('DOMContentLoaded', async () => {
                 filtered.slice(0, 100).forEach(key => {
                     const meta = countryMetadata[key];
                     const flag = getFlagEmoji(meta.iso);
-                    const isSelected = activeCountryData && activeCountryData.name === key;
+                    const isSelected = activeCountryData && activeCountryData.name && (
+                        activeCountryData.name.toLowerCase() === key.toLowerCase()
+                    );
                     const item = document.createElement('div');
-                    item.className = `country-dropdown-item ${isSelected ? 'selected' : ''}`;
+                    item.className = `country-dropdown-item ${isSelected ? 'selected active bg-primary text-white' : ''}`;
                     item.tabIndex = 0;
                     item.innerHTML = `
                         <div class="d-flex align-items-center gap-2.5">
                             <span class="fs-5 flex-shrink-0" style="line-height: 1;">${flag}</span>
                             <div>
-                                <div class="country-name">${escapeHtml(key)}</div>
+                                <div class="country-name">${escapeHtml(key)} ${isSelected ? '✓' : ''}</div>
                                 <div class="country-meta">${escapeHtml(meta.iso)} &bull; ${escapeHtml(meta.region)}</div>
                             </div>
                         </div>
@@ -282,17 +284,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         searchInput.addEventListener('focus', () => {
-            renderCountryOptions(searchInput.value.replace(/\s*\(.*\)/, ''));
+            renderCountryOptions('');
         });
 
         searchInput.addEventListener('click', (e) => {
             e.stopPropagation();
-            renderCountryOptions(searchInput.value.replace(/\s*\(.*\)/, ''));
+            renderCountryOptions('');
         });
 
         document.addEventListener('click', (e) => {
             if (!searchInput.contains(e.target) && !dropdownList.contains(e.target)) {
                 dropdownList.style.display = 'none';
+                const curCountry = (typeof currentSelectedCountry !== 'undefined' && currentSelectedCountry) ? currentSelectedCountry : (activeCountryData ? activeCountryData.name : '');
+                if (curCountry && curCountry !== 'Global / Semua Negara' && curCountry !== 'Global' && curCountry !== '-') {
+                    const match = typeof SOVEREIGN_195_CURRENCIES !== 'undefined' ? SOVEREIGN_195_CURRENCIES.find(c => c.country.toLowerCase() === curCountry.toLowerCase()) : null;
+                    if (match) {
+                        searchInput.value = `${match.country} (${match.code} - ${match.symbol})`;
+                    } else {
+                        searchInput.value = curCountry;
+                    }
+                } else {
+                    searchInput.value = '';
+                }
             }
         });
     }
