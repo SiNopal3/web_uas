@@ -298,15 +298,19 @@ class UserManagementService
         $onlineCount = count(array_unique($onlineUserIds));
         $totalCount = User::count();
 
-        $adminCount = User::where(function($q) {
+        $adminCount = User::where(function ($q) {
             $q->whereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']))
-              ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']))
-              ->orWhere('role_id', 1)
-              ->orWhere('email', 'admin@gmail.com')
-              ->orWhere('email', 'LIKE', '%admin%');
+              ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['Admin', 'Administrator']));
         })->count();
 
-        $userCount = max(0, $totalCount - $adminCount);
+        $userCount = User::where(function ($q) {
+            $q->whereHas('role', fn($r) => $r->whereIn('name', ['User', 'user']))
+              ->orWhereHas('roles', fn($r) => $r->whereIn('name', ['User', 'user']));
+        })->count();
+
+        if (($adminCount + $userCount) < $totalCount) {
+            $userCount = max(0, $totalCount - $adminCount);
+        }
 
         return [
             'total_users' => $totalCount,
