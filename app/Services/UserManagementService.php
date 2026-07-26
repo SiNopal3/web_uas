@@ -273,6 +273,9 @@ class UserManagementService
         }
 
         $onlineCount = count(array_unique($onlineUserIds));
+        $totalCount = User::count();
+        $allUsersList = User::with('role', 'roles')->get();
+
         $adminRole = Role::whereIn('name', ['Admin', 'Administrator'])->first();
         $adminRoleId = $adminRole ? $adminRole->id : 1;
 
