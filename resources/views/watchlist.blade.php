@@ -4,9 +4,9 @@
 
 @section('content')
 <div class="container-fluid p-0">
-    <!-- Top Selector and Country Header -->
+    <!-- Active Target Country Header -->
     <div class="row align-items-center mb-4 g-3 country-selector-row">
-        <div class="col-12 col-xl-5">
+        <div class="col-12">
             <div class="glass-card p-3 d-flex align-items-center justify-content-between flex-wrap gap-2">
                 <div class="overflow-hidden text-truncate pe-2">
                     <span class="small text-uppercase fw-semibold d-block text-truncate text-muted" style="letter-spacing: 0.05em; font-size: 11px !important;">Active Target Country</span>
@@ -20,18 +20,6 @@
                         <span id="selectedCountryRegion" class="badge badge-soft-secondary px-2.5 py-1 fw-semibold text-slate-700">Global</span>
                         <div id="selectedCountryCurrency" class="small fw-semibold mt-1 text-primary" style="font-size: 13px !important;">All Currencies</div>
                     </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-xl-7 country-selector-card">
-            <div class="glass-card p-3" style="overflow: visible !important;">
-                <label for="countrySearchInput" class="form-label small mb-1.5 fw-semibold d-block text-slate-700">
-                    Search Sovereign Country:
-                </label>
-                <div style="position: relative;">
-                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #475569 !important; font-size: 14px; z-index: 5; pointer-events: none;"></i>
-                    <input type="text" id="countrySearchInput" class="form-control ps-5" placeholder="Search country..." autocomplete="off" style="height: 44px; border-radius: 8px; font-size: 13.5px;">
-                    <div id="countryDropdownList" class="dropdown-menu country-dropdown-menu" style="display: none;"></div>
                 </div>
             </div>
         </div>
