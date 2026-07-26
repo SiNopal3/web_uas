@@ -240,29 +240,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 const safeQuery = query.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
                 dropdownList.innerHTML = `<div class="p-3 text-muted small text-center">Negara atau mata uang "${safeQuery}" tidak ditemukan. Coba nama lain.</div>`;
             } else {
+                dropdownList.classList.add('country-dropdown-menu');
                 filtered.slice(0, 100).forEach(item => {
-                    const isSelected = currentSelectedCountry && (
-                        currentSelectedCountry.toLowerCase() === item.country.toLowerCase() ||
-                        currentSelectedCountry.toLowerCase() === item.code.toLowerCase()
-                    );
+                    const isSelected = currentSelectedCountry && 
+                        currentSelectedCountry !== 'Global / Semua Negara' && 
+                        currentSelectedCountry !== 'Global' && 
+                        currentSelectedCountry !== 'Semua Negara' && 
+                        currentSelectedCountry !== '-' && 
+                        currentSelectedCountry !== 'Belum Dipilih' && (
+                            currentSelectedCountry.toLowerCase() === item.country.toLowerCase() ||
+                            currentSelectedCountry.toLowerCase() === item.code.toLowerCase()
+                        );
 
-                    const el = document.createElement('div');
-                    el.className = `dropdown-item d-flex justify-content-between align-items-center py-2 px-3 border-bottom border-secondary ${isSelected ? 'active bg-primary text-white fw-bold' : 'text-white'}`;
-                    el.style.cursor = 'pointer';
-                    el.style.fontSize = '13px';
-                    if (isSelected) {
-                        el.style.background = '#0d6efd';
-                    }
-
-                    // Gunakan live rate jika tersedia
+                    const flag = window.getFlagEmoji ? window.getFlagEmoji(item.iso) : '🌐';
                     const activeRate = (liveRatesData && liveRatesData[item.code]) ? liveRatesData[item.code] : item.rate_usd;
 
+                    const el = document.createElement('div');
+                    el.className = `country-dropdown-item ${isSelected ? 'selected active' : ''}`;
+                    el.tabIndex = 0;
+
                     el.innerHTML = `
-                        <div>
-                            <span class="fw-bold me-1">${item.country} ${isSelected ? '✓' : ''}</span>
-                            <span class="badge ${isSelected ? 'bg-light text-dark' : 'bg-dark text-warning'} border border-secondary small">${item.code}</span>
+                        <div class="d-flex align-items-center gap-2.5">
+                            <span class="fs-5 flex-shrink-0" style="line-height: 1;">${flag}</span>
+                            <div>
+                                <div class="country-name">${escapeHtml(item.country)} ${isSelected ? '✓' : ''}</div>
+                                <div class="country-meta">${escapeHtml(item.code)} &bull; ${escapeHtml(item.region)} &bull; ${item.symbol} ${activeRate.toLocaleString('id-ID', { maximumFractionDigits: 2 })}</div>
+                            </div>
                         </div>
-                        <span class="small ${isSelected ? 'text-light' : 'text-info'} fw-bold">${item.symbol} ${activeRate.toLocaleString('id-ID', { maximumFractionDigits: 2 })} (${item.region})</span>
                     `;
 
                     el.addEventListener('click', (e) => {
@@ -272,8 +276,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         selectCurrency(item.code, item.symbol, activeRate, item.country);
                     });
 
-                    el.addEventListener('mouseenter', () => { if (!isSelected) el.style.background = 'rgba(255, 193, 7, 0.2)'; });
-                    el.addEventListener('mouseleave', () => { if (!isSelected) el.style.background = 'transparent'; });
+                    el.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            el.click();
+                        }
+                    });
+
                     dropdownList.appendChild(el);
                 });
             }
