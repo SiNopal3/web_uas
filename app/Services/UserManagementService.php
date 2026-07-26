@@ -23,53 +23,28 @@ class UserManagementService
      */
     public function ensureDefaultRolesAndPermissions(): void
     {
-        $roles = [
-            'Admin' => 'Enterprise System Administrator with full access to all modules and configurations',
-            'User' => 'General User with access to risk monitoring and analysis features',
-        ];
+        $adminRole = Role::firstOrCreate(['name' => 'Admin'], ['description' => 'Enterprise System Administrator']);
+        $userRole = Role::firstOrCreate(['name' => 'User'], ['description' => 'General User']);
 
-        foreach ($roles as $name => $desc) {
-            Role::firstOrCreate(['name' => $name], ['description' => $desc]);
-        }
+        // Explicitly set role_id in users table
+        DB::table('users')
+            ->where('email', 'admin@gmail.com')
+            ->orWhere('username', 'admin')
+            ->update(['role_id' => $adminRole->id]);
 
-        $adminRole = Role::where('name', 'Admin')->first();
-        $userRole = Role::where('name', 'User')->first();
+        DB::table('users')
+            ->where('email', '!=', 'admin@gmail.com')
+            ->where(function ($q) {
+                $q->whereNull('username')->orWhere('username', '!=', 'admin');
+            })
+            ->update(['role_id' => $userRole->id]);
 
-        // Migrasi & hapus role lama agar hanya tersisa 2 role: Admin dan User
-        $oldAdminRole = Role::where('name', 'Administrator')->first();
-        if ($oldAdminRole && $adminRole) {
-            User::where('role_id', $oldAdminRole->id)->update(['role_id' => $adminRole->id]);
-            foreach ($oldAdminRole->users as $u) {
+        $allUsers = User::all();
+        foreach ($allUsers as $u) {
+            if ($u->role_id === $adminRole->id) {
                 $u->roles()->sync([$adminRole->id]);
-            }
-        }
-
-        if ($userRole && $adminRole) {
-            // Sinkronkan role_id di database secara presisi
-            DB::table('users')
-                ->where('email', 'admin@gmail.com')
-                ->orWhere('username', 'admin')
-                ->update(['role_id' => $adminRole->id]);
-
-            DB::table('users')
-                ->where('email', '!=', 'admin@gmail.com')
-                ->where(function ($q) {
-                    $q->whereNull('username')->orWhere('username', '!=', 'admin');
-                })
-                ->update(['role_id' => $userRole->id]);
-
-            $allUsers = User::all();
-            foreach ($allUsers as $u) {
-                if ($u->role_id === $adminRole->id) {
-                    $u->roles()->sync([$adminRole->id]);
-                } else {
-                    $u->roles()->sync([$userRole->id]);
-                }
-            }
-
-            $oldRoles = Role::whereNotIn('name', ['Admin', 'User'])->get();
-            foreach ($oldRoles as $oldRole) {
-                $oldRole->delete();
+            } else {
+                $u->roles()->sync([$userRole->id]);
             }
         }
 
@@ -298,12 +273,13 @@ class UserManagementService
         }
 
         $onlineCount = count(array_unique($onlineUserIds));
-        $totalCount = User::count();
+        $adminRole = Role::whereIn('name', ['Admin', 'Administrator'])->first();
+        $adminRoleId = $adminRole ? $adminRole->id : 1;
 
-        $adminCount = User::where('email', 'admin@gmail.com')
-            ->orWhere('username', 'admin')
-            ->orWhereHas('role', fn($r) => $r->whereIn('name', ['Admin', 'Administrator'])->where('users.email', 'admin@gmail.com'))
-            ->count();
+        $adminCount = User::where('role_id', $adminRoleId)->count();
+        if ($adminCount === 0) {
+            $adminCount = User::where('email', 'admin@gmail.com')->orWhere('username', 'admin')->count();
+        }
 
         $userCount = max(0, $totalCount - $adminCount);
 
