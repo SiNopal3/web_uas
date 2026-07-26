@@ -45,16 +45,17 @@ class UserManagementService
         }
 
         if ($userRole && $adminRole) {
-            // Pastikan semua user admin maupun user reguler ter-assign role_id dan relasi roles dengan sinkron
+            // Sinkronkan role_id & relasi pivot roles secara tegas dan presisi
             $allUsers = User::all();
             foreach ($allUsers as $u) {
-                if ($u->role_id === $adminRole->id || ($u->role && in_array(strtolower($u->role->name), ['admin', 'administrator']))) {
+                $isSystemAdmin = ($u->email === 'admin@gmail.com' || $u->username === 'admin' || ($u->role && in_array(strtolower($u->role->name), ['admin', 'administrator'])));
+                if ($isSystemAdmin) {
                     if ($u->role_id !== $adminRole->id) {
                         $u->update(['role_id' => $adminRole->id]);
                     }
                     $u->roles()->sync([$adminRole->id]);
                 } else {
-                    if ($u->role_id !== $userRole->id || $u->role_id === null) {
+                    if ($u->role_id !== $userRole->id) {
                         $u->update(['role_id' => $userRole->id]);
                     }
                     $u->roles()->sync([$userRole->id]);
