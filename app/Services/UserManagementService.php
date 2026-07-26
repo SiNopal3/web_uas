@@ -45,19 +45,24 @@ class UserManagementService
         }
 
         if ($userRole && $adminRole) {
-            // Sinkronkan role_id & relasi pivot roles secara presisi
+            // Sinkronkan role_id di database secara presisi
+            DB::table('users')
+                ->where('email', 'admin@gmail.com')
+                ->orWhere('username', 'admin')
+                ->update(['role_id' => $adminRole->id]);
+
+            DB::table('users')
+                ->where('email', '!=', 'admin@gmail.com')
+                ->where(function ($q) {
+                    $q->whereNull('username')->orWhere('username', '!=', 'admin');
+                })
+                ->update(['role_id' => $userRole->id]);
+
             $allUsers = User::all();
             foreach ($allUsers as $u) {
-                $isSystemAdmin = ($u->email === 'admin@gmail.com' || $u->username === 'admin' || ($u->role_id === $adminRole->id && $u->email !== 'gamau.ah@gmail.com'));
-                if ($isSystemAdmin) {
-                    if ($u->role_id !== $adminRole->id) {
-                        $u->update(['role_id' => $adminRole->id]);
-                    }
+                if ($u->role_id === $adminRole->id) {
                     $u->roles()->sync([$adminRole->id]);
                 } else {
-                    if ($u->role_id !== $userRole->id) {
-                        $u->update(['role_id' => $userRole->id]);
-                    }
                     $u->roles()->sync([$userRole->id]);
                 }
             }
